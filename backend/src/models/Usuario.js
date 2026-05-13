@@ -18,12 +18,12 @@ const UsuarioSchema= new Schema({
         trim: true
     },
     telefono:{
-        type: Number,
+        type: String,
         required: true,
         trim: true
     },
     cedula:{
-        type: Number,
+        type: String,
         required: true,
         trim: true,
         unique: true
