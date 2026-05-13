@@ -2,7 +2,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors';
-import router from './routers/usuario_routers.js';
+import routerUsuario from './routers/usuario_routers.js';
 
 
 // Inicializaciones
@@ -30,8 +30,8 @@ app.set('port',process.env.PORT || 3000)
 // Ruta principal
 app.get('/',(req,res)=>res.send("Server on"))
 
-// Rutas para veterinarios
-app.use('/api',routerVeterinarios)
+// Rutas para usuarios
+app.use('/api',routerUsuario)
 
 // Manejo de una ruta que no sea encontrada
 app.use((req,res)=>res.status(404).send("Endpoint no encontrado - 404"))

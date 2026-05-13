@@ -49,14 +49,14 @@ const UsuarioSchema= new Schema({
     },
     rol:{
         type:String,
-        default:"veterinario"
+        default:"Usuario"
     }
 
 },{
     timestamps:true
 })
 //Método para cifrar el password
-veterinarioSchema.methods.encryptPassword = async function(password){
+UsuarioSchema.methods.encryptPassword = async function(password){
     const salt = await bcrypt.genSalt(10)
     const passwordEncryp = await bcrypt.hash(password,salt)
     return passwordEncryp
@@ -64,14 +64,14 @@ veterinarioSchema.methods.encryptPassword = async function(password){
 
 
 // Método para verificar si el password es el mismo de la BDD
-veterinarioSchema.methods.matchPassword = async function(password){
+UsuarioSchema.methods.matchPassword = async function(password){
     const response = await bcrypt.compare(password,this.password)
     return response
 }
 
 
 // Método para crear un token 
-veterinarioSchema.methods.createToken= function(){
+UsuarioSchema.methods.createToken= function(){
     const tokenGenerado = Math.random().toString(36).slice(2)
     this.token = tokenGenerado
     return tokenGenerado

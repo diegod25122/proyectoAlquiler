@@ -9,10 +9,8 @@ const registro = async (req,res)=>{
         if(verificarEmailBDD) return res.status(400).json({msg:"Lo sentimos, el email ya se encuentra registrado"})
         const nuevoUsuario = new Usuario(req.body)
         nuevoUsuario.password = await nuevoUsuario.encryptPassword(password)
-        const token = nuevoUsuario.createToken()
-        await sendMailToRegister(email,token)
         await nuevoUsuario.save()
-        res.status(200).json({msg:"Revisa tu correo electrónico para confirmar tu cuenta"})
+      res.status(200).json({msg:"Usuario registrado exitosamente ✅"})
 
     } catch (error) {
         res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
