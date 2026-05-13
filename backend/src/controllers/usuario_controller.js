@@ -1,7 +1,4 @@
-import Usuario from "../models/Usuario,js";
-
-
-import Veterinario from "../models/Veterinario.js"
+import Usuario from "../models/Usuario.js";
 
 const registro = async (req,res)=>{
 
