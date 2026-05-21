@@ -16,4 +16,4 @@ router.post('/nuevopassword/:token',crearNuevoPassword)
 router.put('/actualizarperfil/:id',verificarTokenJWT,actualizarPerfil)
 router.put('/actualizarpassword/:id',verificarTokenJWT,actualizarPassword)
 
-export default router_
+export default router

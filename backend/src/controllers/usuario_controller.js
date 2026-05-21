@@ -1,7 +1,6 @@
 import Usuario from "../models/Usuario.js";
 import { sendMailToRegister, sendMailToRecoveryPassword } from "../helpers/sendMail.js";
 import { crearTokenJWT } from "../middlewares/JWT.js"
-
 import mongoose from "mongoose"
 
 
