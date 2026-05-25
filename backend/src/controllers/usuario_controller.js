@@ -84,9 +84,7 @@ const comprobarTokenPasword = async (req,res)=>{
         res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
     }
 }
-
-
-
+// Controlador para crear un nuevo password
 const crearNuevoPassword = async (req,res)=>{
 
     try {
