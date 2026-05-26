@@ -1,7 +1,6 @@
 import Usuario from "../models/Usuario.js";
 import { sendMailToRegister, sendMailToRecoveryPassword } from "../helpers/sendMail.js";
 import { crearTokenJWT } from "../middlewares/JWT.js"
-
 import mongoose from "mongoose"
 
 
@@ -85,9 +84,7 @@ const comprobarTokenPasword = async (req,res)=>{
         res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
     }
 }
-
-
-
+// Controlador para crear un nuevo password
 const crearNuevoPassword = async (req,res)=>{
 
     try {

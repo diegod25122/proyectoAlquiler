@@ -1,0 +1,250 @@
+import { useState } from "react"
+import { MdVisibility, MdVisibilityOff } from "react-icons/md"
+import { Link } from "react-router"
+import { useForm } from "react-hook-form"
+import { ToastContainer } from 'react-toastify'
+import useDarkMode from "../hooks/useDarkMode"
+import { Navbar } from "../components/Navbar"
+import { useFetch } from "../hooks/useFetch.js"
+import logo from '../assets/selloEPN.png'
+
+export function Register() {
+
+    const { isDarkMode } = useDarkMode()
+    const [showPassword, setShowPassword] = useState(false)
+    const { fetchDataBackend, loading } = useFetch()
+    const { register, handleSubmit, formState: { errors } } = useForm()
+
+    const registerUser = async (dataForm) => {
+        const url = `${import.meta.env.VITE_BACKEND_URL}/registro`
+        await fetchDataBackend(url, dataForm, "POST")
+    }
+
+    return (
+        <>
+            <Navbar />
+            <main className="min-h-screen w-full flex items-center justify-center bg-[url('/images/prepoRegister.webp')]
+        bg-cover bg-center relative transition-colors duration-300">
+
+                {/* Filtro oscuro */}
+                <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] z-0"></div>
+
+                {/* Tarjeta */}
+                <div className="relative z-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-2xl p-8 
+          w-full max-w-sm mx-4 shadow-2xl border border-gray-100 dark:border-gray-800 
+          transition-colors duration-300 my-8">
+
+                    <ToastContainer />
+
+                    {/* Logo y título */}
+                    <img src={logo} className="w-20 mx-auto mb-4" alt="Sello EPN" />
+                    <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white transition-colors">
+                        Crear Cuenta
+                    </h1>
+                    <p className="text-xs text-center text-gray-500 dark:text-gray-400 mt-1 mb-6 block">
+                        Regístrate con tus credenciales institucionales
+                    </p>
+
+                    <form onSubmit={handleSubmit(registerUser)}>
+
+                        {/* Nombre */}
+                        <div className="mb-3">
+                            <label className="mb-1.5 block text-xs font-semibold text-gray-700 dark:text-gray-300 transition-colors">
+                                Nombre
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Ingresa tu nombre"
+                                className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 
+                  bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 
+                  placeholder-gray-400 dark:placeholder-gray-500 
+                  focus:border-purple-600 dark:focus:border-purple-500 
+                  focus:outline-none focus:ring-1 focus:ring-purple-600 
+                  py-2 px-3 text-sm transition-all"
+                                {...register("nombre", { required: "El nombre es obligatorio" })}
+                            />
+                            {errors.nombre && <p className="text-red-500 text-xs mt-1">{errors.nombre.message}</p>}
+                        </div>
+
+                        {/* Apellido */}
+                        <div className="mb-3">
+                            <label className="mb-1.5 block text-xs font-semibold text-gray-700 dark:text-gray-300 transition-colors">
+                                Apellido
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Ingresa tu apellido"
+                                className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 
+                  bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 
+                  placeholder-gray-400 dark:placeholder-gray-500 
+                  focus:border-purple-600 dark:focus:border-purple-500 
+                  focus:outline-none focus:ring-1 focus:ring-purple-600 
+                  py-2 px-3 text-sm transition-all"
+                                {...register("apellido", { required: "El apellido es obligatorio" })}
+                            />
+                            {errors.apellido && <p className="text-red-500 text-xs mt-1">{errors.apellido.message}</p>}
+                        </div>
+
+                        {/* Facultad */}
+                        <div className="mb-3">
+                            <label className="mb-1.5 block text-xs font-semibold text-gray-700 dark:text-gray-300 transition-colors">
+                                Facultad
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Ingresa tu facultad"
+                                className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 
+                  bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 
+                  placeholder-gray-400 dark:placeholder-gray-500 
+                  focus:border-purple-600 dark:focus:border-purple-500 
+                  focus:outline-none focus:ring-1 focus:ring-purple-600 
+                  py-2 px-3 text-sm transition-all"
+                                {...register("facultad", { required: "La facultad es obligatoria" })}
+                            />
+                            {errors.facultad && <p className="text-red-500 text-xs mt-1">{errors.facultad.message}</p>}
+                        </div>
+
+                        {/* Teléfono */}
+                        <div className="mb-3">
+                            <label className="mb-1.5 block text-xs font-semibold text-gray-700 dark:text-gray-300 transition-colors">
+                                Teléfono
+                            </label>
+                            <input
+                                type="text"
+                                inputMode="tel"
+                                placeholder="09XXXXXXXX"
+                                className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 
+                  bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 
+                  placeholder-gray-400 dark:placeholder-gray-500 
+                  focus:border-purple-600 dark:focus:border-purple-500 
+                  focus:outline-none focus:ring-1 focus:ring-purple-600 
+                  py-2 px-3 text-sm transition-all"
+                                {...register("telefono", {
+                                    required: "El teléfono es obligatorio",
+                                    pattern: {
+                                        value: /^(09)\d{8}$/,
+                                        message: "Debe ser un número válido ej: 09XXXXXXXX"
+                                    },
+                                    minLength: { value: 10, message: "El teléfono debe tener 10 dígitos" },
+                                    maxLength: { value: 10, message: "El teléfono debe tener 10 dígitos" }
+                                })}
+                            />
+                            {errors.telefono && <p className="text-red-500 text-xs mt-1">{errors.telefono.message}</p>}
+                        </div>
+
+                        {/* Cédula */}
+                        <div className="mb-3">
+                            <label className="mb-1.5 block text-xs font-semibold text-gray-700 dark:text-gray-300 transition-colors">
+                                Cédula
+                            </label>
+                            <input
+                                type="text"
+                                inputMode="numeric"
+                                placeholder="Ingrese su número de cédula"
+                                className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 
+                  bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 
+                  placeholder-gray-400 dark:placeholder-gray-500 
+                  focus:border-purple-600 dark:focus:border-purple-500 
+                  focus:outline-none focus:ring-1 focus:ring-purple-600 
+                  py-2 px-3 text-sm transition-all"
+                                {...register("cedula", {
+                                    required: "La cédula es obligatoria",
+                                    pattern: {
+                                        value: /^\d{10}$/,
+                                        message: "Debe ser un número de cédula válido"
+                                    },
+                                    minLength: { value: 10, message: "La cédula debe tener 10 dígitos" },
+                                    maxLength: { value: 10, message: "La cédula debe tener 10 dígitos" }
+                                })}
+                            />
+                            {errors.cedula && <p className="text-red-500 text-xs mt-1">{errors.cedula.message}</p>}
+                        </div>
+
+                        {/* Correo */}
+                        <div className="mb-3">
+                            <label className="mb-1.5 block text-xs font-semibold text-gray-700 dark:text-gray-300 transition-colors">
+                                Correo electrónico
+                            </label>
+                            <input
+                                type="email"
+                                placeholder="nombre.apellido@epn.edu.ec"
+                                className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 
+                  bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 
+                  placeholder-gray-400 dark:placeholder-gray-500 
+                  focus:border-purple-600 dark:focus:border-purple-500 
+                  focus:outline-none focus:ring-1 focus:ring-purple-600 
+                  py-2 px-3 text-sm transition-all"
+                                {...register("email", {
+                                    required: "El correo es obligatorio",
+                                    pattern: {
+                                        value: /^[^\s@]+@epn\.edu\.ec$/,
+                                        message: "Debe ser un correo institucional @epn.edu.ec"
+                                    }
+                                })}
+                            />
+                            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+                        </div>
+
+                        {/* Contraseña */}
+                        <div className="mb-6">
+                            <label className="mb-1.5 block text-xs font-semibold text-gray-700 dark:text-gray-300 transition-colors">
+                                Contraseña
+                            </label>
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="********************"
+                                    className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 
+                    bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 
+                    placeholder-gray-400 dark:placeholder-gray-500 
+                    focus:border-purple-600 dark:focus:border-purple-500 
+                    focus:outline-none focus:ring-1 focus:ring-purple-600 
+                    py-2 px-3 text-sm pr-10 transition-all"
+                                    {...register("password", {
+                                        required: "La contraseña es obligatoria",
+                                        minLength: { value: 6, message: "Mínimo 6 caracteres" }
+                                    })}
+                                />
+                                {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-400 
+                    hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
+                                >
+                                    {showPassword ? <MdVisibilityOff size={20} /> : <MdVisibility size={20} />}
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Botón */}
+                        <button
+                            type="submit"
+                            className="py-2.5 w-full block text-center font-medium rounded-xl transition-all 
+                duration-300 transform active:scale-[0.98] bg-purple-700 hover:bg-purple-800 
+                dark:bg-purple-600 dark:hover:bg-purple-700 text-white shadow-md hover:shadow-lg"
+                            disabled={loading}
+                        >
+                            {loading ? "Registrando..." : "Registrarse"}
+                        </button>
+
+                    </form>
+
+                    {/* Link login */}
+                    <div className="mt-3 text-sm flex justify-between items-center">
+                        <p className="text-gray-500 dark:text-gray-400">¿Ya posees una cuenta?</p>
+                        <Link
+                            to="/login"
+                            className="py-2 px-5 bg-gray-600 dark:bg-gray-700 text-slate-300 border 
+                dark:border-gray-600 rounded-xl hover:scale-110 duration-300 
+                hover:bg-gray-900 hover:text-white"
+                        >
+                            Iniciar sesión
+                        </Link>
+                    </div>
+
+                </div>
+            </main>
+        </>
+    )
+}
