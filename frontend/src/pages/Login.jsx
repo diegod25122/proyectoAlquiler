@@ -23,8 +23,11 @@ export function Login() {
 
         {/* Tarjeta de login */}
       
-        <div className="relative z-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-2xl p-8 w-full max-w-sm mx-4 shadow-2xl border
-         border-gray-100 dark:border-gray-800 transition-colors duration-300">
+                {/* Tarjeta */}
+                <div className="relative z-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-2xl p-8 
+          w-full max-w-sm mx-4 shadow-2xl border border-gray-100 dark:border-gray-800 
+          transition-colors duration-300 my-8">
+            
           {/* Formulario de login */}
           
                     {/* Sello, título y descripción */}
