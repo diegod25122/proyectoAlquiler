@@ -115,25 +115,33 @@ const crearNuevoPassword = async (req,res)=>{
 
 const login = async(req,res)=>{
     try {
-        // Paso 1
+        // Paso 1: Captura de datos
         const {email,password} = req.body
-        // Paso 2
-        if (Object.values(req.body).includes("")) return res.status(404).json({msg:"Debes llenar todos los campos"})
         
-        const usuarioBDD = await Usuario.findOne({email}).select("-status -__v -token -updatedAt -createdAt")
+        // Paso 2: Validaciones críticas
+        if (Object.values(req.body).includes("")) {
+            return res.status(400).json({msg:"Debes llenar todos los campos"}) // Cambiado a 400 (Bad Request)
+        }
+        
+        
+        const usuarioBDD = await Usuario.findOne({email})
+        
         if(!usuarioBDD) return res.status(404).json({msg:"El usuario no se encuentra registrado"})
-        if(!usuarioBDD.confirmEmail) return res.status(403).json({msg:"Debes verificar tu cuenta antes de iniciar sesión"})
         
+        // Validar si el correo institucional ya fue confirmado
+        if(!usuarioBDD.confirmEmail) {
+            return res.status(403).json({msg:"Debes verificar tu cuenta antes de iniciar sesión"})
+        }
+        
+        // Verificar que la contraseña encriptada coincida
         const verificarPassword = await usuarioBDD.matchPassword(password)
         if(!verificarPassword) return res.status(401).json({msg:"El password no es correcto"})
         
-        // Paso 3
-        const {nombre,apellido,facultad,telefono,cedula,rol,_id} = usuarioBDD
-        
-        // --- AQUÍ GENERAMOS EL TOKEN ---
+        // Paso 3: Desestructuración segura una vez autenticado
+        const {nombre, apellido, facultad, telefono, cedula, rol, _id} = usuarioBDD
         const token = crearTokenJWT(usuarioBDD._id, usuarioBDD.rol)
         
-        // Paso 4: Enviamos la respuesta INCLUYENDO el token
+        // Paso 4: Enviamos la respuesta limpia al Frontend incluyendo el Token
         res.status(200).json({
             token,
             rol,
@@ -143,12 +151,13 @@ const login = async(req,res)=>{
             telefono,
             cedula,
             _id,
-            email:usuarioBDD.email
+            email: usuarioBDD.email
         })
 
     } catch (error) {
-        console.error(error)
-        res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
+        
+        console.error("Error exacto en la función login:", error)
+        res.status(500).json({ msg: `❌ Error en el servidor - ${error.message || error}` })
     }
 }
 

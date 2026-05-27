@@ -1,10 +1,13 @@
 import { Link, Outlet, useLocation } from 'react-router'
+import storeAuth from '../context/storeAuth'
+import storeProfile from '../context/storeProfile'
 
 
 const Dashboard = () => {
     const location = useLocation()
     const urlActual = location.pathname
-
+    const { clearToken } = storeAuth()
+    const{user} = storeProfile()
 
     return (
     
@@ -22,11 +25,11 @@ const Dashboard = () => {
 
                 {/* Nombre de usuario */}
                 <p className='text-slate-400 text-center my-4 text-sm'> <span className='bg-green-600 w-3 h-3 
-                    inline-block rounded-full'></span> Bienvenido - </p>
+                    inline-block rounded-full'></span> Bienvenido - {user?.nombre} </p>
                 
 
                 {/* Rol de usuario */}
-                <p className='text-slate-400 text-center my-4 text-sm'> Rol - </p>
+                <p className='text-slate-400 text-center my-4 text-sm'> Rol - {user?.rol} </p>
                 
                 
                 <hr className="mt-5 border-slate-500" />
@@ -81,7 +84,7 @@ const Dashboard = () => {
                 
                     {/* Nombre de usuario */}
                     <div className='text-md font-semibold text-slate-100'>
-                        Usuario - 
+                        Usuario - {user?.nombre}
                     </div>
                 
                 
@@ -93,7 +96,7 @@ const Dashboard = () => {
                     {/* Botón salir */}
                     <div>
                         <Link to='/' className=" text-white mr-3 text-md block hover:bg-red-900 text-center
-                        bg-red-800 px-4 py-1 rounded-lg">Salir</Link>
+                        bg-red-800 px-4 py-1 rounded-lg" onClick={() => clearToken()}>Salir</Link>
                     </div>
                 
                 </div>
