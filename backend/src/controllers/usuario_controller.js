@@ -135,7 +135,7 @@ const login = async(req,res)=>{
         
         // Paso 4: Enviamos la respuesta INCLUYENDO el token
         res.status(200).json({
-            token, // <-- NO OLVIDES ESTO
+            token,
             rol,
             nombre,
             apellido,
