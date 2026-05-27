@@ -3,7 +3,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors';
 import routerUsuario from './routers/usuario_routers.js';
-
+import swaggerDocs from './config/swagger.js'
 
 // Inicializaciones
 const app = express()
@@ -18,7 +18,7 @@ dotenv.config()
 app.use(express.json())
 app.use(cors())
 
-
+swaggerDocs(app) 
 
 // Variables globales
 app.set('port',process.env.PORT || 3000)
