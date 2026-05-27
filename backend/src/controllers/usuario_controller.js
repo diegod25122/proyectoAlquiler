@@ -70,14 +70,12 @@ const recuperarPassword = async (req, res) => {
 
 const comprobarTokenPasword = async (req,res)=>{
     try {
-        // Paso 1
         const {token} = req.params
-        // Paso 2
         const usuarioBDD = await Usuario.findOne({token})
-        if(usuarioBDD?.token !== token) return res.status(404).json({msg:"Lo sentimos, no se puede validar la cuenta"})
-        // Paso 3
-
-        // Paso 4
+        
+        
+        if(!usuarioBDD) return res.status(404).json({msg:"Lo sentimos, no se puede validar la cuenta o el token expiró"})
+        
         res.status(200).json({msg:"Token confirmado, ya puedes crear tu nuevo password"}) 
     
     } catch (error) {
@@ -169,22 +167,22 @@ const perfil =(req,res)=>{
 
 
 const actualizarPerfil = async (req,res)=>{
-
     try {
-        const {id} = req.params
-        const {nombre,apellido,facultad,telefono,cedula, email} = req.body
-        if( !mongoose.Types.ObjectId.isValid(id) ) return res.status(400).json({msg:`ID inválido: ${id}`})
+    
+        const id = req.usuarioHeader._id; 
+        const {nombre,apellido,facultad,telefono,cedula, email} = req.body;
+        
         const usuarioBDD = await Usuario.findById(id)
-        if(!usuarioBDD) return res.status(404).json({ msg: `No existe el usuario con ID ${id}` })
+        if(!usuarioBDD) return res.status(404).json({ msg: "No existe el usuario" })
         if (Object.values(req.body).includes("")) return res.status(400).json({msg:"Debes llenar todos los campos"})
-        if (usuarioBDD.email !== email)
-        {
+        
+        if (usuarioBDD.email !== email) {
             const emailExistente  = await Usuario.findOne({email})
-            if (emailExistente )
-            {
-                return res.status(404).json({msg:`El email ya se encuentra registrado`})  
+            if (emailExistente ) {
+                return res.status(400).json({msg:"El email ya se encuentra registrado"})  // Cambié a 400 (Bad Request)
             }
         }
+        
         usuarioBDD.nombre = nombre ?? usuarioBDD.nombre
         usuarioBDD.apellido = apellido ?? usuarioBDD.apellido
         usuarioBDD.facultad = facultad ?? usuarioBDD.facultad
@@ -192,6 +190,7 @@ const actualizarPerfil = async (req,res)=>{
         usuarioBDD.cedula = cedula ?? usuarioBDD.cedula
         usuarioBDD.email = email ?? usuarioBDD.email
         await usuarioBDD.save()
+        
         res.status(200).json(usuarioBDD)
         
     } catch (error) {
@@ -199,7 +198,6 @@ const actualizarPerfil = async (req,res)=>{
         res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
     }
 }
-
 
 const actualizarPassword = async (req,res)=>{
     try {
