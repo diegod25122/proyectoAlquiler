@@ -6,7 +6,6 @@ import { ToastContainer } from 'react-toastify'
 import { useNavigate, useParams } from 'react-router'
 import { useForm } from 'react-hook-form'
 
-
 const Reset = () => {
 
     const navigate = useNavigate()
