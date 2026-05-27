@@ -125,7 +125,7 @@ export function Login() {
 
           {/* Olvidaste tu contraseña */}
           <div className="mt-5 text-xs border-b-2 py-4">
-            <Link to="/forgot/id" className="underline text-sm text-gray-400 hover:text-gray-900">¿Olvidaste tu contraseña?</Link>
+            <Link to="/forgot" className="underline text-sm text-gray-400 hover:text-gray-900">¿Olvidaste tu contraseña?</Link>
           </div>
 
           {/* Enlaces para volver o registrarse */}

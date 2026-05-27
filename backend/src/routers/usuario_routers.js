@@ -10,7 +10,7 @@ const router = Router()
 router.post('/registro', validacionRegistro, registro)
 router.post('/usuario/login',login)
 router.get('/usuario/perfil', verificarTokenJWT, perfil)
-router.get('/confirmar/:token', confirmarMail)
+router.get('/confirm/:token', confirmarMail)
 
 router.post('/recuperarpassword',recuperarPassword)
 router.get('/recuperarpassword/:token',comprobarTokenPasword)

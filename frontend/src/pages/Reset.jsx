@@ -28,8 +28,8 @@ const Reset = () => {
     useEffect(() => {
         const verifyToken = async()=>{
             const url = `${import.meta.env.VITE_BACKEND_URL}/recuperarpassword/${token}`
-            await fetchDataBackend(url,'GET')
-            setTokenBack(true)
+            const data = await fetchDataBackend(url, null, 'GET')
+            if (data) setTokenBack(true)
         }
         verifyToken()
     }, [])
