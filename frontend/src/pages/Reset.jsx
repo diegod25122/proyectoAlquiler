@@ -1,4 +1,4 @@
-import logoDog from '../assets/dog-hand.webp'
+
 import { useState } from 'react'
 import { useEffect } from 'react'
 import {useFetch} from '../hooks/useFetch';
@@ -46,11 +46,8 @@ const Reset = () => {
             <small className="text-gray-400 block my-4 text-sm">
                 Pro favor, ingrese los siguientes datos
             </small>
-            <img
-                className="object-cover h-80 w-80 rounded-full border-4 border-solid border-slate-600"
-                src={logoDog}
-                alt="image description"
-            />
+  <img className="object-cover h-80 w-80 rounded-full border-4 border-solid border-slate-600" src="/images/gatoConfirm.jpg" alt="image description" />
+
 
             {tokenback && (
 

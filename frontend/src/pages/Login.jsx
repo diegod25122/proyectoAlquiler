@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form'
 import storeAuth from '../context/storeAuth'
 import { useFetch } from '../hooks/useFetch'
 
+
 export function Login() {
   const { isDarkMode } = useDarkMode()
   const { register, handleSubmit, formState: { errors } } = useForm()
@@ -19,14 +20,15 @@ export function Login() {
 
 
 
-    const loginUser = async(dataForm) => {
-        const url = `${import.meta.env.VITE_BACKEND_URL}/usuario/login`
-        const response = await fetchDataBackend(url, dataForm,'POST')
-        if(response){
-            navigate('/dashboard')
-        }
+const loginUser = async(dataForm) => {
+    const url = `${import.meta.env.VITE_BACKEND_URL}/usuario/login`
+    const response = await fetchDataBackend(url, dataForm,'POST')
+    if(response){
+        setToken(response.token)  // ← guarda token
+        setRol(response.rol)      // ← guarda rol
+        navigate('/dashboard')
     }
-
+}
   return (
     <>
       <Navbar />

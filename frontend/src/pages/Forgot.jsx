@@ -1,29 +1,29 @@
-import {Link} from 'react-router'
+import { Link } from 'react-router'
 import { useForm } from 'react-hook-form';
-import { ToastContainer} from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
 import { useFetch } from '../hooks/useFetch'
-
+import { Navbar } from '../components/Navbar'
 export const Forgot = () => {
 
     const { register, handleSubmit, formState: { errors } } = useForm()
-    const {fetchDataBackend,loading} = useFetch()
+    const { fetchDataBackend, loading } = useFetch()
 
     const sendMail = async (dataForm) => {
         const url = `${import.meta.env.VITE_BACKEND_URL}/recuperarpassword`
-        await fetchDataBackend(url, dataForm,'POST')
+        await fetchDataBackend(url, dataForm, 'POST')
     }
 
     return (
-
-        <div className="flex flex-col sm:flex-row h-screen">
-
+        <>
+            <Navbar />
+        <div className="flex flex-col sm:flex-row h-screen  bg-white dark:bg-gray-900 transition-colors duration-300 ">
             <ToastContainer/>
 
-            <div className="w-full sm:w-1/2 h-screen bg-white flex justify-center items-center">
+            <div className="w-full sm:w-1/2 h-screen bg-white dark:bg-gray-900 flex justify-center items-center transition-colors duration-300 my-8">
 
-                <div className="md:w-4/5 sm:w-full">
+                <div className="md:w-4/5 sm:w-full  bg-white dark:bg-gray-900 transition-colors duration-300 my-8">
 
-                    <h1 className="text-3xl font-semibold mb-2 text-center uppercase  text-gray-500">!Olvidaste tu contraseña¡</h1>
+                    <h1 className="text-3xl font-semibold mb-2 text-center uppercase  text-gray-500 dark:text-gray-300 transition-colors duration-300 my-8">!Olvidaste tu contraseña¡</h1>
                     <small className="text-gray-400 block my-4 text-sm">No te preocupes</small>
 
 
@@ -32,7 +32,7 @@ export const Forgot = () => {
 
                         {/* Campo correo electrónico */}
                         <div className="mb-1">
-                            <label className="mb-2 block text-sm font-semibold">Correo electrónico</label>
+                            <label className="mb-2 block text-sm font-semibold dark:text-gray-300">Correo electrónico</label>
                             <input type="email" placeholder="Ingresa un correo electrónico válido" className="block w-full rounded-md border border-gray-300 py-1 px-1.5 text-gray-500"
                             {...register("email", { required: "El correo electrónico es obligatorio" })}
                             />
@@ -55,7 +55,7 @@ export const Forgot = () => {
 
 
                     {/* Enlace para iniciar sesión si ya posee una cuenta */}
-                    <div className="mt-3 text-sm flex justify-between items-center">
+                    <div className="mt-3 text-sm flex justify-between items-center dark:text-gray-300 transition-colors duration-300">
                         <p>¿Ya posees una cuenta?</p>
                         <Link to="/login" className="py-2 px-5 bg-gray-600 text-slate-300 border rounded-xl hover:scale-110 duration-300 hover:bg-gray-900 hover:text-white">Iniciar sesión</Link>
                     </div>
@@ -65,10 +65,11 @@ export const Forgot = () => {
             </div>
 
             {/* Imagen */}
-            <div className="w-full sm:w-1/2 h-1/3 sm:h-screen bg-[url('/public/images/catforgot.jpg')] 
+            <div className="w-full sm:w-1/2 h-1/3 sm:h-screen bg-[url('/public/images/gatoForgot.webp')] 
                 bg-no-repeat bg-cover bg-center sm:block hidden">
             </div>
 
         </div>
+            </>
     )
 }
