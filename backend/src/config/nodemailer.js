@@ -2,21 +2,13 @@ import nodemailer from "nodemailer"
 import dotenv from "dotenv"
 dotenv.config()
 
-
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com", 
-  port: 587,              
-  secure: false, 
-  logger: true,
-  debug: true,
+  host: "sandbox.smtp.mailtrap.io",
+  port: 2525, 
   auth: {
-    user: process.env.USER_MAILTRAP,
-    pass: process.env.PASS_MAILTRAP,
+    user: process.env.USER_MAILTRAP, 
+    pass: process.env.PASS_MAILTRAP, 
   },
-  tls: {
-
-    rejectUnauthorized: false 
-  }
 });
 /**
  * Función genérica para enviar correos
