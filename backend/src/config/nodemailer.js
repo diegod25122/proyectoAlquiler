@@ -3,17 +3,21 @@ import dotenv from "dotenv"
 dotenv.config()
 
 
-
 const transporter = nodemailer.createTransport({
- 
-  host: "74.125.142.108", 
-  port: process.env.PORT_MAILTRAP, 
-  secure: false,                   
+  host: "smtp.gmail.com", 
+  port: 587,              
+  secure: false, 
+  logger: true,
+  debug: true,
   auth: {
     user: process.env.USER_MAILTRAP,
     pass: process.env.PASS_MAILTRAP,
   },
-})
+  tls: {
+
+    rejectUnauthorized: false 
+  }
+});
 /**
  * Función genérica para enviar correos
  * @param {string} to - Email del destinatario
