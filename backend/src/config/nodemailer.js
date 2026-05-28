@@ -2,13 +2,23 @@ import nodemailer from "nodemailer"
 import dotenv from "dotenv"
 dotenv.config()
 
+import nodemailer from 'nodemailer';
+
 const transporter = nodemailer.createTransport({
-  host: "sandbox.smtp.mailtrap.io",
-  port: 2525, 
+  
+  service: 'gmail', 
   auth: {
     user: process.env.USER_MAILTRAP, 
     pass: process.env.PASS_MAILTRAP, 
   },
+});
+
+transporter.verify((error, success) => {
+  if (error) {
+    console.log("❌ Error de conexión con Gmail:", error);
+  } else {
+    console.log("✅ Servidor listo para enviar correos desde Gmail");
+  }
 });
 /**
  * Función genérica para enviar correos
