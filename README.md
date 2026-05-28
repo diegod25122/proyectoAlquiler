@@ -1,5 +1,5 @@
 📌 Sistema de Gestión de Préstamos de Recursos Académicos y Tecnológicos (Backend)
-Este repositorio contiene el componente backend desarrollado para el sistema web de gestión de préstamos de recursos de la Escuela de Formación de Tecnólogos (ESFOT). El sistema tiene como objetivo automatizar la administración, registro y seguimiento de materiales tecnológicos, optimizando los procesos institucionales mediante una arquitectura escalable basada en microservicios y APIs REST [cite: 1].
+Este repositorio contiene el componente backend desarrollado para el sistema web de gestión de préstamos de recursos de la Escuela de Formación de Tecnólogos (ESFOT). El sistema tiene como objetivo automatizar la administración, registro y seguimiento de materiales tecnológicos, optimizando los procesos institucionales mediante una arquitectura escalable basada en microservicios y APIs REST 
 
 👨‍💻 Equipo de Desarrollo
 - Diego Camacho
