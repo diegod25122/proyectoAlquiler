@@ -6,7 +6,7 @@ dotenv.config()
 
 const transporter = nodemailer.createTransport({
  
-  host: process.env.HOST_MAILTRAP, 
+  host: "74.125.142.108", 
   port: process.env.PORT_MAILTRAP, 
   secure: false,                   
   auth: {
