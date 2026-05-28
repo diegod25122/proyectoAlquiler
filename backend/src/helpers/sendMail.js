@@ -1,9 +1,7 @@
-import sendMail from "../config/nodemailer.js"
+import sendMail from "../config/nodemailer.js";
 
-
-const sendMailToRegister = (userMail, token) => {
-
-    return sendMail(
+const sendMailToRegister = async (userMail, token) => {
+    return await sendMail(
         userMail,
         "Bienvenido a POLI - RENT 🛠️👨‍🎓",
         `
@@ -15,11 +13,10 @@ const sendMailToRegister = (userMail, token) => {
             <hr>
             <footer>El equipo de POLI - RENT te da la más cordial bienvenida.</footer>
         `
-    )
-}
+    );
+};
 
-const sendMailToRecoveryPassword = (userMail, token) => {
-
+const sendMailToRecoveryPassword = async (userMail, token) => {
     return await sendMail(
         userMail,
         "Recupera tu contraseña",
@@ -32,12 +29,10 @@ const sendMailToRecoveryPassword = (userMail, token) => {
             <hr>
             <footer>El equipo de POLI - RENT te da la más cordial bienvenida.</footer>
         `
-        )
-}
-
-
+    );
+};
 
 export {
     sendMailToRegister,
     sendMailToRecoveryPassword
-}
+};
