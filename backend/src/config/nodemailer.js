@@ -6,18 +6,17 @@ dotenv.config()
 
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,             
-  secure: false,        
+  host: process.env.HOST_MAILTRAP, 
+  port: 587,                     
+  secure: false,                 
   auth: {
     user: process.env.USER_MAILTRAP, 
     pass: process.env.PASS_MAILTRAP, 
   },
   tls: {
-    rejectUnauthorized: false 
+    rejectUnauthorized: false     
   }
 });
-
 transporter.verify((error, success) => {
   if (error) {
     console.log("❌ Error de conexión con Gmail:", error);
