@@ -16,7 +16,9 @@ const sendMailToRegister = async (userMail, token) => {
     );
 };
 
-const sendMailToRecoveryPassword = async (userMail, token) => {
+const sendMailToRecoveryPassword = (userMail, token) => {
+
+
     return await sendMail(
         userMail,
         "Recupera tu contraseña",
