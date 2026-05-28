@@ -7,17 +7,16 @@ Este repositorio contiene el componente backend desarrollado para el sistema web
 - Anthony Ledesma
 
 🛠 Tecnologías Utilizadas
-El backend fue implementado utilizando un stack tecnológico moderno, aplicando el patrón arquitectónico MVC (Modelo-Vista-Controlador) para garantizar mantenibilidad y escalabilidad [cite: 1]:
+El backend fue implementado utilizando un stack tecnológico moderno, aplicando el patrón arquitectónico MVC (Modelo-Vista-Controlador) para garantizar mantenibilidad y escalabilidad 
 
-Entorno: Node.js [cite: 1]
+Entorno: Node.js 
 
-Framework: Express.js [cite: 1]
+Framework: Express.js 
 
-Base de Datos: MongoDB (NoSQL) [cite: 1]
+Base de Datos: MongoDB (NoSQL) 
 
-Modelado de datos: Mongoose [cite: 1]
-
-Seguridad: JWT (JSON Web Tokens) y bcryptjs [cite: 1]
+Modelado de datos: Mongoose 
+Seguridad: JWT (JSON Web Tokens) y bcryptjs 
 
 🚀 Instalación y Ejecución
 Sigue estos pasos para levantar el entorno de desarrollo en tu máquina local:
