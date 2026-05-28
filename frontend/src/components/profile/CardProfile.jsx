@@ -1,3 +1,4 @@
+import useDarkMode from "../../hooks/useDarkMode";
 
 export const CardProfile = () => {
 

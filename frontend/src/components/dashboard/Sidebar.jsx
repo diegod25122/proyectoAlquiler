@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router'
-
+import { MdDashboard, MdCategory, MdPerson, MdBarChart, MdSupport, MdShoppingCart, MdLogout } from 'react-icons/md'
 import useDarkMode from '../../hooks/useDarkMode'
 import storeAuth from '../../context/storeAuth'
 import storeProfile from '../../context/storeProfile'
@@ -26,7 +26,7 @@ export const Sidebar = () => {
     return (
         <aside className="w-56 bg-gray-900 flex flex-col justify-between h-screen sticky top-0">
 
-            {/* Logo y navegación */}
+            {/* Parte superior - Logo y navegación */}
             <div>
                 {/* Logo */}
                 <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-700">
@@ -60,7 +60,7 @@ export const Sidebar = () => {
                 </nav>
             </div>
 
-            {/* Parte inferior - Dark mode + usuario */}
+            {/* Dark mode + usuario */}
             <div className="px-4 pb-4 border-t border-gray-700 pt-4 space-y-4">
 
                 {/* Toggle dark mode */}

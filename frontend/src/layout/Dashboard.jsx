@@ -24,7 +24,7 @@ const Dashboard = () => {
                         Dashboard
                     </h1>
 
-                    {/*búsqueda, notificaciones, avatar */}
+                    {/* Derecha */}
                     <div className="flex items-center gap-4">
 
                         {/* Búsqueda */}
@@ -47,7 +47,7 @@ const Dashboard = () => {
                             </span>
                         </button>
 
-                        {/* Avatar */}
+                        {/* Avatar , nombre */}
                         <div className="flex items-center gap-2">
                             <img
                                 src="https://cdn-icons-png.flaticon.com/512/4715/4715329.png"
