@@ -20,7 +20,7 @@ const sendMailToRegister = (userMail, token) => {
 
 const sendMailToRecoveryPassword = (userMail, token) => {
 
-    return sendMail(
+    return await sendMail(
         userMail,
         "Recupera tu contraseña",
         `
