@@ -17,7 +17,7 @@ const sendMailToRegister = async (userMail, token) => {
 };
 //hola
 
-const sendMailToRecoveryPassword = (userMail, token) => {
+const sendMailToRecoveryPassword = async(userMail, token) => {
 
 
     return await sendMail(
