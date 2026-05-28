@@ -1,0 +1,44 @@
+📌 Sistema de Gestión de Préstamos de Recursos Académicos y Tecnológicos (Backend)
+Este repositorio contiene el componente backend desarrollado para el sistema web de gestión de préstamos de recursos de la Escuela de Formación de Tecnólogos (ESFOT). El sistema tiene como objetivo automatizar la administración, registro y seguimiento de materiales tecnológicos, optimizando los procesos institucionales mediante una arquitectura escalable basada en microservicios y APIs REST 
+
+👨‍💻 Equipo de Desarrollo
+- Diego Camacho
+- Jairo Maigua
+- Anthony Ledesma
+
+🛠 Tecnologías Utilizadas
+El backend fue implementado utilizando un stack tecnológico moderno, aplicando el patrón arquitectónico MVC (Modelo-Vista-Controlador) para garantizar mantenibilidad y escalabilidad 
+
+Entorno: Node.js 
+
+Framework: Express.js 
+
+Base de Datos: MongoDB (NoSQL) 
+
+Modelado de datos: Mongoose 
+Seguridad: JWT (JSON Web Tokens) y bcryptjs 
+
+🚀 Instalación y Ejecución
+Sigue estos pasos para levantar el entorno de desarrollo en tu máquina local:
+
+1. Clonar el repositorio
+Bash
+git clone https://github.com/diegod25122/proyectoAlquiler.git
+cd backend
+2. Configurar variables de entorno
+Crea un archivo .env en la raíz de la carpeta backend basándote en el archivo .env.example y configura tus credenciales:
+
+MONGO_URI: Cadena de conexión a tu base de datos MongoDB.
+
+JWT_SECRET: Llave secreta para la autenticación.
+
+3. Instalar dependencias
+Bash
+npm install
+4. Ejecutar el proyecto
+Bash
+npm run dev
+
+📂 Documentacion de la API: https://poli-rent-backend.onrender.com/api-docs/
+
+
