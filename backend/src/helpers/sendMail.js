@@ -15,6 +15,7 @@ const sendMailToRegister = async (userMail, token) => {
         `
     );
 };
+//hola
 
 const sendMailToRecoveryPassword = (userMail, token) => {
 
