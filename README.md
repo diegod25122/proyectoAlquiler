@@ -2,11 +2,9 @@
 Este repositorio contiene el componente backend desarrollado para el sistema web de gestión de préstamos de recursos de la Escuela de Formación de Tecnólogos (ESFOT). El sistema tiene como objetivo automatizar la administración, registro y seguimiento de materiales tecnológicos, optimizando los procesos institucionales mediante una arquitectura escalable basada en microservicios y APIs REST [cite: 1].
 
 👨‍💻 Equipo de Desarrollo
-Diego Camacho
-
-Jairo Maigua
-
-Anthony Ledesma
+- Diego Camacho
+- Jairo Maigua
+- Anthony Ledesma
 
 🛠 Tecnologías Utilizadas
 El backend fue implementado utilizando un stack tecnológico moderno, aplicando el patrón arquitectónico MVC (Modelo-Vista-Controlador) para garantizar mantenibilidad y escalabilidad [cite: 1]:
