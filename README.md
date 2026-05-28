@@ -26,7 +26,7 @@ Sigue estos pasos para levantar el entorno de desarrollo en tu máquina local:
 
 1. Clonar el repositorio
 Bash
-git clone 
+git clone https://github.com/diegod25122/proyectoAlquiler.git
 cd backend
 2. Configurar variables de entorno
 Crea un archivo .env en la raíz de la carpeta backend basándote en el archivo .env.example y configura tus credenciales:
@@ -41,5 +41,5 @@ npm install
 4. Ejecutar el proyecto
 Bash
 npm run dev
-📂 Documentación Académica
-Para más información sobre la metodología Scrum aplicada, diseño de la arquitectura, y los resultados obtenidos, puedes consultar los documentos del Trabajo de Integración Curricular:
+
+
