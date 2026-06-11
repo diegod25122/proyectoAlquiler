@@ -3,42 +3,14 @@ import dotenv from "dotenv"
 dotenv.config()
 
 const transporter = nodemailer.createTransport({
-<<<<<<< HEAD
-  host: process.env.HOST_MAILTRAP, 
-  port: 587,                     
-  secure: false,                 
+  host: process.env.HOST_MAILTRAP,      // smtp-relay.brevo.com ✅
+  port: Number(process.env.PORT_MAILTRAP), // 465
+  secure: true,                          // obligatorio con 465
   auth: {
-    user: process.env.USER_MAILTRAP, 
-    pass: process.env.PASS_MAILTRAP, 
-  },
-  tls: {
-    rejectUnauthorized: false     
+    user: process.env.USER_MAILTRAP,    // verificar que sea el email real de Brevo
+    pass: process.env.PASS_MAILTRAP,    // la API key de Brevo
   }
-});
-transporter.verify((error, success) => {
-  if (error) {
-    console.log("❌ Error de conexión con Gmail:", error);
-  } else {
-    console.log("✅ Servidor listo para enviar correos desde Gmail");
-  }
-});
-/**
- * Función genérica para enviar correos
- * @param {string} to - Email del destinatario
- * @param {string} subject - Asunto del correo
- * @param {string} html - Contenido HTML del correo
- */
-=======
-    host: process.env.HOST_MAILTRAP,
-    port: Number(process.env.PORT_MAILTRAP),
-    secure: false,
-    auth: {
-        user: process.env.USER_MAILTRAP,
-        pass: process.env.PASS_MAILTRAP,
-    }
 })
->>>>>>> fd82d7fc6b16584fc883651dcfbd637b5db86339
-
 const sendMail = async (to, subject, html) => {
     try {
         const info = await transporter.sendMail({
