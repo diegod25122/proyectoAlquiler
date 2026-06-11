@@ -3,12 +3,12 @@ import dotenv from "dotenv"
 dotenv.config()
 
 const transporter = nodemailer.createTransport({
-  host: process.env.HOST_MAILTRAP,      // smtp-relay.brevo.com ✅
-  port: Number(process.env.PORT_MAILTRAP), // 465
-  secure: true,                          // obligatorio con 465
+  host: process.env.HOST_MAILTRAP,
+  port: Number(process.env.PORT_MAILTRAP),
+  secure: true, // ← true para 465
   auth: {
-    user: process.env.USER_MAILTRAP,    // verificar que sea el email real de Brevo
-    pass: process.env.PASS_MAILTRAP,    // la API key de Brevo
+    user: process.env.USER_MAILTRAP,
+    pass: process.env.PASS_MAILTRAP,
   }
 })
 const sendMail = async (to, subject, html) => {
