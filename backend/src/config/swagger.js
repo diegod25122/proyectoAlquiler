@@ -1,5 +1,20 @@
 import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
+import dotenv from 'dotenv'
+
+dotenv.config()
+
+const servers = [
+    { url: 'http://localhost:3000/api', description: 'Local Development' }
+]
+
+// Add production server if in production
+if (process.env.NODE_ENV === 'production' || process.env.PROD_URL_BACKEND) {
+    servers.push({
+        url: process.env.PROD_URL_BACKEND || 'https://poli-rent-backend.onrender.com/api',
+        description: 'Production'
+    })
+}
 
 const options = {
     definition: {
@@ -9,9 +24,7 @@ const options = {
             version: '1.0.0',
             description: 'API REST para el sistema de gestión de herramientas EPN'
         },
-        servers: [
-            { url: 'http://localhost:3000/api' }
-        ],
+        servers: servers,
         components: {
             securitySchemes: {
                 bearerAuth: {
