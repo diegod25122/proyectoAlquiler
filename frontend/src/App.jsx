@@ -22,7 +22,7 @@ import storeProfile from './context/storeProfile'
 import storeAuth from './context/storeAuth'
 
 function App() {
-  const { profile   } = storeProfile()
+  const { profile  } = storeProfile()
   const { token } = storeAuth()
 
   useEffect(() => {
