@@ -1,4 +1,4 @@
-import sendMail from "../config/nodemailer.js";
+import sendMail from "../config/brevo.js";
 
 const sendMailToRegister = async (userMail, token) => {
     const frontendUrl = process.env.URL_FRONTEND || process.env.PROD_URL_FRONTEND
