@@ -16,27 +16,36 @@ const crearTokenJWT = (id, rol) => {
 
 
 const verificarTokenJWT = async (req, res, next) => {
-
-	const { authorization } = req.headers
+    const { authorization } = req.headers
     if (!authorization) return res.status(401).json({ msg: "Acceso denegado: token no proporcionado" })
     try {
         const token = authorization.split(" ")[1]
-        const { id, rol } = jwt.verify(token,process.env.JWT_SECRET)
-        if (rol === "Usuario") {
-            const usuarioBDD = await Usuario.findById(id).lean().select("-password")
-            if (!usuarioBDD) return res.status(401).json({ msg: "Usuario no encontrado" })
-            req.usuarioHeader = usuarioBDD
-            next()
-        }
+        // Solo extraemos el ID, el rol nos lo dará la Base de Datos
+        const { id } = jwt.verify(token, process.env.JWT_SECRET) 
+        
+        const usuarioBDD = await Usuario.findById(id).lean().select("-password")
+        if (!usuarioBDD) return res.status(401).json({ msg: "Usuario no encontrado" })
+        
+        req.usuarioHeader = usuarioBDD 
+        next()
     } catch (error) {
         console.log(error)
         return res.status(401).json({ msg: `Token inválido o expirado - ${error}` })
+    }
+}
+const verificarRolAdmin = async (req, res, next) => {
+    // Verificamos que el usuario extraído del token tenga el rol correcto
+    if (req.usuarioHeader && req.usuarioHeader.rol === "Administrador") {
+        next(); // Tiene permiso, la ruta continúa
+    } else {
+        return res.status(403).json({ msg: "⛔ Acceso denegado: Se requieren permisos de Administrador" })
     }
 }
 
 
 export { 
     crearTokenJWT,
-    verificarTokenJWT 
+    verificarTokenJWT,
+    verificarRolAdmin
 }
 

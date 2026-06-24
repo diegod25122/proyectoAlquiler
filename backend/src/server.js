@@ -4,12 +4,20 @@ import dotenv from 'dotenv'
 import cors from 'cors';
 import routerUsuario from './routers/usuario_routers.js';
 import swaggerDocs from './config/swagger.js'
+import fileUpload from "express-fileupload"
+import cloudinary from 'cloudinary'
+import routerHerramientas from './routers/herramienta_routes.js'
 
 // Inicializaciones
 const app = express()
 dotenv.config()
 
-
+//confirguracion cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+})
 // Configuraciones 
 // CORS Configuration
 const corsOptions = {
