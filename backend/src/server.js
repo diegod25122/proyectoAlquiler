@@ -23,6 +23,7 @@ cloudinary.config({
 const corsOptions = {
     origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [
         'http://localhost:5173',
+        'https://proyectoalquiler.onrender.com',
         'https://proyecto-alquiler-five.vercel.app'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
