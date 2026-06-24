@@ -7,6 +7,7 @@ const transporter = nodemailer.createTransport({
   port: process.env.PORT_MAILTRAP || 587,
   secure: false,
   requireTLS: true,
+  family: 4,
   auth: {
     user: process.env.USER_MAILTRAP,
     pass: process.env.PASS_MAILTRAP,
