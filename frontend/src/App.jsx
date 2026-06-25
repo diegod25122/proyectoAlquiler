@@ -21,7 +21,6 @@ import { useEffect } from 'react'
 import storeProfile from './context/storeProfile'
 import storeAuth from './context/storeAuth'
 import SpaceBackground from './components/SpaceBackground'
-import MainContent from "./MainContent";
 
 function App() {
   const { profile  } = storeProfile()
