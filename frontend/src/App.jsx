@@ -20,8 +20,7 @@ import ProtectedRoute from './routers/ProtectedRoute'
 import { useEffect } from 'react'
 import storeProfile from './context/storeProfile'
 import storeAuth from './context/storeAuth'
-import RegistrarHerramienta
- from './components/create/formHerramienta'
+import RegistrarHerramienta from './components/create/RegistrarHerramienta'
 function App() {
   const { profile  } = storeProfile()
   const { token } = storeAuth()
