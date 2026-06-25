@@ -32,7 +32,6 @@ const Profile = () => {
                 {/* Card para mostrar el perfil y formulario para cambiar la contraseña */}
                 <div className='w-full md:w-1/2 flex flex-col gap-y-6'>
                     <CardProfile />
-                    <CardPassword />
                 </div>
 
             </div>
