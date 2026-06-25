@@ -75,23 +75,7 @@ const Dashboard = () => {
                         </div>
 
                         {/* Avatar, nombre y logout */}
-                        <div className="flex items-center gap-2">
-                            <img
-                                src={user?.imagen || "https://cdn-icons-png.flaticon.com/512/4715/4715329.png"}
-                                alt="avatar"
-                                className="w-9 h-9 rounded-full border-2 border-green-500 object-cover"
-                            />
-                            <span className="text-sm font-medium text-gray-700 dark:text-white hidden md:block">
-                                Hola, {user?.nombre || 'Usuario'}
-                            </span>
-                            <button
-                                onClick={handleLogout}
-                                className="text-sm text-gray-500 hover:text-red-500 transition-colors"
-                                title="Cerrar sesión"
-                            >
-                                🚪
-                            </button>
-                        </div>
+            
 
                     </div>
                 </header>
