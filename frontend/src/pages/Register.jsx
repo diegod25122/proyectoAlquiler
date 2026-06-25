@@ -16,6 +16,7 @@ const FACULTADES = [
     "Química",
     "Nivelación",
     "Agroindustria",
+    "Mecanica"
 ]
 
 export function Register() {
