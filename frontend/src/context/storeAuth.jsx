@@ -19,4 +19,4 @@ const storeAuth = create(
 )
 
 
-export default storeAuth
+export default storeAuth;
