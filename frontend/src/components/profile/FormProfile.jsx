@@ -19,10 +19,6 @@ const FormularioPerfil = () => {
         formData.append('cedula', dataForm.cedula)
         formData.append('email', dataForm.email)
 
-        if (selectedImage) {
-            formData.append('imagen', selectedImage)
-        }
-
         updateProfile(url, formData)
     }
 
@@ -36,7 +32,6 @@ const FormularioPerfil = () => {
                 cedula: user.cedula || '',
                 email: user.email,
             })
-            setImagePreview(user.imagen || null)
         }
     }, [user, reset])
 
@@ -52,22 +47,7 @@ const FormularioPerfil = () => {
             <ToastContainer />
 
             {/* Imagen de perfil */}
-            <div className="mb-5">
-                <label className="mb-2 block text-sm font-semibold">Foto de perfil</label>
-                <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-200 file:text-gray-700 hover:file:bg-gray-300"
-                />
-                {imagePreview && (
-                    <img
-                        src={imagePreview}
-                        alt="Preview perfil"
-                        className="mt-3 w-32 h-32 object-cover rounded-xl border border-gray-200"
-                    />
-                )}
-            </div>
+
 
             {/* Campo Nombre */}
             <div>
