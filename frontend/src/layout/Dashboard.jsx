@@ -1,11 +1,11 @@
 import { Outlet, useLocation } from 'react-router'
 import { Sidebar } from '../components/dashboard/Sidebar'
 import storeProfile from '../context/storeProfile'
+import storeAuth from '../context/storeAuth'
 
 const Dashboard = () => {
     const { user } = storeProfile()
-    const location = useLocation()
-
+    const {cleartoken} = storeAuth()
     return (
         <div className="flex h-screen bg-gray-100 dark:bg-gray-950">
 

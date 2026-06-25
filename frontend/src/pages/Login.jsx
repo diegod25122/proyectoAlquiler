@@ -8,7 +8,7 @@ import { ToastContainer } from 'react-toastify'
 import { useForm } from 'react-hook-form'
 import storeAuth from '../context/storeAuth'
 import { useFetch } from '../hooks/useFetch'
-
+import storeAuth from '../context/storeAuth'
 
 export function Login() {
   const { isDarkMode } = useDarkMode()
@@ -24,8 +24,8 @@ const loginUser = async(dataForm) => {
     const url = `${import.meta.env.VITE_BACKEND_URL}/usuario/login`
     const response = await fetchDataBackend(url, dataForm,'POST')
     if(response){
-        setToken(response.token)  // ← guarda token
-        setRol(response.rol)      // ← guarda rol
+        setToken(response.token)  
+        setRol(response.rol)    
         navigate('/dashboard')
     }
 }
