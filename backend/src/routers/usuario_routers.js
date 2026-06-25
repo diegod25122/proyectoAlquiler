@@ -2,9 +2,10 @@ import { Router } from 'express'
 import { actualizarPassword, actualizarPerfil, comprobarTokenPasword, confirmarMail, crearNuevoPassword, login, perfil, recuperarPassword, registro } from '../controllers/usuario_controller.js'
 import { verificarTokenJWT } from '../middlewares/JWT.js'
 import { validacionRegistro } from '../middlewares/validaciones.js'
+import multer from 'multer'
 
 const router = Router()
-
+const upload=multer
 /**
  * @swagger
  * tags:
@@ -265,7 +266,7 @@ router.post('/nuevopassword/:token', crearNuevoPassword)
  *       404:
  *         description: Usuario no encontrado
  */
-router.put('/actualizarperfil/', verificarTokenJWT, actualizarPerfil)
+router.put('/actualizarperfil/', upload.single('imagen'),verificarTokenJWT, actualizarPerfil)
 
 /**
  * @swagger
