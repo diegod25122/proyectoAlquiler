@@ -2,7 +2,7 @@ import { Link } from 'react-router'
 import { useForm } from 'react-hook-form';
 import { ToastContainer } from 'react-toastify'
 import { useFetch } from '../hooks/useFetch'
-import { Navbar } from '../components/Navbar'
+
 export const Forgot = () => {
 
     const { register, handleSubmit, formState: { errors } } = useForm()
@@ -15,7 +15,6 @@ export const Forgot = () => {
 
     return (
         <>
-            <Navbar />
         <div className="flex flex-col sm:flex-row h-screen  bg-white dark:bg-gray-900 transition-colors duration-300 ">
             <ToastContainer/>
 

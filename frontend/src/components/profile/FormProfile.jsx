@@ -10,7 +10,7 @@ const FormularioPerfil = () => {
     const [imagePreview, setImagePreview] = useState(null)
 
     const updateUser = (dataForm) => {
-        const url = `${import.meta.env.VITE_BACKEND_URL}/api/actualizarperfil`
+        const url = `${import.meta.env.VITE_BACKEND_URL}/actualizarperfil`
         const formData = new FormData()
         formData.append('nombre', dataForm.nombre)
         formData.append('apellido', dataForm.apellido)

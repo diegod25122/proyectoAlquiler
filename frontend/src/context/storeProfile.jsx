@@ -20,7 +20,7 @@ const storeProfile = create((set) => ({
     clearUser: () => set({ user: null }),
     profile: async () => {
         try {
-            const url = `${import.meta.env.VITE_BACKEND_URL}/api/usuario/perfil`
+            const url = `${import.meta.env.VITE_BACKEND_URL}/usuario/perfil`
             const respuesta = await axios.get(url, getAuthHeaders())
             set({ user: respuesta.data })
         } catch (error) {

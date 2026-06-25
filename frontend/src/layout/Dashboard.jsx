@@ -1,73 +1,105 @@
-import { Outlet, useLocation } from 'react-router'
+import { Outlet, useLocation, useNavigate } from 'react-router'
+import { useState } from 'react'
 import { Sidebar } from '../components/dashboard/Sidebar'
 import storeProfile from '../context/storeProfile'
 import storeAuth from '../context/storeAuth'
 
 const Dashboard = () => {
     const { user } = storeProfile()
-    const {cleartoken} = storeAuth()
+    const { clearToken } = storeAuth()
+    const navigate = useNavigate()
+    const [busqueda, setBusqueda] = useState('')
+    const [mostrarNotificaciones, setMostrarNotificaciones] = useState(false)
+
+    const handleLogout = () => {
+        clearToken()
+        navigate('/')
+    }
+
+    const handleBuscar = (e) => {
+        e.preventDefault()
+        // Aquí puedes filtrar tus alquileres o navegar a una vista de resultados
+        console.log('Buscando:', busqueda)
+    }
+
     return (
         <div className="flex h-screen bg-gray-100 dark:bg-gray-950">
 
-            {/* Sidebar */}
             <Sidebar />
 
-            {/* Contenido principal */}
             <div className="flex-1 flex flex-col overflow-hidden">
 
-                {/* Header superior */}
                 <header className="bg-white dark:bg-gray-900 shadow-sm px-6 py-3 
                                    flex items-center justify-between">
 
-                    {/* Título página actual */}
                     <h1 className="text-xl font-bold text-gray-800 dark:text-white">
                         Dashboard
                     </h1>
 
-                    {/* Derecha */}
                     <div className="flex items-center gap-4">
 
-                        {/* Búsqueda */}
-                        <div className="relative hidden md:block">
+                        {/* Búsqueda funcional */}
+                        <form onSubmit={handleBuscar} className="relative hidden md:block">
                             <input
                                 type="text"
+                                value={busqueda}
+                                onChange={(e) => setBusqueda(e.target.value)}
                                 placeholder="Buscar..."
                                 className="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white
                                            rounded-lg px-4 py-2 pl-9 text-sm focus:outline-none w-64"
                             />
-                            <span className="absolute left-3 top-2.5 text-gray-400">🔍</span>
+                            <button type="submit" className="absolute left-3 top-2.5 text-gray-400">
+                                🔍
+                            </button>
+                        </form>
+
+                        {/* Notificaciones funcionales */}
+                        <div className="relative">
+                            <button
+                                onClick={() => setMostrarNotificaciones(!mostrarNotificaciones)}
+                                className="relative text-gray-500 hover:text-gray-700"
+                            >
+                                🔔
+                                <span className="absolute -top-1 -right-1 bg-red-500 text-white 
+                                                 text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                                    1
+                                </span>
+                            </button>
+
+                            {mostrarNotificaciones && (
+                                <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 
+                                               shadow-lg rounded-lg p-3 z-50 text-sm text-gray-700 dark:text-white">
+                                    <p>No tienes notificaciones nuevas.</p>
+                                </div>
+                            )}
                         </div>
 
-                        {/* Notificaciones */}
-                        <button className="relative text-gray-500 hover:text-gray-700">
-                            🔔
-                            <span className="absolute -top-1 -right-1 bg-red-500 text-white 
-                                             text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                                1
-                            </span>
-                        </button>
-
-                        {/* Avatar , nombre */}
+                        {/* Avatar, nombre y logout */}
                         <div className="flex items-center gap-2">
                             <img
-                                src="https://cdn-icons-png.flaticon.com/512/4715/4715329.png"
+                                src={user?.imagen || "https://cdn-icons-png.flaticon.com/512/4715/4715329.png"}
                                 alt="avatar"
-                                className="w-9 h-9 rounded-full border-2 border-green-500"
+                                className="w-9 h-9 rounded-full border-2 border-green-500 object-cover"
                             />
                             <span className="text-sm font-medium text-gray-700 dark:text-white hidden md:block">
-                                Hola, {user?.nombre}
+                                Hola, {user?.nombre || 'Usuario'}
                             </span>
+                            <button
+                                onClick={handleLogout}
+                                className="text-sm text-gray-500 hover:text-red-500 transition-colors"
+                                title="Cerrar sesión"
+                            >
+                                🚪
+                            </button>
                         </div>
 
                     </div>
                 </header>
 
-                {/* Contenido páginas */}
                 <main className="flex-1 overflow-y-auto p-6">
                     <Outlet />
                 </main>
 
-                {/* Footer */}
                 <footer className="bg-gray-800 py-3 text-center text-gray-400 text-sm">
                     © 2025 Poli Rent - Todos los derechos reservados
                 </footer>
