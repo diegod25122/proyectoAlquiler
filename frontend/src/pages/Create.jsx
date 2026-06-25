@@ -1,4 +1,4 @@
-import { Form } from '../components/create/Form'
+import { Form } from "react-router"
 
 const Create = () => {
     return (

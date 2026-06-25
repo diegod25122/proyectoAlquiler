@@ -9,7 +9,7 @@ import generateAvatar from "../../helpers/consultarIA"
 
 const DEFAULT_IMAGE = "https://cdn-icons-png.flaticon.com/512/2618/2618671.png" // ícono genérico de herramienta
 
-export const FormHerramienta = ({ herramienta }) => {
+export const Form = ({ herramienta }) => {
     const [imagenState, setImagenState] = useState({
         preview: herramienta?.imagen || DEFAULT_IMAGE,
         prompt: "",
