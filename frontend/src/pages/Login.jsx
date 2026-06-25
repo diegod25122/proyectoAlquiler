@@ -30,7 +30,7 @@ const loginUser = async(dataForm) => {
 }
   return (
     <>
-      <Navbar />
+
       <ToastContainer />
       <main
         className="min-h-[calc(100vh-64px)] w-full flex items-center justify-center bg-[url('/images/sistemaLogin.jpg')] bg-cover bg-center relative transition-colors duration-300"
