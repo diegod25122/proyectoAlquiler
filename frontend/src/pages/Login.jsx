@@ -8,7 +8,6 @@ import { ToastContainer } from 'react-toastify'
 import { useForm } from 'react-hook-form'
 import storeAuth from '../context/storeAuth'
 import { useFetch } from '../hooks/useFetch'
-import storeAuth from '../context/storeAuth'
 
 export function Login() {
   const { isDarkMode } = useDarkMode()
