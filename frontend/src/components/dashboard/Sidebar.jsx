@@ -16,11 +16,9 @@ export const Sidebar = () => {
 
     const navLinks = [
         { to: '/dashboard', label: 'Dashboard', icon: '🏠' },
-        { to: '/dashboard/catalog', label: 'Catálogo', icon: '📦' },
         { to: '/dashboard/list', label: 'Mis Alquileres', icon: '🛒' },
         { to: '/dashboard/profile', label: 'Perfil', icon: '👤' },
-        { to: '/dashboard/reports', label: 'Reportes', icon: '📊' },
-        { to: '/dashboard/support', label: 'Soporte', icon: '❓' },
+
     ]
 
     return (
@@ -30,7 +28,7 @@ export const Sidebar = () => {
             <div>
                 {/* Logo */}
                 <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-700">
-                    <img src={logo} alt="EPN" className="w-10 h-10"/>
+                    <img src={logo} alt="EPN" className="w-10 h-10" />
                     <div>
                         <p className="text-white font-bold text-sm">EPN ToolRental</p>
                         <p className="text-gray-400 text-xs">Escuela Politécnica Nacional</p>
@@ -68,14 +66,17 @@ export const Sidebar = () => {
                     <span className="text-gray-400 text-sm">Dark modo</span>
                     <button
                         onClick={() => setIsDarkMode(!isDarkMode)}
-                        className={`w-12 h-6 rounded-full transition-colors relative
-                            ${isDarkMode ? 'bg-blue-600' : 'bg-gray-600'}`}
+                      
+                        className={`w-11 h-6 rounded-full transition-colors relative flex items-center px-1
+            ${isDarkMode ? 'bg-blue-600' : 'bg-gray-600'}`}
                     >
-                        <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform
-                            ${isDarkMode ? 'translate-x-2' : 'translate-x-1'}`}
+                       
+                        <span className={`w-4 h-4 bg-white rounded-full transition-transform
+            ${isDarkMode ? 'translate-x-5' : 'translate-x-0'}`}
                         />
                     </button>
                 </div>
+
 
                 {/* Info usuario */}
                 <div className="flex items-center justify-between">

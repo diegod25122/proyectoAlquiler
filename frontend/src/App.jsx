@@ -19,8 +19,7 @@ import PublicRoute from './routers/PublicRoute'
 import ProtectedRoute from './routers/ProtectedRoute'
 import { useEffect } from 'react'
 import storeProfile from './context/storeProfile'
-import storeAuth from './context/storeAuth'
-import SpaceBackground from './components/SpaceBackground'
+
 
 function App() {
   const { profile  } = storeProfile()
@@ -34,7 +33,6 @@ function App() {
   return (
     <>
       <BrowserRouter>
-      <SpaceBackground/>
         <Routes>
 
 
