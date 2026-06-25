@@ -16,7 +16,7 @@ export default function Panel() {
     const fetchHerramientas = async () => {
       try {
         const token = getToken()
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/herramientas`, {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/herramientas`, {
           headers: {
             Authorization: token ? `Bearer ${token}` : undefined,
           },

@@ -5,7 +5,6 @@ import { validacionRegistro } from '../middlewares/validaciones.js'
 import multer from 'multer'
 
 const router = Router()
-const upload=multer
 /**
  * @swagger
  * tags:
@@ -266,7 +265,7 @@ router.post('/nuevopassword/:token', crearNuevoPassword)
  *       404:
  *         description: Usuario no encontrado
  */
-router.put('/actualizarperfil/', upload.single('imagen'),verificarTokenJWT, actualizarPerfil)
+router.put('/actualizarperfil/',verificarTokenJWT, actualizarPerfil)
 
 /**
  * @swagger

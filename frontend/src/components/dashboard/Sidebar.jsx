@@ -17,7 +17,8 @@ export const Sidebar = () => {
     const navLinks = [
         { to: '/dashboard', label: 'Dashboard', icon: '🏠' },
         { to: '/dashboard/list', label: 'Mis Alquileres', icon: '🛒' },
-        { to: '/dashboard/profile', label: 'Perfil', icon: '👤' },
+        { to: '/dashboard/registrar-herramienta', label: 'Registrar Herramienta', icon: '🛠️' },
+        { to: '/dashboard/profile', label: 'Perfil', icon: '👤' }
 
     ]
 

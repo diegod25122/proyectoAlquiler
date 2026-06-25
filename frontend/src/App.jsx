@@ -58,6 +58,7 @@ function App() {
                   <Route path='create' element={<Create />} />
                   <Route path='update/:id' element={<Update />} />
                   <Route path='chat' element={<Chat />} />
+                  <Route path="registrar-herramienta" element={<RegistrarHerramienta />} />
                 </Route>
               </Routes>
             </ProtectedRoute>

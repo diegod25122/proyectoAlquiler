@@ -1,104 +1,80 @@
-// src/components/dashboard/FormHerramienta.jsx
-/* eslint-disable react/prop-types */
+// src/pages/dashboard/RegistrarHerramienta.jsx
 import { useState } from "react"
-import { useFetch } from "../../hooks/useFetch"
 import { useNavigate } from "react-router"
 import { useForm } from "react-hook-form"
 import { toast, ToastContainer } from "react-toastify"
+import storeHerramienta from "../../context/storeHerramienta"
 import generateAvatar from "../../helpers/consultarIA"
 
-const DEFAULT_IMAGE = "https://cdn-icons-png.flaticon.com/512/2618/2618671.png" // ícono genérico de herramienta
+const DEFAULT_IMAGE = "https://cdn-icons-png.flaticon.com/512/2618/2618671.png"
 
-export const Form = ({ herramienta }) => {
-    const [imagenState, setImagenState] = useState({
-        preview: herramienta?.imagen || DEFAULT_IMAGE,
-        prompt: "",
-        loading: false,
-        modo: "subir" // "subir" | "ia"
-    })
-
+const RegistrarHerramienta = () => {
+    const { registrarHerramienta } = storeHerramienta()
     const navigate = useNavigate()
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
-    const { fetchDataBackend } = useFetch()
 
-    // Generar imagen con IA a partir del prompt
+    const [imagenState, setImagenState] = useState({
+        preview: DEFAULT_IMAGE,
+        prompt: "",
+        loading: false,
+        modo: "subir",
+    })
+
     const handleGenerateImage = async () => {
         if (!imagenState.prompt.trim()) {
             toast.error("Escribe una descripción para generar la imagen")
             return
         }
-        setImagenState(prev => ({ ...prev, loading: true }))
+        setImagenState((prev) => ({ ...prev, loading: true }))
         try {
             const blob = await generateAvatar(imagenState.prompt)
-            const isImage = blob?.type?.startsWith("image/")
-            if (!isImage) throw new Error("No es una imagen válida")
+            if (!blob?.type?.startsWith("image/")) throw new Error("No es una imagen válida")
 
             const file = new File([blob], "herramienta.png", { type: blob.type })
             const imageUrl = URL.createObjectURL(blob)
 
-            setImagenState(prev => ({ ...prev, preview: imageUrl, loading: false }))
+            setImagenState((prev) => ({ ...prev, preview: imageUrl, loading: false }))
             setValue("imagen", [file])
         } catch (error) {
             console.error(error)
             toast.error("Error al generar la imagen con IA")
-            setImagenState(prev => ({ ...prev, preview: DEFAULT_IMAGE, loading: false }))
+            setImagenState((prev) => ({ ...prev, preview: DEFAULT_IMAGE, loading: false }))
         }
     }
 
-    // Subir imagen manualmente desde archivo
     const handleFileChange = (event) => {
         const file = event.target.files?.[0]
         if (!file) return
-        setImagenState(prev => ({ ...prev, preview: URL.createObjectURL(file) }))
+        setImagenState((prev) => ({ ...prev, preview: URL.createObjectURL(file) }))
         setValue("imagen", [file])
     }
 
-    const registrarHerramienta = async (dataForm) => {
+    const onSubmit = async (dataForm) => {
         const formData = new FormData()
-        Object.keys(dataForm).forEach((key) => {
-            if (key === "imagen") {
-                if (dataForm.imagen?.[0]) {
-                    formData.append("imagen", dataForm.imagen[0])
-                }
-            } else {
-                formData.append(key, dataForm[key])
-            }
-        })
-
-        let url = `${import.meta.env.VITE_BACKEND_URL}/herramienta/registro`
-        const storedUser = JSON.parse(localStorage.getItem("auth-token"))
-        const headers = {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${storedUser?.state?.token}`
+        formData.append("nombre", dataForm.nombre)
+        formData.append("codigoInventario", dataForm.codigoInventario)
+        formData.append("descripcion", dataForm.descripcion)
+        if (dataForm.imagen?.[0]) {
+            formData.append("imagen", dataForm.imagen[0])
         }
 
-        let response
-        if (herramienta?._id) {
-            url = `${import.meta.env.VITE_BACKEND_URL}/herramienta/actualizar/${herramienta._id}`
-            response = await fetchDataBackend(url, formData, "PUT", headers)
-        } else {
-            response = await fetchDataBackend(url, formData, "POST", headers)
-        }
-
-        if (response) {
-            setTimeout(() => {
-                navigate("/dashboard/herramientas")
-            }, 1500)
+        const exito = await registrarHerramienta(formData)
+        if (exito) {
+            setTimeout(() => navigate("/dashboard"), 1500)
         }
     }
 
     return (
-        <form onSubmit={handleSubmit(registrarHerramienta)} className="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-md">
+        <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl mx-auto bg-white dark:bg-gray-900 p-6 rounded-xl shadow-md">
             <ToastContainer />
-            <h2 className="text-xl font-bold text-gray-800 mb-5">
-                {herramienta?._id ? "Editar herramienta" : "Registrar nueva herramienta"}
+            <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-5">
+                Registrar nueva herramienta
             </h2>
 
-            {/* Selector de modo de imagen */}
             <div className="flex gap-2 mb-4">
                 <button
                     type="button"
-                    onClick={() => setImagenState(prev => ({ ...prev, modo: "subir" }))}
+                    onClick={() => setImagenState((prev) => ({ ...prev, modo: "subir" }))}
                     className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors
                         ${imagenState.modo === "subir" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-600"}`}
                 >
@@ -106,7 +82,7 @@ export const Form = ({ herramienta }) => {
                 </button>
                 <button
                     type="button"
-                    onClick={() => setImagenState(prev => ({ ...prev, modo: "ia" }))}
+                    onClick={() => setImagenState((prev) => ({ ...prev, modo: "ia" }))}
                     className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors
                         ${imagenState.modo === "ia" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-600"}`}
                 >
@@ -114,7 +90,6 @@ export const Form = ({ herramienta }) => {
                 </button>
             </div>
 
-            {/* Preview */}
             <div className="flex flex-col items-center mb-5">
                 <img
                     src={imagenState.preview}
@@ -135,7 +110,7 @@ export const Form = ({ herramienta }) => {
                             type="text"
                             placeholder="Describe la herramienta (ej: taladro industrial rojo)"
                             value={imagenState.prompt}
-                            onChange={(e) => setImagenState(prev => ({ ...prev, prompt: e.target.value }))}
+                            onChange={(e) => setImagenState((prev) => ({ ...prev, prompt: e.target.value }))}
                             className="flex-1 rounded-md border border-gray-300 py-2 px-3 text-sm"
                         />
                         <button
@@ -150,9 +125,8 @@ export const Form = ({ herramienta }) => {
                 )}
             </div>
 
-            {/* Nombre */}
             <div className="mb-4">
-                <label className="mb-1 block text-sm font-semibold text-gray-700">Nombre</label>
+                <label className="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Nombre</label>
                 <input
                     type="text"
                     placeholder="Ej: Taladro Bosch"
@@ -162,9 +136,8 @@ export const Form = ({ herramienta }) => {
                 {errors.nombre && <p className="text-red-600 text-sm mt-1">{errors.nombre.message}</p>}
             </div>
 
-            {/* Código de inventario */}
             <div className="mb-4">
-                <label className="mb-1 block text-sm font-semibold text-gray-700">Código de inventario</label>
+                <label className="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Código de inventario</label>
                 <input
                     type="text"
                     placeholder="Ej: HER-0023"
@@ -174,9 +147,8 @@ export const Form = ({ herramienta }) => {
                 {errors.codigoInventario && <p className="text-red-600 text-sm mt-1">{errors.codigoInventario.message}</p>}
             </div>
 
-            {/* Descripción */}
             <div className="mb-5">
-                <label className="mb-1 block text-sm font-semibold text-gray-700">Descripción</label>
+                <label className="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Descripción</label>
                 <textarea
                     rows={3}
                     placeholder="Detalles de la herramienta..."
@@ -190,8 +162,10 @@ export const Form = ({ herramienta }) => {
                 type="submit"
                 className="bg-blue-600 w-full p-2.5 text-white uppercase font-bold rounded-lg hover:bg-blue-700 transition-all"
             >
-                {herramienta?._id ? "Actualizar" : "Registrar"}
+                Registrar
             </button>
         </form>
     )
 }
+
+export default RegistrarHerramienta
