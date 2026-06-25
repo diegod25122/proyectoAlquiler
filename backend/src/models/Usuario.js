@@ -43,6 +43,16 @@ const UsuarioSchema= new Schema({
         type:String,
         default:null
     },
+    imagen: {
+        type: String,
+        trim: true,
+        default: null
+    },
+    imagenID: {
+        type: String,
+        trim: true,
+        default: null
+    },
     confirmEmail:{
         type:Boolean,
         default:false

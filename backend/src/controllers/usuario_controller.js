@@ -1,6 +1,7 @@
 import Usuario from "../models/Usuario.js";
 import { sendMailToRegister, sendMailToRecoveryPassword } from "../helpers/sendMail.js";
 import { crearTokenJWT } from "../middlewares/JWT.js"
+import { subirImagenCloudinary } from "../helpers/uploadCloudinary.js"
 
 import mongoose from "mongoose"
 
@@ -166,33 +167,41 @@ const perfil =(req,res)=>{
 
 
 
-const actualizarPerfil = async (req,res)=>{
+const actualizarPerfil = async (req,res) => {
     try {
-    
-        const id = req.usuarioHeader._id; 
-        const {nombre,apellido,facultad,telefono,cedula, email} = req.body;
-        
+        const id = req.usuarioHeader._id
+        const { nombre, apellido, facultad, telefono, cedula, email } = req.body
+
         const usuarioBDD = await Usuario.findById(id)
-        if(!usuarioBDD) return res.status(404).json({ msg: "No existe el usuario" })
-        if (Object.values(req.body).includes("")) return res.status(400).json({msg:"Debes llenar todos los campos"})
-        
+        if (!usuarioBDD) return res.status(404).json({ msg: "No existe el usuario" })
+        if (Object.values(req.body).includes("")) return res.status(400).json({ msg: "Debes llenar todos los campos" })
+
         if (usuarioBDD.email !== email) {
-            const emailExistente  = await Usuario.findOne({email})
-            if (emailExistente ) {
-                return res.status(400).json({msg:"El email ya se encuentra registrado"})  // Cambié a 400 (Bad Request)
+            const emailExistente = await Usuario.findOne({ email })
+            if (emailExistente) {
+                return res.status(400).json({ msg: "El email ya se encuentra registrado" })
             }
         }
-        
+
+        if (req.files?.imagen) {
+            if (usuarioBDD.imagenID) {
+                const { v2 as cloudinary } = await import('cloudinary')
+                await cloudinary.uploader.destroy(usuarioBDD.imagenID)
+            }
+            const { secure_url, public_id } = await subirImagenCloudinary(req.files.imagen.tempFilePath)
+            usuarioBDD.imagen = secure_url
+            usuarioBDD.imagenID = public_id
+        }
+
         usuarioBDD.nombre = nombre ?? usuarioBDD.nombre
         usuarioBDD.apellido = apellido ?? usuarioBDD.apellido
         usuarioBDD.facultad = facultad ?? usuarioBDD.facultad
         usuarioBDD.telefono = telefono ?? usuarioBDD.telefono
         usuarioBDD.cedula = cedula ?? usuarioBDD.cedula
         usuarioBDD.email = email ?? usuarioBDD.email
+
         await usuarioBDD.save()
-        
         res.status(200).json(usuarioBDD)
-        
     } catch (error) {
         console.error(error)
         res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })

@@ -72,7 +72,7 @@ export const Sidebar = () => {
                             ${isDarkMode ? 'bg-blue-600' : 'bg-gray-600'}`}
                     >
                         <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform
-                            ${isDarkMode ? 'translate-x-7' : 'translate-x-1'}`}
+                            ${isDarkMode ? 'translate-x-2' : 'translate-x-1'}`}
                         />
                     </button>
                 </div>
@@ -96,7 +96,7 @@ export const Sidebar = () => {
                         className="text-gray-400 hover:text-red-400 transition-colors"
                         title="Cerrar sesión"
                     >
-                        🚪
+                        <button>Salir</button>
                     </Link>
                 </div>
 
