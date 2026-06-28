@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Sidebar } from '../components/dashboard/Sidebar'
 import storeProfile from '../context/storeProfile'
 import storeAuth from '../context/storeAuth'
+import RegistrarHerramienta from '../components/create/RegistrarHerramienta'
 
 const Dashboard = () => {
     const { user } = storeProfile()
@@ -37,21 +38,6 @@ const Dashboard = () => {
                     </h1>
 
                     <div className="flex items-center gap-4">
-
-                        {/* Búsqueda funcional */}
-                        <form onSubmit={handleBuscar} className="relative hidden md:block">
-                            <input
-                                type="text"
-                                value={busqueda}
-                                onChange={(e) => setBusqueda(e.target.value)}
-                                placeholder="Buscar..."
-                                className="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white
-                                           rounded-lg px-4 py-2 pl-9 text-sm focus:outline-none w-64"
-                            />
-                            <button type="submit" className="absolute left-3 top-2.5 text-gray-400">
-                                🔍
-                            </button>
-                        </form>
 
                         {/* Notificaciones funcionales */}
                         <div className="relative">

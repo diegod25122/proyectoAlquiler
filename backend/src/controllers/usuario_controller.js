@@ -2,6 +2,7 @@ import Usuario from "../models/Usuario.js";
 import { sendMailToRegister, sendMailToRecoveryPassword } from "../helpers/sendMail.js";
 import { crearTokenJWT } from "../middlewares/JWT.js"
 import { subirImagenCloudinary } from "../helpers/uploadCloudinary.js"
+import { v2 as cloudinary } from "cloudinary"
 
 import mongoose from "mongoose"
 
@@ -27,16 +28,12 @@ const registro = async (req,res)=>{
 }
 const confirmarMail = async (req, res) => {
     try {
-        // Paso 1 
         const { token } = req.params
-        // Paso 2
         const usuarioBDD = await Usuario.findOne({ token })
         if (!usuarioBDD) return res.status(404).json({ msg: "Token inválido o cuenta ya confirmada" })
-        // Paso 3
         usuarioBDD.token = null
         usuarioBDD.confirmEmail = true
         await usuarioBDD.save()
-        // Paso 4
         res.status(200).json({ msg: "Cuenta confirmada, ya puedes iniciar sesión" })
 
     } catch (error) {
@@ -47,18 +44,14 @@ const confirmarMail = async (req, res) => {
 const recuperarPassword = async (req, res) => {
 
     try {
-        // Paso 1
         const { email } = req.body
-        // Paso 2
         if (!email) return res.status(400).json({ msg: "Debes ingresar un correo electrónico" })
         const usuarioBDD = await Usuario.findOne({ email })
         if (!usuarioBDD) return res.status(404).json({ msg: "El usuario no se encuentra registrado" })
-        // Paso 3
         const token = usuarioBDD.createToken()
         usuarioBDD.token = token
         await sendMailToRecoveryPassword(email, token)
         await usuarioBDD.save()
-        // Paso 4
         res.status(200).json({ msg: "Revisa tu correo electrónico para reestablecer tu cuenta" })
         
     } catch (error) {
@@ -73,7 +66,6 @@ const comprobarTokenPasword = async (req,res)=>{
     try {
         const {token} = req.params
         const usuarioBDD = await Usuario.findOne({token})
-        
         
         if(!usuarioBDD) return res.status(404).json({msg:"Lo sentimos, no se puede validar la cuenta o el token expiró"})
         
@@ -90,19 +82,15 @@ const comprobarTokenPasword = async (req,res)=>{
 const crearNuevoPassword = async (req,res)=>{
 
     try {
-        // Paso 1
         const{password,confirmpassword} = req.body
         const { token } = req.params
-        // Paso 2
         if (Object.values(req.body).includes("")) return res.status(404).json({msg:"Debes llenar todos los campos"})
         if(password !== confirmpassword) return res.status(404).json({msg:"Los passwords no coinciden"})
         const usuarioBDD = await Usuario.findOne({token})
         if(!usuarioBDD) return res.status(404).json({msg:"No se puede validar la cuenta"})
-        // Paso 3
         usuarioBDD.token = null
         usuarioBDD.password = await usuarioBDD.encryptPassword(password)
         await usuarioBDD.save()
-        // Paso 4
         res.status(200).json({msg:"Felicitaciones, ya puedes iniciar sesión con tu nuevo password"}) 
 
     } catch (error) {
@@ -114,33 +102,26 @@ const crearNuevoPassword = async (req,res)=>{
 
 const login = async(req,res)=>{
     try {
-        // Paso 1: Captura de datos
         const {email,password} = req.body
         
-        // Paso 2: Validaciones críticas
         if (Object.values(req.body).includes("")) {
-            return res.status(400).json({msg:"Debes llenar todos los campos"}) // Cambiado a 400 (Bad Request)
+            return res.status(400).json({msg:"Debes llenar todos los campos"})
         }
-        
         
         const usuarioBDD = await Usuario.findOne({email})
         
         if(!usuarioBDD) return res.status(404).json({msg:"El usuario no se encuentra registrado"})
         
-        // Validar si el correo institucional ya fue confirmado
         if(!usuarioBDD.confirmEmail) {
             return res.status(403).json({msg:"Debes verificar tu cuenta antes de iniciar sesión"})
         }
         
-        // Verificar que la contraseña encriptada coincida
         const verificarPassword = await usuarioBDD.matchPassword(password)
         if(!verificarPassword) return res.status(401).json({msg:"El password no es correcto"})
         
-        // Paso 3: Desestructuración segura una vez autenticado
         const {nombre, apellido, facultad, telefono, cedula, rol, _id} = usuarioBDD
         const token = crearTokenJWT(usuarioBDD._id, usuarioBDD.rol)
         
-        // Paso 4: Enviamos la respuesta limpia al Frontend incluyendo el Token
         res.status(200).json({
             token,
             rol,
@@ -185,7 +166,6 @@ const actualizarPerfil = async (req,res) => {
 
         if (req.files?.imagen) {
             if (usuarioBDD.imagenID) {
-                const { v2 as cloudinary } = await import('cloudinary')
                 await cloudinary.uploader.destroy(usuarioBDD.imagenID)
             }
             const { secure_url, public_id } = await subirImagenCloudinary(req.files.imagen.tempFilePath)

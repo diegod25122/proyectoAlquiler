@@ -2,6 +2,7 @@
 import { create } from "zustand"
 import axios from "axios"
 import { toast } from "react-toastify"
+import { actualizarProducto, listarProductos, registrarProducto } from "../../../backend/src/controllers/producto_controller"
 
 const getAuthHeaders = (data) => {
     const storedUser = JSON.parse(localStorage.getItem("auth-token"))
@@ -14,45 +15,45 @@ const getAuthHeaders = (data) => {
     return { headers }
 }
 
-const storeHerramienta = create((set) => ({
-    herramientas: [],
+const storeProducto = create((set) => ({
+    productos: [],
 
-    listarHerramientas: async () => {
+    listarProductos: async () => {
         try {
-            const url = `${import.meta.env.VITE_BACKEND_URL}/herramientas`
+            const url = `${import.meta.env.VITE_BACKEND_URL}/productos`
             const respuesta = await axios.get(url, getAuthHeaders())
             set({ herramientas: respuesta.data })
         } catch (error) {
-            console.error("Error al listar herramientas:", error)
-            toast.error("No se pudieron cargar las herramientas")
+            console.error("Error al listar productos:", error)
+            toast.error("No se pudieron cargar los productos")
         }
     },
 
-    registrarHerramienta: async (formData) => {
+    registrarProducto: async (formData) => {
         try {
-            const url = `${import.meta.env.VITE_BACKEND_URL}/herramienta/registro`
+            const url = `${import.meta.env.VITE_BACKEND_URL}/producto/registro`
             await axios.post(url, formData, getAuthHeaders(formData))
-            toast.success("Herramienta registrada correctamente")
+            toast.success("Producto registrada correctamente")
             return true
         } catch (error) {
-            console.error("Error al registrar herramienta:", error)
-            toast.error(error.response?.data?.msg || "Error al registrar la herramienta")
+            console.error("Error al registrar producto:", error)
+            toast.error(error.response?.data?.msg || "Error al registrar el producto")
             return false
         }
     },
 
-    actualizarHerramienta: async (id, formData) => {
+    actualizarProducto: async (id, formData) => {
         try {
-            const url = `${import.meta.env.VITE_BACKEND_URL}/herramienta/actualizar/${id}`
+            const url = `${import.meta.env.VITE_BACKEND_URL}/producto/actualizar/${id}`
             await axios.put(url, formData, getAuthHeaders(formData))
-            toast.success("Herramienta actualizada correctamente")
+            toast.success("Producto actualizado correctamente")
             return true
         } catch (error) {
-            console.error("Error al actualizar herramienta:", error)
-            toast.error(error.response?.data?.msg || "Error al actualizar la herramienta")
+            console.error("Error al actualizar producto:", error)
+            toast.error(error.response?.data?.msg || "Error al actualizar el producto")
             return false
         }
     },
 }))
 
-export default storeHerramienta
+export default storeProducto

@@ -59,6 +59,7 @@ const UsuarioSchema= new Schema({
     },
     rol:{
         type:String,
+        enum:["Admin", "Usuario"],
         default:"Usuario"
     }
 

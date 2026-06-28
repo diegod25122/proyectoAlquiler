@@ -7,7 +7,7 @@ import routerUsuario from './routers/usuario_routers.js';
 import swaggerDocs from './config/swagger.js'
 import fileUpload from "express-fileupload"
 import cloudinary from 'cloudinary'
-import routerHerramientas from './routers/herramienta_routes.js'
+import routerProducto from './routers/usuario_routers.js';
 
 // Inicializaciones
 const app = express()
@@ -60,7 +60,7 @@ app.get('/health', (req, res) => {
 
 // Rutas para usuarios
 app.use('/api', routerUsuario)
-app.use('/api', routerHerramientas)
+app.use('/api', routerProducto)
 
 // Manejo de una ruta que no sea encontrada
 app.use((req,res)=>res.status(404).send("Endpoint no encontrado - 404"))
