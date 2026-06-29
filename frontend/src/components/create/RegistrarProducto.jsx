@@ -1,4 +1,3 @@
-// src/pages/dashboard/RegistrarHerramienta.jsx
 import { useState } from "react"
 import { useNavigate } from "react-router"
 import { useForm } from "react-hook-form"
@@ -9,7 +8,7 @@ import generateAvatar from "../../helpers/consultarIA"
 const DEFAULT_IMAGE = "https://cdn-icons-png.flaticon.com/512/2618/2618671.png"
 
 const RegistrarProducto = () => {
-    const { registrarProducto } = storeHerramienta()
+    const { registrarProducto } = storeProducto()
     const navigate = useNavigate()
     const { register, handleSubmit, watch, formState: { errors }, setValue } = useForm()
 
