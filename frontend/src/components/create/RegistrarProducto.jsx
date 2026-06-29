@@ -262,4 +262,4 @@ const RegistrarProducto = () => {
     )
 }
 
-export default RegistrarProducto //Exportar la variable
+export default RegistrarProducto 
