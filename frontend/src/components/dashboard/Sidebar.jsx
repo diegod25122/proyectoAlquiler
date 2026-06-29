@@ -1,5 +1,11 @@
 import { Link, useLocation } from 'react-router'
-import { MdDashboard, MdCategory, MdPerson, MdBarChart, MdSupport, MdShoppingCart, MdLogout } from 'react-icons/md'
+import { 
+    MdDashboard, 
+    MdInventory,      
+    MdAddBox,      
+    MdPerson, 
+    MdLogout 
+} from 'react-icons/md'
 import useDarkMode from '../../hooks/useDarkMode'
 import storeAuth from '../../context/storeAuth'
 import storeProfile from '../../context/storeProfile'
@@ -15,42 +21,44 @@ export const Sidebar = () => {
     const isActive = (path) => urlActual === path
 
     const navLinks = [
-        { to: '/dashboard', label: 'Dashboard', icon: '🏠' },
-        { to: '/dashboard/list', label: 'Mis Alquileres', icon: '🛒' },
-        { to: '/dashboard/registrarproducto', label: 'Registrar Producto', icon: '🛠️' },
-        { to: '/dashboard/profile', label: 'Perfil', icon: '👤' }
-
+        { to: '/dashboard', label: 'Dashboard', icon: <MdDashboard className="h-5 w-5" /> },
+        { to: '/dashboard/list', label: 'Inventario General', icon: <MdInventory className="h-5 w-5" /> },
+        { to: '/dashboard/registrarproducto', label: 'Registrar Producto', icon: <MdAddBox className="h-5 w-5" /> },
+        { to: '/dashboard/profile', label: 'Perfil', icon: <MdPerson className="h-5 w-5" /> }
     ]
 
     return (
-        <aside className="w-56 bg-gray-900 flex flex-col justify-between h-screen sticky top-0">
+        <aside className="w-56 bg-gray-900 flex flex-col justify-between h-screen sticky top-0 border-r border-gray-800">
 
             {/* Parte superior - Logo y navegación */}
             <div>
-                {/* Logo */}
-                <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-700">
-                    <img src={logo} alt="EPN" className="w-10 h-10" />
+                {/* Logo EPN */}
+                <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-800">
+                    <img src={logo} alt="EPN" className="w-10 h-10 object-contain" />
                     <div>
-                        <p className="text-white font-bold text-sm">EPN ToolRental</p>
-                        <p className="text-gray-400 text-xs">Escuela Politécnica Nacional</p>
+                        <p className="text-white font-bold text-sm tracking-wide">EPN ToolRental</p>
+                        <p className="text-gray-400 text-xs font-medium">ESFOT - EPN</p>
                     </div>
                 </div>
 
-                {/* Navegación */}
-                <nav className="mt-4 px-3">
-                    <p className="text-gray-500 text-xs uppercase px-3 mb-2">Navegación</p>
+                {/* Navegación Dinámica */}
+                <nav className="mt-5 px-3">
+                    <p className="text-gray-500 text-[11px] font-bold uppercase tracking-wider px-3 mb-3">Módulos Admin</p>
                     <ul className="space-y-1">
                         {navLinks.map(link => (
                             <li key={link.to}>
                                 <Link
                                     to={link.to}
-                                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors
+                                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200
                                         ${isActive(link.to)
-                                            ? 'bg-blue-600 text-white font-semibold'
-                                            : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                                            ? 'bg-purple-700 text-white font-semibold shadow-md shadow-purple-900/30'
+                                            : 'text-gray-400 hover:bg-gray-800/60 hover:text-white'
                                         }`}
                                 >
-                                    <span>{link.icon}</span>
+                                    {/* Renderizado del componente del ícono de React-Icons */}
+                                    <span className={`${isActive(link.to) ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}>
+                                        {link.icon}
+                                    </span>
                                     {link.label}
                                 </Link>
                             </li>
@@ -59,46 +67,45 @@ export const Sidebar = () => {
                 </nav>
             </div>
 
-            {/* Dark mode + usuario */}
-            <div className="px-4 pb-4 border-t border-gray-700 pt-4 space-y-4">
+            {/* Parte Inferior: Dark mode + Información del Usuario */}
+            <div className="px-4 pb-4 border-t border-gray-800 pt-4 space-y-4 bg-gray-950/40">
 
                 {/* Toggle dark mode */}
-                <div className="flex items-center justify-between">
-                    <span className="text-gray-400 text-sm">Dark modo</span>
+                <div className="flex items-center justify-between px-2">
+                    <span className="text-gray-400 text-xs font-medium">Modo Oscuro</span>
                     <button
                         onClick={() => setIsDarkMode(!isDarkMode)}
-                      
-                        className={`w-11 h-6 rounded-full transition-colors relative flex items-center px-1
-            ${isDarkMode ? 'bg-blue-600' : 'bg-gray-600'}`}
+                        className={`w-10 h-5 rounded-full transition-colors relative flex items-center px-0.5
+                            ${isDarkMode ? 'bg-purple-600' : 'bg-gray-700'}`}
                     >
-                       
-                        <span className={`w-4 h-4 bg-white rounded-full transition-transform
-            ${isDarkMode ? 'translate-x-5' : 'translate-x-0'}`}
+                        <span className={`w-4 h-4 bg-white rounded-full transition-transform duration-200 shadow-sm
+                            ${isDarkMode ? 'translate-x-5' : 'translate-x-0'}`}
                         />
                     </button>
                 </div>
 
-
-                {/* Info usuario */}
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
+                {/* Info usuario y botón de salida */}
+                <div className="flex items-center justify-between border-t border-gray-800/60 pt-3 px-1">
+                    <div className="flex items-center gap-2.5 max-w-[140px]">
                         <img
                             src="https://cdn-icons-png.flaticon.com/512/4715/4715329.png"
                             alt="avatar"
-                            className="w-8 h-8 rounded-full border-2 border-green-500"
+                            className="w-8 h-8 rounded-full border-2 border-purple-500/80 object-cover"
                         />
-                        <div>
-                            <p className="text-white text-xs font-semibold">{user?.nombre}</p>
-                            <p className="text-gray-400 text-xs">{user?.facultad}</p>
+                        <div className="truncate">
+                            <p className="text-white text-xs font-semibold truncate">{user?.nombre || 'Administrador'}</p>
+                            <p className="text-gray-500 text-[10px] truncate">{user?.facultad || 'Taller ESFOT'}</p>
                         </div>
                     </div>
+                    
+                    {/* Botón Salir con Ícono Profesional */}
                     <Link
                         to="/"
                         onClick={() => clearToken()}
-                        className="text-gray-400 hover:text-red-400 transition-colors"
-                        title="Cerrar sesión"
+                        className="text-gray-400 hover:text-red-400 transition-colors p-1.5 rounded-lg hover:bg-red-500/10"
+                        title="Cerrar sesión web"
                     >
-                        <button>Salir</button>
+                        <MdLogout className="h-5 w-5" />
                     </Link>
                 </div>
 
