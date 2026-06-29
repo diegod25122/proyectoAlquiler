@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "react-tsparticles": "^2.12.2",
+    "sweetalert": "^2.1.2",
+    "sweetalert2": "^11.26.25",
     "tsparticles": "^4.2.1"
   }
 }
