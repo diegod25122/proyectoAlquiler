@@ -1,36 +1,54 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { MdDeleteForever, MdInfo, MdPublishedWithChanges } from "react-icons/md"; // Cambia "x" por "md" en tu entorno
+import { MdDeleteForever, MdInfo, MdPublishedWithChanges } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import storeAuth from "../../context/storeAuth";
 
 const Table = () => {
     const [productos, setProductos] = useState([]);
     const [cargando, setCargando] = useState(true);
     const navigate = useNavigate();
+    const { token } = storeAuth();
 
     // 1. Cargar inventario exclusivo del Admin
-    useEffect(() => {
-        const obtenerInventarioAdmin = async () => {
-            try {
-                const token = localStorage.getItem('token'); 
-                const config = {
-                    headers: { Authorization: `Bearer ${token}` }
-                };
-                
-                // Llamamos al nuevo endpoint administrativo protegido
-                const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/productos/admin`, config);
-                setProductos(data);
-            } catch (error) {
-                console.error("Error al cargar el inventario de administración:", error);
-                Swal.fire("Error", "No se pudo cargar el inventario o sesión expirada", "error");
-            } finally {
-                setCargando(false);
+useEffect(() => {
+    const obtenerInventarioAdmin = async () => {
+        try {
+            // 1. Obtenemos el string de la llave correcta de tu Zustand/Storage
+            const authStorage = localStorage.getItem('auth-token'); 
+            
+            if (!authStorage) {
+                console.error("No se encontró información de autenticación en el LocalStorage");
+                return;
             }
-        };
-        obtenerInventarioAdmin();
-    }, []);
 
+            // 2. Parseamos el JSON porque viene estructurado como objeto
+            const parsedStorage = JSON.parse(authStorage);
+            
+            // 3. Extraemos el token real saltando al nodo .state.token
+            const token = parsedStorage?.state?.token;
+
+            if (!token) {
+                console.error("El token no existe dentro del estado");
+                return;
+            }
+
+            const config = {
+                headers: { Authorization: `Bearer ${token}` }
+            };
+            
+            // Llamamos al endpoint administrativo protegido
+            const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/productos/admin`, config);
+            setProductos(data);
+        } catch (error) {
+            console.error("Error al cargar el inventario de administración:", error);
+        } finally {
+            setCargando(false);
+        }
+    };
+    obtenerInventarioAdmin();
+}, []);
     // 2. Función para dar de baja / eliminar físicamente un producto
     const handleEliminar = async (id, nombre) => {
         Swal.fire({
@@ -45,7 +63,6 @@ const Table = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const token = localStorage.getItem('token');
                     const config = {
                         headers: { Authorization: `Bearer ${token}` }
                     };
