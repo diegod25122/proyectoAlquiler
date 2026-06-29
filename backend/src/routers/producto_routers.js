@@ -1,8 +1,9 @@
 import { Router } from 'express'
+import multer from 'multer' // <-- 1. Importamos Multer
 import { 
     registrarProducto, 
     listarProductos,
-    listarProductosAdmin, // <-- NUEVO: Para la tabla completa del Admin
+    listarProductosAdmin, 
     actualizarProducto, 
     eliminarProducto,
     detalleProducto
@@ -10,24 +11,23 @@ import {
 
 import { verificarTokenJWT, verificarRolAdmin } from '../middlewares/JWT.js'
 
+// 2. Configuración básica de Multer para almacenar temporalmente en el disco de Render
+const upload = multer({ dest: 'uploads/' }) 
+
 const router = Router()
 
-// RUTAS PÚBLICAS (Catálogo Estudiantes)
-// Cualquiera puede ver el catálogo sin loguearse
+// RUTAS PÚBLICAS
 router.get("/productos", listarProductos) 
 
 // RUTAS PRIVADAS / ADMINISTRATIVAS
-// Requieren estar logueados Y tener rol de Administrador
-
-// Obtener detalles específic
 router.get("/producto/:id", verificarTokenJWT, detalleProducto)
-
-// Listar el inventario completo con auditoría en el Dashboard del Admin
 router.get("/productos/admin", verificarTokenJWT, verificarRolAdmin, listarProductosAdmin)
 
-// Acciones de escritura, edición y borrado
-router.post("/producto/registro", verificarTokenJWT, verificarRolAdmin, registrarProducto)
-router.put("/producto/actualizar/:id", verificarTokenJWT, verificarRolAdmin, actualizarProducto)
+// 3. Agregamos upload.single('imagen') justo antes de tu controlador
+// 'imagen' es el nombre exacto de la llave que pusimos en el FormData del frontend
+router.post("/producto/registro", verificarTokenJWT, verificarRolAdmin, upload.single('imagen'), registrarProducto)
+
+router.put("/producto/actualizar/:id", verificarTokenJWT, verificarRolAdmin, upload.single('imagen'), actualizarProducto)
 router.delete("/producto/eliminar/:id", verificarTokenJWT, verificarRolAdmin, eliminarProducto)
 
 export default router
