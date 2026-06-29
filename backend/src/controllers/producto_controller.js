@@ -1,5 +1,4 @@
 import Producto from "../models/Producto.js"
-import { v2 as cloudinary } from "cloudinary"
 import mongoose from "mongoose"
 import fs from "fs-extra"
 

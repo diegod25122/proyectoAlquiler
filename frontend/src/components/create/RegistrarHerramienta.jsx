@@ -3,7 +3,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router"
 import { useForm } from "react-hook-form"
 import { toast, ToastContainer } from "react-toastify"
-import storeHerramienta from "../../context/storeHerramienta"
+import storeHerramienta from "../../context/storeProducto"
 import generateAvatar from "../../helpers/consultarIA"
 
 const DEFAULT_IMAGE = "https://cdn-icons-png.flaticon.com/512/2618/2618671.png"
