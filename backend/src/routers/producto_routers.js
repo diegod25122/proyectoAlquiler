@@ -10,7 +10,7 @@ import { verificarTokenJWT, verificarRolAdmin } from '../middlewares/JWT.js'
 const router = Router()
 
 // Rutas Públicas (Cualquier estudiante logueado puede ver el catálogo)
-router.get("/productos", verificarTokenJWT, listarProductos)
+router.get("/productos", listarProductos)
 router.get("/producto/:id", verificarTokenJWT, detalleProducto)
 
 // Rutas Administrativas (Requieren estar logueados Y ser administradores)
