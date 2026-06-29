@@ -93,7 +93,7 @@ export const Sidebar = () => {
                             className="w-8 h-8 rounded-full border-2 border-purple-500/80 object-cover"
                         />
                         <div className="truncate">
-                            <p className="text-white text-xs font-semibold truncate">{user?.nombre,'-', {user}.rol}</p>
+                            <p className="text-white text-xs font-semibold truncate">{user?.nombre} - {user.rol}</p>
                             <p className="text-gray-500 text-[10px] truncate">{user?.facultad}</p>
                         </div>
                     </div>
