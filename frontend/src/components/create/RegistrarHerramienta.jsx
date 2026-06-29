@@ -8,8 +8,8 @@ import generateAvatar from "../../helpers/consultarIA"
 
 const DEFAULT_IMAGE = "https://cdn-icons-png.flaticon.com/512/2618/2618671.png"
 
-const RegistrarHerramienta = () => {
-    const { registrarHerramienta } = storeHerramienta()
+const RegistrarProducto = () => {
+    const { RegistrarProducto } = storeProducto()
     const navigate = useNavigate()
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
 
@@ -168,4 +168,4 @@ const RegistrarHerramienta = () => {
     )
 }
 
-export default RegistrarHerramienta
+export default RegistrarProducto
