@@ -9,38 +9,38 @@ const getToken = () => {
 }
 
 export default function Panel() {
-  const [herramientas, setHerramientas] = useState([])
+  const[productos, setProductos] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchHerramientas = async () => {
+    const fetchProductos = async () => {
       try {
         const token = getToken()
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/herramientas`, {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/productos`, {
           headers: {
             Authorization: token ? `Bearer ${token}` : undefined,
           },
         })
-        setHerramientas(response.data || [])
+        setProductos(response.data || [])
       } catch (error) {
-        console.error('Error cargando herramientas:', error)
-        setHerramientas([])
+        console.error('Error cargando productos:', error)
+        setProductos([])
       } finally {
         setLoading(false)
       }
     }
 
-    fetchHerramientas()
+    fetchProductos()
   }, [])
 
-  const total = herramientas.length
-  const disponibles = herramientas.filter((herramienta) => herramienta.estado).length
-  const enPrestamo = herramientas.filter((herramienta) => herramienta.enPrestamo).length
-  const sinDisponibilidad = herramientas.filter((herramienta) => herramienta.estado === false).length
+  const total = productos.length
+  const disponibles = productos.filter((herramienta) => herramienta.estado).length
+  const enPrestamo = productos.filter((herramienta) => herramienta.enPrestamo).length
+  const sinDisponibilidad = productos.filter((herramienta) => herramienta.estado === false).length
 
   const stats = [
     {
-      titulo: 'Herramientas Disponibles',
+      titulo: 'Productos Disponibles',
       numero: disponibles,
       icono: '🔧',
       porcentaje: total ? `${Math.round((disponibles / total) * 100)}%` : '0%',
@@ -56,7 +56,7 @@ export default function Panel() {
       colorIcono: 'bg-orange-100',
     },
     {
-      titulo: 'Total de Herramientas',
+      titulo: 'Total de Productos',
       numero: total,
       icono: '📚',
       porcentaje: total ? '100%' : '0%',
@@ -91,11 +91,11 @@ export default function Panel() {
         ))}
       </section>
 
-      <h2 className="font-black text-2xl text-gray-500 dark:text-gray-300">Herramientas Destacadas</h2>
+      <h2 className="font-black text-2xl text-gray-500 dark:text-gray-300">Productos Destacadas</h2>
       <hr className="border-t-2 border-gray-300" />
 
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {herramientas.slice(0, 4).map((tool) => (
+        {productos.slice(0, 4).map((tool) => (
           <ToolHighlight
             key={tool._id}
             nombre={tool.nombre}
