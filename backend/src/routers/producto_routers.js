@@ -25,9 +25,9 @@ router.get("/productos/admin", verificarTokenJWT, verificarRolAdmin, listarProdu
 
 // 3. Agregamos upload.single('imagen') justo antes de tu controlador
 // 'imagen' es el nombre exacto de la llave que pusimos en el FormData del frontend
-router.post("/producto/registro", verificarTokenJWT, verificarRolAdmin, upload.single('imagen'), registrarProducto)
+router.post("/producto/registro", verificarTokenJWT, verificarRolAdmin, registrarProducto)
 
-router.put("/producto/actualizar/:id", verificarTokenJWT, verificarRolAdmin, upload.single('imagen'), actualizarProducto)
+router.put("/producto/actualizar/:id", verificarTokenJWT, verificarRolAdmin,  actualizarProducto)
 router.delete("/producto/eliminar/:id", verificarTokenJWT, verificarRolAdmin, eliminarProducto)
 
 export default router
