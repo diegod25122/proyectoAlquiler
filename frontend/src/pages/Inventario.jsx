@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import Table from "../components/Table"; // Asegúrate de ajustar la ruta de importación de tu tabla
+import Table from "../list/Table"; // Asegúrate de ajustar la ruta de importación de tu tabla
 import { MdAddCircleOutline } from "react-icons/md"; // Ajusta a "md" según tus iconos
 
 const InventarioAdmin = () => {
