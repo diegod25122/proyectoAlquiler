@@ -35,7 +35,7 @@ const verificarTokenJWT = async (req, res, next) => {
 }
 const verificarRolAdmin = async (req, res, next) => {
     // Verificamos que el usuario extraído del token tenga el rol correcto
-    if (req.usuarioHeader && req.usuarioHeader.rol === "Administrador") {
+    if (req.usuarioHeader && req.usuarioHeader.rol === "Admin") {
         next(); // Tiene permiso, la ruta continúa
     } else {
         return res.status(403).json({ msg: "⛔ Acceso denegado: Se requieren permisos de Administrador" })
