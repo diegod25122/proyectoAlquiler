@@ -1,62 +1,85 @@
+import { useState } from 'react'
 import logo from '../assets/selloEPN.png'
+import { toast } from 'react-toastify'
 
 export const Footer = () => {
+    const [form, setForm] = useState({ nombre: '', correo: '', mensaje: '' })
+
+    const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        // ⚠️ Simulado por ahora: no hay endpoint de soporte en el backend todavía.
+        // Cuando exista (ej. POST /soporte), reemplaza esto por el axios.post real.
+        toast.success("Mensaje enviado. Te contactaremos pronto.")
+        setForm({ nombre: '', correo: '', mensaje: '' })
+    }
+
     return (
-        <footer className="bg-blue-900 dark:bg-gray-950 text-white mt-12">
+        <footer className="bg-gray-950 text-gray-300 py-12 px-6">
+            <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
 
-            <div className="container mx-auto px-6 py-12">
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center md:text-left">
-
-                    {/* Logo y descripción */}
-                    <div className="flex flex-col items-center md:items-start gap-3">
-                        <div className="flex items-center gap-3">
-                            <img src={logo} alt="EPN" className="w-12 h-12"/>
-                            <h2 className="text-2xl font-bold">Poli Rent</h2>
-                        </div>
-                        <p className="text-gray-300 text-sm leading-relaxed max-w-xs">
-                            Sistema de gestión de herramientas para estudiantes
-                            de la Escuela Politécnica Nacional.
-                        </p>
+                {/* Columna 1: Información institucional */}
+                <div>
+                    <div className="flex items-center gap-3 mb-4">
+                        <img src={logo} alt="EPN" className="w-10" />
+                        <h2 className="font-display text-xl font-bold text-white">EPN ToolRental</h2>
                     </div>
-
-                    {/* Sobre nosotros */}
-                    <div className="flex flex-col items-center md:items-start gap-3">
-                        <h3 className="font-bold text-lg border-b border-blue-700 pb-2 w-full text-center md:text-left">
-                            Sobre Nosotros
-                        </h3>
-                        <p className="text-gray-300 text-sm leading-relaxed">
-                            Somos estudiantes de la ESFOT comprometidos con 
-                            facilitar el acceso a herramientas tecnológicas 
-                            para toda la comunidad politécnica.
-                        </p>
-                    </div>
-
-                    {/* Contacto */}
-                    <div className="flex flex-col items-center md:items-start gap-3">
-                        <h3 className="font-bold text-lg border-b border-blue-700 pb-2 w-full text-center md:text-left">
-                            Contacto
-                        </h3>
-                        <ul className="space-y-2 text-gray-300 text-sm">
-                            <li>📍 Ladrón de Guevara E11-253, Quito</li>
-                            <li>📧 esfot@epn.edu.ec</li>
-                            <li>📞 (02) 297-6300</li>
-                        </ul>
-                    </div>
-
-                </div>
-
-                {/* Copyright */}
-                <div className="border-t border-blue-700 dark:border-gray-700 mt-10 pt-6 
-                                flex flex-col md:flex-row justify-between items-center gap-3">
-                    <p className="text-gray-400 text-sm">
-                        © 2025 Poli Rent - Escuela Politécnica Nacional
-                    </p>
-                    <p className="text-gray-500 text-xs">
-                        Todos los derechos reservados
+                    <ul className="space-y-2 text-sm">
+                        <li>🕗 Horario de atención: Lunes a Viernes, 08:00 – 16:00</li>
+                        <li>📍 Edificio N° 24, Planta Baja — Taller ESFOT</li>
+                        <li>📧 soporte.esfot@epn.edu.ec</li>
+                    </ul>
+                    <p className="text-gray-500 text-xs mt-6">
+                        © {new Date().getFullYear()} EPN ToolRental — Escuela Politécnica Nacional
                     </p>
                 </div>
 
+                {/* Columna 2: Formulario rápido de soporte */}
+                <div>
+                    <h3 className="font-display text-lg font-bold text-white mb-4">
+                        ¿Necesitas ayuda?
+                    </h3>
+                    <form onSubmit={handleSubmit} className="space-y-3">
+                        <input
+                            type="text"
+                            name="nombre"
+                            placeholder="Nombre"
+                            value={form.nombre}
+                            onChange={handleChange}
+                            required
+                            className="w-full rounded-lg bg-gray-900 border border-gray-800 px-4 py-2.5 text-sm
+                                       text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6B46C1]"
+                        />
+                        <input
+                            type="email"
+                            name="correo"
+                            placeholder="Correo institucional"
+                            value={form.correo}
+                            onChange={handleChange}
+                            required
+                            className="w-full rounded-lg bg-gray-900 border border-gray-800 px-4 py-2.5 text-sm
+                                       text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6B46C1]"
+                        />
+                        <textarea
+                            name="mensaje"
+                            rows={3}
+                            placeholder="Mensaje"
+                            value={form.mensaje}
+                            onChange={handleChange}
+                            required
+                            className="w-full rounded-lg bg-gray-900 border border-gray-800 px-4 py-2.5 text-sm
+                                       text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6B46C1]"
+                        />
+                        <button
+                            type="submit"
+                            className="w-full py-2.5 bg-[#6B46C1] text-white rounded-lg text-sm font-semibold
+                                       hover:bg-[#5b3aa8] transition-colors"
+                        >
+                            Enviar Mensaje
+                        </button>
+                    </form>
+                </div>
             </div>
         </footer>
     )
