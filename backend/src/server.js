@@ -7,7 +7,7 @@ import routerUsuario from './routers/usuario_routers.js';
 import swaggerDocs from './config/swagger.js'
 import fileUpload from "express-fileupload"
 import cloudinary from 'cloudinary'
-import routerProducto from './routers/usuario_routers.js';
+import routerProducto from './routers/producto_routers.js';
 
 // Inicializaciones
 const app = express()
