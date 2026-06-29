@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { MdDeleteForever, MdInfo, MdPublishedWithChanges } from "react-icons/x"; // Cambia "x" por "md" en tu entorno
+import { MdDeleteForever, MdInfo, MdPublishedWithChanges } from "react-icons/md"; // Cambia "x" por "md" en tu entorno
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
