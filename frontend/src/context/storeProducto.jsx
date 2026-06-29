@@ -27,7 +27,7 @@ const storeProducto = create((set) => ({
     // --- Listar catálogo (Público, no requiere token) ---
     listarProductos: async () => {
         try {
-            const respuesta = await axios.get(BASE_URL)
+            const respuesta = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/productos`)
             set({ productos: respuesta.data })
         } catch (error) {
             console.error(error)
@@ -50,7 +50,7 @@ const storeProducto = create((set) => ({
     registrarProducto: async (data) => {
         try {
             // data debe ser FormData si incluye imagen, o un objeto plano si no
-            const respuesta = await axios.post(BASE_URL, data, getAuthHeaders(data))
+            const respuesta = await axios.post(`${BASE_URL}/registro`, data, getAuthHeaders(data))
             toast.success(respuesta.data.msg || "Producto registrado exitosamente")
             return respuesta.data
         } catch (error) {
@@ -63,7 +63,7 @@ const storeProducto = create((set) => ({
     // --- Actualizar producto (Admin) ---
     actualizarProducto: async (id, data) => {
         try {
-            const respuesta = await axios.put(`${BASE_URL}/${id}`, data, getAuthHeaders(data))
+            const respuesta = await axios.put(`${BASE_URL}/actualizar/${id}`, data, getAuthHeaders(data))
             toast.success(respuesta.data.msg || "Producto actualizado exitosamente")
             return respuesta.data
         } catch (error) {
@@ -76,7 +76,7 @@ const storeProducto = create((set) => ({
     // --- Dar de baja producto (Admin) ---
     eliminarProducto: async (id) => {
         try {
-            const respuesta = await axios.delete(`${BASE_URL}/${id}`, getAuthHeaders())
+            const respuesta = await axios.delete(`${BASE_URL}/eliminar/${id}`, getAuthHeaders())
             toast.success(respuesta.data.msg || "Producto dado de baja exitosamente")
         } catch (error) {
             console.error(error)

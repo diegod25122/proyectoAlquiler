@@ -146,6 +146,21 @@ const listarProductos = async (req, res) => {
 }
 
 /* ============================================================
+   2.5. LISTAR PRODUCTOS PARA EL ADMIN (Dashboard completo)
+   ============================================================ */
+const listarProductosAdmin = async (req, res) => {
+    try {
+        const productos = await Producto.find()
+            .select("-createdAt -updatedAt -__v")
+            .populate("registradoPor", "_id nombre apellido")
+
+        return res.status(200).json(productos)
+    } catch (error) {
+        return manejarErrorProducto(error, res)
+    }
+}
+
+/* ============================================================
    3. DETALLE DE PRODUCTO (Público)
    ============================================================ */
 const detalleProducto = async (req, res) => {
@@ -241,6 +256,7 @@ const eliminarProducto = async (req, res) => {
 export {
     registrarProducto,
     listarProductos,
+    listarProductosAdmin,
     detalleProducto,
     actualizarProducto,
     eliminarProducto

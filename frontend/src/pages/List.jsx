@@ -16,7 +16,7 @@ const InventarioAdmin = () => {
                 
                 {/* Botón de Registro alineado a la derecha */}
                 <button
-                    onClick={() => navigate("/admin/producto/registro")}
+                    onClick={() => navigate("/dashboard/registrar-producto")}
                     className="mt-4 md:mt-0 flex items-center bg-purple-700 hover:bg-purple-800 text-white font-semibold px-4 py-2.5 rounded-lg shadow-md transition-all transform hover:-translate-y-0.5"
                 >
                     <MdAddCircleOutline className="mr-2 h-5 w-5" />

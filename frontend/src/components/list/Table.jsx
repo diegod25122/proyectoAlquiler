@@ -102,12 +102,12 @@ const Table = () => {
                                 </td>
                                 <td className="p-3 text-center whitespace-nowrap">
                                     <MdInfo 
-                                        onClick={() => navigate(`/admin/producto/${producto._id}`)}
+                                        onClick={() => navigate(`/dashboard/details/${producto._id}`)}
                                         title="Ver Detalle" 
                                         className="h-6 w-6 text-slate-700 cursor-pointer inline-block mr-3 hover:text-green-600"
                                     />
                                     <MdPublishedWithChanges 
-                                        onClick={() => navigate(`/admin/producto/editar/${producto._id}`)}
+                                        onClick={() => navigate(`/dashboard/update/${producto._id}`)}
                                         title="Actualizar / Editar" 
                                         className="h-6 w-6 text-slate-700 cursor-pointer inline-block mr-3 hover:text-blue-600"
                                     />
