@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Sidebar } from '../components/dashboard/Sidebar'
 import storeProfile from '../context/storeProfile'
 import storeAuth from '../context/storeAuth'
-import RegistrarHerramienta from '../components/create/RegistrarHerramienta'
+import RegistrarHerramienta from '../components/create/RegistrarProducto'
 
 const Dashboard = () => {
     const { user } = storeProfile()

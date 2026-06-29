@@ -20,7 +20,7 @@ import ProtectedRoute from './routers/ProtectedRoute'
 import { useEffect } from 'react'
 import storeProfile from './context/storeProfile'
 import storeAuth from './context/storeAuth'
-import RegistrarHerramienta from './components/create/RegistrarHerramienta'
+import RegistrarProducto from './components/create/RegistrarProducto'
 
 function App() {
   const { profile  } = storeProfile()
@@ -59,7 +59,7 @@ function App() {
                   <Route path='create' element={<Create />} />
                   <Route path='update/:id' element={<Update />} />
                   <Route path='chat' element={<Chat />} />
-                  <Route path="registrar-herramienta" element={<RegistrarHerramienta />} />
+                  <Route path="registrar-producto" element={<RegistrarProducto/>} />
                 </Route>
               </Routes>
             </ProtectedRoute>
