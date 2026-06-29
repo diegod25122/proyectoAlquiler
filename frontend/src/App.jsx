@@ -9,7 +9,6 @@ import { NotFound } from './pages/NotFound'
 import Dashboard from './layout/Dashboard'
 import Profile from './pages/Profile'
 import List from './pages/List'
-import Details from './pages/Details'
 import Create from './pages/Create'
 import Update from './pages/Update'
 import Chat from './pages/Chat'
@@ -55,7 +54,6 @@ function App() {
                   <Route index element={<Panel />} />
                   <Route path='profile' element={<Profile />} />
                   <Route path='list' element={<List />} />
-                  <Route path='details/:id' element={<Details />} />
                   <Route path='create' element={<Create />} />
                   <Route path='update/:id' element={<Update />} />
                   <Route path='chat' element={<Chat />} />
