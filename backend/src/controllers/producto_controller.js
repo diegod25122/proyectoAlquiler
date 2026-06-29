@@ -81,6 +81,7 @@ const manejarErrorProducto = (error, res) => {
 const registrarProducto = async (req, res) => {
     const { nombre, codigoInventario, descripcion, categoria, tipo, precio, stock, promptImagenIA } = req.body
 
+    // 1. Validar campos requeridos de texto
     const camposRequeridos = { nombre, codigoInventario, descripcion, categoria, tipo, stock }
     const camposFaltantes = Object.entries(camposRequeridos)
         .filter(([_, valor]) => valor === undefined || valor === null || valor === "")
@@ -94,15 +95,18 @@ const registrarProducto = async (req, res) => {
         return res.status(400).json({ msg: "Los productos consumibles requieren un precio mayor a 0" })
     }
 
-    if (req.files?.imagen && promptImagenIA) {
+    // Identificar si viene un archivo físico (compatible con Multer: req.file)
+    const archivoImagen = req.file; 
+
+    if (archivoImagen && promptImagenIA) {
         return res.status(400).json({ msg: "Elige una sola fuente de imagen: archivo o IA, no ambas" })
     }
 
     try {
         const nuevoProducto = new Producto({
-            nombre,
-            codigoInventario,
-            descripcion,
+            nombre: nombre.trim(),
+            codigoInventario: codigoInventario.trim().toUpperCase(),
+            descripcion: descripcion.trim(),
             categoria,
             tipo,
             precio: tipo === "Consumible" ? Number(precio) : 0,
@@ -110,26 +114,33 @@ const registrarProducto = async (req, res) => {
             registradoPor: req.usuarioHeader._id
         })
 
-        if (promptImagenIA) {
+        // 2. Procesar flujo de imagen según la fuente elegida
+        if (promptImagenIA && promptImagenIA.trim() !== "") {
             const buffer = await generarImagenIA(promptImagenIA)
             const { secure_url, public_id } = await subirBufferACloudinary(buffer)
             nuevoProducto.imagen = secure_url
             nuevoProducto.imagenID = public_id
             nuevoProducto.isGeneratedByIA = true
-        } else if (req.files?.imagen) {
-            const { secure_url, public_id } = await subirArchivoACloudinary(req.files.imagen.tempFilePath)
+            
+        } else if (archivoImagen) {
+            // Si usas Multer con almacenamiento en disco local (ej: carpeta uploads/)
+            // pasas archivoImagen.path. Si usas memoria buffer, archivoImagen.buffer
+            const { secure_url, public_id } = await subirArchivoACloudinary(archivoImagen.path)
             nuevoProducto.imagen = secure_url
             nuevoProducto.imagenID = public_id
+        } else {
+            // Imagen por defecto institucional por si no suben nada
+            nuevoProducto.imagen = "https://cdn-icons-png.flaticon.com/512/2618/2618671.png"
         }
 
         await nuevoProducto.save()
         return res.status(201).json({ msg: "✅ Producto registrado exitosamente", producto: nuevoProducto })
 
     } catch (error) {
+        console.error("❌ Error real en el controlador:", error); // Esto te ahorrará revisar Render a cada rato
         return manejarErrorProducto(error, res)
     }
 }
-
 /* ============================================================
    2. LISTAR PRODUCTOS (Público / Catálogo)
    ============================================================ */
