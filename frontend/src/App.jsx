@@ -8,7 +8,7 @@ import { Confirm } from './pages/Confirm'
 import { NotFound } from './pages/NotFound'
 import Dashboard from './layout/Dashboard'
 import Profile from './pages/Profile'
-import List from './pages/List'
+import InventarioAdmin from './pages/Inventario'
 import Details from './pages/Details'
 import Create from './pages/Create'
 import Update from './pages/Update'
@@ -54,7 +54,7 @@ function App() {
                 <Route element={<Dashboard />}>
                   <Route index element={<Panel />} />
                   <Route path='profile' element={<Profile />} />
-                  <Route path='list' element={<List />} />
+                  <Route path='inventario' element={<InventarioAdmin />} />
                   <Route path='details/:id' element={<Details />} />
                   <Route path='create' element={<Create />} />
                   <Route path='update/:id' element={<Update />} />
