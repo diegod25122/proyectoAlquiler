@@ -1,6 +1,7 @@
 // components/home/Catalog.jsx
 import { useState, useEffect, useMemo } from 'react'
-import { Sidebar } from '../catalog/Searchbar'
+import { Sidebar } from '../catalog/Sidebar'
+import {Searchbar} from '../catalog/Searchbar'
 import { ToolCard } from '../catalog/ToolCard'
 import storeProducto from '../../context/storeProducto'
 
