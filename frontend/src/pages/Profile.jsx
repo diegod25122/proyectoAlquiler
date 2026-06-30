@@ -24,7 +24,9 @@ const Profile = () => {
                 {
                     user && user.rol == 'Usuario'
                     ? (
+                        <div className="w-full max-w-md">
                         <CardProfileOwner />
+                        </div>
                     ) : (
                         <div className='flex justify-around gap-x-8 flex-wrap gap-y-8 md:flex-nowrap'>
                             {/* Formulario perfil */}
