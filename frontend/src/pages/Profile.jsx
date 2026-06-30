@@ -24,8 +24,10 @@ const Profile = () => {
                 {
                     user && user.rol == 'Usuario'
                     ? (
+                          <div className="flex justify-center">
                         <div className="w-full max-w-md">
                         <CardProfileOwner />
+                        </div>
                         </div>
                     ) : (
                         <div className='flex justify-around gap-x-8 flex-wrap gap-y-8 md:flex-nowrap'>
