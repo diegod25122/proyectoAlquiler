@@ -12,7 +12,7 @@ export const CardProfileOwner = () => {
                 <img src="https://cdn-icons-png.flaticon.com/512/4715/4715329.png" alt="img-client" className="m-auto " width={120} height={120} />
             </div>
             <div className="self-start">
-                <b>Nombre:</b><p className="inline-block ml-3">{user?.nombre}</p>
+                <b>Nombre:</b><p className="inline-block ml-3">{user?.nombre}-{user.apellido}</p>
             </div >
             <div className="self-start">
                 <b>Cédula:</b><p className="inline-block ml-3">{user?.cedula}</p>
@@ -24,7 +24,7 @@ export const CardProfileOwner = () => {
                 <b>Celular:</b><p className="inline-block ml-3">{user?.celular}</p>
             </div>
             <div className="self-start">
-                <b>Nombre de la mascota:</b><p className="inline-block ml-3">{user?.nombreMascota}</p>
+                <b>Facultad:</b><p className="inline-block ml-3">{user?.facultad}</p>
             </div>
         </div>
     )
