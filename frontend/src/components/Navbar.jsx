@@ -12,9 +12,6 @@ export const Navbar = () => {
     const carritoRef = useRef(null)
     const navigate = useNavigate()
 
-    // ⚠️ Asumo la misma forma de localStorage que usas en getAuthHeaders()
-    // de storeProfile (JSON con state.token). Si tu storeAuth guarda el rol
-    // en otro campo, ajusta esta lectura.
     const sesion = JSON.parse(localStorage.getItem("auth-token") || "null")
     const estaLogueado = Boolean(sesion?.state?.token)
     const esAdmin = sesion?.state?.rol === "Admin"
@@ -44,7 +41,7 @@ export const Navbar = () => {
                 <Link to="/" className="flex items-center gap-3">
                     <img src={sello} alt="Sello EPN" className="w-10" />
                     <span className="font-display text-lg font-bold text-[#0F2A4A] dark:text-white tracking-tight">
-                        EPN ToolRental
+                        PoliRent
                     </span>
                 </Link>
 

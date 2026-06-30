@@ -24,7 +24,7 @@ const storeProducto = create((set) => ({
     productos: [],
     productoSeleccionado: null,
 
-    // --- Listar catálogo (Público, no requiere token) ---
+    // Listar catálogo (Público)
     listarProductos: async () => {
         try {
             const respuesta = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/productos`)
@@ -35,7 +35,7 @@ const storeProducto = create((set) => ({
         }
     },
 
-    // --- Detalle de un producto (Público) ---
+    // Detalle de un producto (Público) 
     detalleProducto: async (id) => {
         try {
             const respuesta = await axios.get(`${BASE_URL}/${id}`)
@@ -46,7 +46,7 @@ const storeProducto = create((set) => ({
         }
     },
 
-    // --- Registrar producto (Admin) ---
+    //Registrar producto
     registrarProducto: async (data) => {
         try {
             // data debe ser FormData si incluye imagen, o un objeto plano si no
@@ -56,11 +56,11 @@ const storeProducto = create((set) => ({
         } catch (error) {
             console.error(error)
             toast.error(error.response?.data?.msg || "Ocurrió un error al registrar el producto")
-            throw error // re-lanzamos para que el componente sepa que falló (ej. no cerrar el modal)
+            throw error 
         }
     },
 
-    // --- Actualizar producto (Admin) ---
+    // Actualizar producto
     actualizarProducto: async (id, data) => {
         try {
             const respuesta = await axios.put(`${BASE_URL}/actualizar/${id}`, data, getAuthHeaders(data))
@@ -73,7 +73,7 @@ const storeProducto = create((set) => ({
         }
     },
 
-    // --- Dar de baja producto (Admin) ---
+    //Dar de baja producto
     eliminarProducto: async (id) => {
         try {
             const respuesta = await axios.delete(`${BASE_URL}/eliminar/${id}`, getAuthHeaders())

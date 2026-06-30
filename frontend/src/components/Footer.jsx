@@ -9,7 +9,6 @@ export const Footer = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        // ⚠️ Simulado por ahora: no hay endpoint de soporte en el backend todavía.
         // Cuando exista (ej. POST /soporte), reemplaza esto por el axios.post real.
         toast.success("Mensaje enviado. Te contactaremos pronto.")
         setForm({ nombre: '', correo: '', mensaje: '' })

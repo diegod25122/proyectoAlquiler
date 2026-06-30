@@ -24,7 +24,8 @@ export const Sidebar = () => {
         { to: '/dashboard', label: 'Dashboard', icon: <MdDashboard className="h-5 w-5" /> },
         { to: '/dashboard/list', label: 'Inventario General', icon: <MdInventory className="h-5 w-5" /> },
         { to: '/dashboard/registrar-producto', label: 'Registrar Producto', icon: <MdAddBox className="h-5 w-5" /> },
-        { to: '/dashboard/profile', label: 'Perfil', icon: <MdPerson className="h-5 w-5" /> }
+        { to: '/dashboard/profile', label: 'Perfil', icon: <MdPerson className="h-5 w-5" /> },
+        {to: '/dashboard/usuarios', label: 'Usuarios', icon: <MdPerson className='h-5 w-5'/>},
     ]
 
     return (
