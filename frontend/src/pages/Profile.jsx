@@ -22,7 +22,7 @@ const Profile = () => {
                     </p>
                 </div>
                 {
-                    user && user.rol == 'paciente'
+                    user && user.rol == 'Usuario'
                     ? (
                         <CardProfileOwner />
                     ) : (
