@@ -61,7 +61,13 @@ const UsuarioSchema= new Schema({
         type:String,
         enum:["Admin", "Usuario"],
         default:"Usuario"
+    },
+    reservas: [
+    {
+        type: Schema.Types.ObjectId,
+        ref: "Reserva"
     }
+]
 
 },{
     timestamps:true

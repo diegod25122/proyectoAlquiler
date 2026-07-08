@@ -61,7 +61,13 @@ const ProductoSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Usuario', // Relación con el ID del Administrador que lo creó, excelente para auditorias
         required: true 
+    },
+    reservas: [
+    {
+        type: Schema.Types.ObjectId,
+        ref: "Reserva"
     }
+]
 }, {
     timestamps: true
 });

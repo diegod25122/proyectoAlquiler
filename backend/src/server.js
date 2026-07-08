@@ -8,7 +8,7 @@ import swaggerDocs from './config/swagger.js'
 import fileUpload from "express-fileupload"
 import cloudinary from 'cloudinary'
 import routerProducto from './routers/producto_routers.js';
-
+import routerReserva from './routers/reserva_routers.js';
 // Inicializaciones
 const app = express()
 dotenv.config()
@@ -61,6 +61,9 @@ app.get('/health', (req, res) => {
 // Rutas para usuarios
 app.use('/api', routerUsuario)
 app.use('/api', routerProducto)
+
+//ruta para reservas
+app.use('/api', routerReserva)
 
 // Manejo de una ruta que no sea encontrada
 app.use((req,res)=>res.status(404).send("Endpoint no encontrado - 404"))
