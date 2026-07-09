@@ -3,7 +3,7 @@ import { CardProfile } from '../components/profile/CardProfile'
 import FormProfile from '../components/profile/FormProfile'
 import useDarkMode from '../hooks/useDarkMode'
 import storeProfile from '../context/storeProfile'
-import { CardProfileOwner } from '../components/profile/CardProfileOwner'
+import PerfilUsuario from '../components/profile/PerfilUsuario'
 const Profile = () => {
     // Obtenemos el estado del modo oscuro de tu hook
     const isDarkMode = useDarkMode(state => state.isDarkMode)
@@ -24,11 +24,7 @@ const Profile = () => {
                 {
                     user && user.rol == 'Usuario'
                     ? (
-                          <div className="flex justify-center">
-                        <div className="w-full max-w-md">
-                        <CardProfileOwner />
-                        </div>
-                        </div>
+                        <PerfilUsuario />
                     ) : (
                         <div className='flex justify-around gap-x-8 flex-wrap gap-y-8 md:flex-nowrap'>
                             {/* Formulario perfil */}

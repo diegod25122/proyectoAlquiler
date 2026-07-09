@@ -1,0 +1,337 @@
+.perfil-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #1f2937;
+  background: #f5f6fa;
+  box-sizing: border-box;
+}
+
+.tarjeta {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 1.5rem;
+}
+
+.tarjeta h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 1.25rem;
+}
+
+.icono-titulo {
+  color: #7c3aed;
+}
+
+/* Bienvenida */
+.bienvenida {
+  background: linear-gradient(135deg, #ede9fe 0%, #e0e7ff 100%);
+  border: none;
+}
+
+.bienvenida h1 {
+  margin: 0 0 6px;
+  font-size: 24px;
+}
+
+.bienvenida p {
+  margin: 0;
+  color: #4b5563;
+  font-size: 14px;
+}
+
+/* Layout de 2 columnas */
+.grid-dos-columnas {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 1.25rem;
+}
+
+@media (max-width: 900px) {
+  .grid-dos-columnas {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Información personal */
+.info-personal {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+}
+
+.avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+}
+
+.btn-editar-avatar {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #7c3aed;
+  color: #fff;
+  border: 2px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.info-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.info-fila {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.icono-fila {
+  margin-top: 3px;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.info-fila .label {
+  display: block;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.info-fila p {
+  margin: 2px 0 0;
+  font-weight: 500;
+}
+
+/* Botones */
+.btn-primario {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1px solid #7c3aed;
+  color: #7c3aed;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-primario:hover {
+  background: #f5f3ff;
+}
+
+.btn-secundario {
+  border: 1px solid #d1d5db;
+  background: #fff;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-secundario:hover {
+  background: #f9fafb;
+}
+
+/* Acciones rápidas */
+.grid-acciones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 500px) {
+  .grid-acciones {
+    grid-template-columns: 1fr;
+  }
+}
+
+.accion-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f9fafb;
+  border: 1px solid #eef0f3;
+  border-radius: 10px;
+  padding: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.accion-card:hover {
+  border-color: #d1d5db;
+}
+
+.accion-icono {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.accion-texto {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.accion-texto strong {
+  font-size: 13px;
+}
+
+.accion-texto small {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.accion-flecha {
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+/* Resumen de actividad */
+.grid-resumen {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 800px) {
+  .grid-resumen {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.resumen-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f9fafb;
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.resumen-icono {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.resumen-item strong {
+  display: block;
+  font-size: 18px;
+}
+
+.resumen-item p {
+  margin: 2px 0 0;
+  font-size: 13px;
+}
+
+.resumen-item small {
+  color: #9ca3af;
+  font-size: 11px;
+}
+
+/* Colores compartidos */
+.color-morado .accion-icono,
+.color-morado .resumen-icono {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+
+.color-verde .accion-icono,
+.color-verde .resumen-icono {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.color-naranja .accion-icono,
+.color-naranja .resumen-icono {
+  background: #ffedd5;
+  color: #ea580c;
+}
+
+.color-azul .accion-icono,
+.color-azul .resumen-icono {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+/* Seguridad de la cuenta */
+.seguridad-fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f2f4;
+  font-size: 14px;
+}
+
+.seguridad-fila:last-child {
+  border-bottom: none;
+}
+
+.seguridad-fila > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4b5563;
+}
+
+.valor-secreto {
+  letter-spacing: 2px;
+  color: #6b7280;
+}
+
+.badge-exito {
+  background: #dcfce7;
+  color: #16a34a;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+/* Panel de edición */
+.panel-edicion {
+  border-top: 1px solid #e5e7eb;
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
