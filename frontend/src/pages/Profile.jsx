@@ -17,9 +17,6 @@ const Profile = () => {
                         Perfil
                     </h1>
                     <hr className='my-4 border-gray-200 dark:border-gray-750' />
-                    <p className='text-gray-600 dark:text-gray-400'>
-                        Este módulo te permite gestionar el perfil del usuario
-                    </p>
                 </div>
                 {
                     user && user.rol == 'Usuario'

@@ -31,19 +31,38 @@
 
 /* Bienvenida */
 .bienvenida {
-  background: linear-gradient(135deg, #ede9fe 0%, #e0e7ff 100%);
+  background: linear-gradient(135deg, #6d5bd0 0%, #4c63d2 100%);
   border: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: #ffffff;
 }
 
 .bienvenida h1 {
   margin: 0 0 6px;
-  font-size: 24px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
 }
 
 .bienvenida p {
   margin: 0;
-  color: #4b5563;
+  color: #e0e0ff;
   font-size: 14px;
+}
+
+.bienvenida-ilustracion {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 600px) {
+  .bienvenida-ilustracion {
+    display: none;
+  }
 }
 
 /* Layout de 2 columnas */
@@ -81,6 +100,13 @@
   align-items: center;
   justify-content: center;
   color: #6b7280;
+  overflow: hidden;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .btn-editar-avatar {
@@ -294,6 +320,64 @@
   color: #2563eb;
 }
 
+/* Tabla de pagos */
+.tabla-wrapper {
+  overflow-x: auto;
+}
+
+.tabla-pagos {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.tabla-pagos th {
+  text-align: left;
+  padding: 10px 12px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  color: #6b7280;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tabla-pagos td {
+  padding: 12px;
+  border-bottom: 1px solid #f1f2f4;
+}
+
+.tabla-pagos tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tabla-vacia {
+  text-align: center;
+  color: #9ca3af;
+  padding: 2rem !important;
+}
+
+.badge-pagado {
+  background: #dcfce7;
+  color: #16a34a;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.badge-pendiente {
+  background: #fef9c3;
+  color: #ca8a04;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
 /* Seguridad de la cuenta */
 .seguridad-fila {
   display: flex;
@@ -329,9 +413,191 @@
   border-radius: 6px;
 }
 
-/* Panel de edición */
-.panel-edicion {
-  border-top: 1px solid #e5e7eb;
-  margin-top: 1rem;
-  padding-top: 1rem;
+/* Modal de edición */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-contenido {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.modal-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 1;
+}
+
+.modal-cabecera h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.modal-cerrar {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+.modal-cerrar:hover {
+  color: #1f2937;
+  background: #f3f4f6;
+}
+
+.modal-cuerpo {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Dark mode — .dark class is on the parent div in Profile.jsx */
+.dark .perfil-page {
+  background: #111827;
+  color: #e5e7eb;
+}
+
+.dark .tarjeta {
+  background: #1f2937;
+  border-color: #374151;
+  color: #e5e7eb;
+}
+
+.dark .tarjeta h2 {
+  color: #f3f4f6;
+}
+
+.dark .bienvenida {
+  background: linear-gradient(135deg, #4c1d95 0%, #1e3a8a 100%);
+}
+
+.dark .resumen-item {
+  background: #111827;
+  border-color: #374151;
+}
+
+.dark .accion-card {
+  background: #111827;
+  border-color: #374151;
+  color: #e5e7eb;
+}
+
+.dark .accion-card:hover {
+  border-color: #6b7280;
+}
+
+.dark .accion-texto small {
+  color: #9ca3af;
+}
+
+.dark .tabla-pagos th {
+  background: #111827;
+  color: #9ca3af;
+  border-color: #374151;
+}
+
+.dark .tabla-pagos td {
+  border-color: #374151;
+  color: #e5e7eb;
+}
+
+.dark .tabla-vacia {
+  color: #6b7280;
+}
+
+.dark .info-fila .label {
+  color: #6b7280;
+}
+
+.dark .info-fila p {
+  color: #e5e7eb;
+}
+
+.dark .icono-fila {
+  color: #6b7280;
+}
+
+.dark .seguridad-fila {
+  border-color: #374151;
+}
+
+.dark .seguridad-fila > span:first-child {
+  color: #9ca3af;
+}
+
+.dark .valor-secreto {
+  color: #9ca3af;
+}
+
+.dark .btn-primario {
+  background: #1f2937;
+  color: #a78bfa;
+  border-color: #a78bfa;
+}
+
+.dark .btn-primario:hover {
+  background: #374151;
+}
+
+.dark .btn-secundario {
+  background: #1f2937;
+  color: #e5e7eb;
+  border-color: #374151;
+}
+
+.dark .btn-secundario:hover {
+  background: #374151;
+}
+
+.dark .avatar {
+  background: #374151;
+  color: #9ca3af;
+}
+
+.dark .modal-contenido {
+  background: #1f2937;
+  color: #e5e7eb;
+}
+
+.dark .modal-cabecera {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.dark .modal-cabecera h3 {
+  color: #f3f4f6;
+}
+
+.dark .modal-cerrar {
+  color: #9ca3af;
+}
+
+.dark .modal-cerrar:hover {
+  background: #374151;
+  color: #e5e7eb;
 }
