@@ -1,40 +1,3 @@
-<<<<<<< HEAD
-/* eslint-disable no-unused-vars */
-import { useEffect, useState } from "react"
-import TableTreatments from "../components/treatments/Table"
-import ModalTreatments from "../components/treatments/Modal"
-
-
-import { useParams } from "react-router"
-import {useFetch} from "../hooks/useFetch"
-
-
-const Details = () => {
-    
-    const { id } = useParams()
-    const [patient, setPatient] = useState({})
-    const  {fetchDataBackend}  = useFetch()
-    const [treatments, setTreatments] = useState(["demo"])
-
-    const formatDate = (date) => {
-        return new Date(date).toLocaleDateString('es-EC', { dateStyle: 'long', timeZone: 'UTC' })
-    }
-
-    useEffect(() => {
-        const listPatient = async () => {
-            const url = `${import.meta.env.VITE_BACKEND_URL}/paciente/${id}`
-            const storedUser = JSON.parse(localStorage.getItem("auth-token"))
-            const headers= {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${storedUser.state.token}`
-            }
-            const response = await fetchDataBackend(url, null, "GET", headers)
-            setPatient(response)
-        }
-        listPatient()
-    }, [])
-
-=======
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
 import axios from 'axios'
@@ -67,7 +30,6 @@ const Details = () => {
             console.error(error)
         }
     }
->>>>>>> 1bf228a (Agrega modulo de prestamos con pago Stripe e IA)
 
     useEffect(() => {
         const fetchHerramienta = async () => {
@@ -100,70 +62,20 @@ const Details = () => {
                             <li className="text-md text-gray-00 mt-4 font-bold text-xl">Datos de la herramienta</li>
 
                             <ul className="pl-5">
-<<<<<<< HEAD
-
-                                <li className="text-md mt-2">
-                                    <span className="text-gray-600 font-bold">Cédula: {patient?.cedulaPropietario}</span>
-                                </li>
-
-                                <li className="text-md mt-2">
-                                    <span className="text-gray-600 font-bold">Nombres completos: {patient?.nombrePropietario}</span>
-                                </li>
-
-                                <li className="text-md mt-2">
-                                    <span className="text-gray-600 font-bold">Correo electrónico: {patient?.emailPropietario}</span>
-                                </li>
-
-                                <li className="text-md mt-2">
-                                <span className="text-gray-600 font-bold">Celular: {patient?.celularPropietario}</span>
-                                </li>
-
-                            </ul>
-
-
-
-                            <li className="text-md text-gray-00 mt-4 font-bold text-xl">Datos de la mascota</li>
-
-
-                            {/* Datos del paciente */}
-                            <ul className="pl-5">
-
-                                <li className="text-md mt-2">
-                                    <span className="text-gray-600 font-bold">Nombre: {patient?.nombreMascota}</span>
-=======
                                 <li className="text-md mt-2">
                                     <span className="text-gray-600 font-bold">Nombre: </span>
                                     {herramienta?.nombre}
->>>>>>> 1bf228a (Agrega modulo de prestamos con pago Stripe e IA)
                                 </li>
                                 <li className="text-md mt-2">
-<<<<<<< HEAD
-                                    <span className="text-gray-600 font-bold">Tipo: {patient?.tipoMascota}</span>
-=======
                                     <span className="text-gray-600 font-bold">Código de inventario: </span>
                                     {herramienta?.codigoInventario}
->>>>>>> 1bf228a (Agrega modulo de prestamos con pago Stripe e IA)
                                 </li>
                                 <li className="text-md mt-2">
-<<<<<<< HEAD
-                                    <span className="text-gray-600 font-bold">Fecha de nacimiento: {formatDate(patient?.fechaNacimientoMascota)}</span>
-=======
                                     <span className="text-gray-600 font-bold">Descripción: </span>
                                     {herramienta?.descripcion}
->>>>>>> 1bf228a (Agrega modulo de prestamos con pago Stripe e IA)
                                 </li>
                                 <li className="text-md mt-2">
                                     <span className="text-gray-600 font-bold">Estado: </span>
-<<<<<<< HEAD
-                                    <span className="bg-blue-100 text-green-500 text-xs font-medium 
-                                        mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
-                                    {patient?.estadoMascota && "activo"}
-                                    </span>
-                                </li>
-
-                                <li className="text-md text-gray-00 mt-4">
-                                    <span className="text-gray-600 font-bold">Observación: {patient?.detalleMascota}</span>
-=======
                                     <span className={`bg-blue-100 text-xs font-medium mr-2 px-2.5 py-0.5 rounded ${
                                         herramienta?.estado ? 'text-green-500' : 'text-red-500'
                                     }`}>
@@ -181,7 +93,6 @@ const Details = () => {
                                 <li className="text-md mt-2">
                                     <span className="text-gray-600 font-bold">Registrado por: </span>
                                     {herramienta?.registradoPor?.nombre} {herramienta?.registradoPor?.apellido}
->>>>>>> 1bf228a (Agrega modulo de prestamos con pago Stripe e IA)
                                 </li>
                             </ul>
 
@@ -190,15 +101,11 @@ const Details = () => {
 
                     {/* Imagen lateral */}
                     <div>
-<<<<<<< HEAD
-                        <img src={patient?.avatarMascota || patient?.avatarMascotaIA} alt="dogandcat" className='h-80 w-80 rounded-full'/>
-=======
                         <img
                             src={herramienta?.imagen || 'https://cdn-icons-png.flaticon.com/512/2138/2138440.png'}
                             alt={herramienta?.nombre || 'herramienta'}
                             className='h-80 w-80 object-cover rounded-lg'
                         />
->>>>>>> 1bf228a (Agrega modulo de prestamos con pago Stripe e IA)
                     </div>
                 </div>
 
