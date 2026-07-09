@@ -34,7 +34,7 @@ const Details = () => {
     useEffect(() => {
         const fetchHerramienta = async () => {
             try {
-                const url = `${import.meta.env.VITE_BACKEND_URL}/herramienta/${id}`
+                const url = `${import.meta.env.VITE_BACKEND_URL}/producto/${id}`
                 const { data } = await axios.get(url, getAuthHeaders())
                 setHerramienta(data)
             } catch (error) {

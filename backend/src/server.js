@@ -9,7 +9,6 @@ import fileUpload from "express-fileupload"
 import cloudinary from 'cloudinary'
 import routerProducto from './routers/producto_routers.js';
 import routerReserva from './routers/reserva_routers.js';
-import routerHerramientas from './routers/herramienta_routes.js'
 import routerPrestamos from './routers/prestamo_routes.js'
 
 // Inicializaciones
@@ -67,9 +66,6 @@ app.use('/api', routerProducto)
 
 //ruta para reservas
 app.use('/api', routerReserva)
-
-// Rutas para herramientas
-app.use('/api',routerHerramientas)
 
 // Rutas para prestamos
 app.use('/api',routerPrestamos)

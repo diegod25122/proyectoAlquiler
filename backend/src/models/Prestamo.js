@@ -3,7 +3,7 @@ import mongoose, { Schema, model } from 'mongoose'
 const prestamoSchema = new Schema({
     herramienta: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Herramienta',
+        ref: 'Producto',
         required: true
     },
     usuario: {
