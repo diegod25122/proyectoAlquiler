@@ -9,6 +9,9 @@ import fileUpload from "express-fileupload"
 import cloudinary from 'cloudinary'
 import routerProducto from './routers/producto_routers.js';
 import routerReserva from './routers/reserva_routers.js';
+import routerHerramientas from './routers/herramienta_routes.js'
+import routerPrestamos from './routers/prestamo_routes.js'
+
 // Inicializaciones
 const app = express()
 dotenv.config()
@@ -19,7 +22,7 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
 })
-// Configuraciones 
+// Configuraciones
 // CORS Configuration
 const corsOptions = {
     origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [
@@ -32,7 +35,7 @@ const corsOptions = {
     credentials: true
 }
 
-// Middlewares 
+// Middlewares
 app.use(cors(corsOptions))
 app.use(express.json())
 app.use(fileUpload({
@@ -41,14 +44,14 @@ app.use(fileUpload({
     createParentPath: true,
 }))
 
-swaggerDocs(app) 
+swaggerDocs(app)
 
 // Variables globales
 app.set('port',process.env.PORT || 3000)
 
 
 
-// Rutas 
+// Rutas
 
 // Ruta principal
 app.get('/',(req,res)=>res.send("Server on"))
@@ -64,6 +67,12 @@ app.use('/api', routerProducto)
 
 //ruta para reservas
 app.use('/api', routerReserva)
+
+// Rutas para herramientas
+app.use('/api',routerHerramientas)
+
+// Rutas para prestamos
+app.use('/api',routerPrestamos)
 
 // Manejo de una ruta que no sea encontrada
 app.use((req,res)=>res.status(404).send("Endpoint no encontrado - 404"))

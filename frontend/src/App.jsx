@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Route, Routes } from 'react-router'
 import { Home } from './pages/Home'
 import Login from './pages/Login'
@@ -9,6 +8,7 @@ import { NotFound } from './pages/NotFound'
 import Dashboard from './layout/Dashboard'
 import Profile from './pages/Profile'
 import List from './pages/List'
+import Details from './pages/Details'
 import Create from './pages/Create'
 import Update from './pages/Update'
 import Chat from './pages/Chat'
@@ -16,6 +16,7 @@ import Reset from './pages/Reset'
 import Panel from './pages/Panel'
 import PublicRoute from './routers/PublicRoute'
 import ProtectedRoute from './routers/ProtectedRoute'
+import PrivateRouteWithRole from './routers/PrivateRouteWithRole'
 import { useEffect } from 'react'
 import storeProfile from './context/storeProfile'
 import storeAuth from './context/storeAuth'
@@ -54,8 +55,9 @@ function App() {
                   <Route index element={<Panel />} />
                   <Route path='profile' element={<Profile />} />
                   <Route path='list' element={<List />} />
-                  <Route path='create' element={<Create />} />
-                  <Route path='update/:id' element={<Update />} />
+                  <Route path='details/:id' element={<Details />} />
+                  <Route path='create' element={<PrivateRouteWithRole><Create /></PrivateRouteWithRole>} />
+                  <Route path='update/:id' element={<PrivateRouteWithRole><Update /></PrivateRouteWithRole>} />
                   <Route path='chat' element={<Chat />} />
                   <Route path="registrar-producto" element={<RegistrarProducto/>} />
                 </Route>
