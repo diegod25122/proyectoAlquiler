@@ -210,8 +210,7 @@ const RegistrarProducto = () => {
 
                 {/* COLUMNA DERECHA - Inventario y Precio + Imagen */}
                 <div className="lg:col-span-1 space-y-6">
-
-                    {/* Sección: Imagen del Producto */}
+                                        {/* Sección: Imagen del Producto */}
                     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
                             Imagen del producto
@@ -283,9 +282,7 @@ const RegistrarProducto = () => {
                             JPG, PNG, WebP. Máx. 5MB
                         </p>
                     </div>
-                </div>
-
-                                    {/* Sección: Inventario y Precio */}
+                    {/* Sección: Inventario y Precio */}
                     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
                         <div className="flex items-center gap-2 mb-6">
                             <div className="w-6 h-6 text-purple-600">💰</div>
@@ -338,9 +335,71 @@ const RegistrarProducto = () => {
                             </div>
                         )}
                     </div>
-
+                </div>
             </div>
 
+            {/* Sección: Configuración Adicional */}
+            <div className="max-w-7xl mx-auto bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 mb-8">
+                <div className="flex items-center gap-2 mb-6">
+                    <div className="w-6 h-6 text-gray-600 dark:text-gray-400">⚙️</div>
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+                        Configuración Adicional
+                    </h2>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {/* Generado con IA */}
+                    <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                                ¿Generado con IA?
+                            </label>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                Marcar si el producto fue generado con IA
+                            </p>
+                        </div>
+                        <input
+                            type="checkbox"
+                            className="w-5 h-5 accent-blue-600 cursor-pointer"
+                            {...register("generadoConIA")}
+                        />
+                    </div>
+
+                    {/* Estado del Producto */}
+                    <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                                Estado del producto
+                            </label>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                {estado ? "Activo (visible)" : "Inactivo (oculto)"}
+                            </p>
+                        </div>
+                        <div className="relative w-12 h-7">
+                            <input
+                                type="checkbox"
+                                className="sr-only peer"
+                                {...register("estado")}
+                            />
+                            <div className="w-full h-full bg-gray-300 dark:bg-gray-700 peer-checked:bg-blue-600 rounded-full transition-colors cursor-pointer peer"></div>
+                            <div className="absolute top-1 left-1 w-5 h-5 bg-white rounded-full shadow-md peer-checked:translate-x-5 transition-transform"></div>
+                        </div>
+                    </div>
+
+                    {/* Registrado por */}
+                    <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                            Registrado por
+                        </label>
+                        <p className="text-sm text-gray-700 dark:text-gray-300">
+                            Jairo Maigua (Administrador)
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            Usuario que registra el producto
+                        </p>
+                    </div>
+                </div>
+            </div>
 
             {/* Botones de Acción */}
             <div className="max-w-7xl mx-auto flex gap-3 justify-end">
