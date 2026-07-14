@@ -210,60 +210,6 @@ const RegistrarProducto = () => {
 
                 {/* COLUMNA DERECHA - Inventario y Precio + Imagen */}
                 <div className="lg:col-span-1 space-y-6">
-                    
-                    {/* Sección: Inventario y Precio */}
-                    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
-                        <div className="flex items-center gap-2 mb-6">
-                            <div className="w-6 h-6 text-purple-600">💰</div>
-                            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-                                Inventario y Precio
-                            </h2>
-                        </div>
-
-                        {/* Stock */}
-                        <div className="mb-5">
-                            <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">
-                                Stock disponible <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="number"
-                                placeholder="Ej: 5"
-                                min="0"
-                                className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 py-3 px-4 text-gray-700 dark:text-white bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                {...register("stock", { 
-                                    required: "El stock es obligatorio", 
-                                    min: { value: 0, message: "El stock mínimo permitido es 0 unidades" } 
-                                })}
-                            />
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Cantidad disponible en inventario (mínimo 0)</p>
-                            {errors.stock && <p className="text-red-600 text-sm mt-1.5">{errors.stock.message}</p>}
-                        </div>
-
-                        {/* Precio Condicional */}
-                        {tipoSeleccionado === "Consumible" && (
-                            <div className="mb-5">
-                                <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">
-                                    Precio unitario <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <span className="absolute left-4 top-3.5 text-gray-500 dark:text-gray-400 font-semibold">$</span>
-                                    <input
-                                        type="number"
-                                        step="0.01"
-                                        placeholder="0.00"
-                                        min="0.01"
-                                        className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 py-3 pl-8 pr-4 text-gray-700 dark:text-white bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                        {...register("precio", { 
-                                            required: "El precio es obligatorio para artículos consumibles",
-                                            min: { value: 0.01, message: "El precio debe ser un valor positivo mayor a 0" }
-                                        })}
-                                    />
-                                </div>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Precio de venta al público</p>
-                                {errors.precio && <p className="text-red-600 text-sm mt-1.5">{errors.precio.message}</p>}
-                            </div>
-                        )}
-                    </div>
 
                     {/* Sección: Imagen del Producto */}
                     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
@@ -340,68 +286,59 @@ const RegistrarProducto = () => {
                 </div>
             </div>
 
-            {/* Sección: Configuración Adicional */}
-            <div className="max-w-7xl mx-auto bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 mb-8">
-                <div className="flex items-center gap-2 mb-6">
-                    <div className="w-6 h-6 text-gray-600 dark:text-gray-400">⚙️</div>
-                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-                        Configuración Adicional
-                    </h2>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Generado con IA */}
-                    <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                        <div>
-                            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                                ¿Generado con IA?
-                            </label>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                                Marcar si el producto fue generado con IA
-                            </p>
+                    {/* Sección: Inventario y Precio */}
+                    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
+                        <div className="flex items-center gap-2 mb-6">
+                            <div className="w-6 h-6 text-purple-600">💰</div>
+                            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+                                Inventario y Precio
+                            </h2>
                         </div>
-                        <input
-                            type="checkbox"
-                            className="w-5 h-5 accent-blue-600 cursor-pointer"
-                            {...register("generadoConIA")}
-                        />
-                    </div>
 
-                    {/* Estado del Producto */}
-                    <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                        <div>
-                            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                                Estado del producto
+                        {/* Stock */}
+                        <div className="mb-5">
+                            <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                Stock disponible <span className="text-red-500">*</span>
                             </label>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                                {estado ? "Activo (visible)" : "Inactivo (oculto)"}
-                            </p>
-                        </div>
-                        <div className="relative w-12 h-7">
                             <input
-                                type="checkbox"
-                                className="sr-only peer"
-                                {...register("estado")}
+                                type="number"
+                                placeholder="Ej: 5"
+                                min="0"
+                                className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 py-3 px-4 text-gray-700 dark:text-white bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                {...register("stock", { 
+                                    required: "El stock es obligatorio", 
+                                    min: { value: 0, message: "El stock mínimo permitido es 0 unidades" } 
+                                })}
                             />
-                            <div className="w-full h-full bg-gray-300 dark:bg-gray-700 peer-checked:bg-blue-600 rounded-full transition-colors cursor-pointer peer"></div>
-                            <div className="absolute top-1 left-1 w-5 h-5 bg-white rounded-full shadow-md peer-checked:translate-x-5 transition-transform"></div>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Cantidad disponible en inventario (mínimo 0)</p>
+                            {errors.stock && <p className="text-red-600 text-sm mt-1.5">{errors.stock.message}</p>}
                         </div>
-                    </div>
 
-                    {/* Registrado por */}
-                    <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                            Registrado por
-                        </label>
-                        <p className="text-sm text-gray-700 dark:text-gray-300">
-                            Jairo Maigua (Administrador)
-                        </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            Usuario que registra el producto
-                        </p>
+                        {/* Precio Condicional */}
+                        {tipoSeleccionado === "Consumible" && (
+                            <div className="mb-5">
+                                <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                    Precio unitario <span className="text-red-500">*</span>
+                                </label>
+                                <div className="relative">
+                                    <span className="absolute left-4 top-3.5 text-gray-500 dark:text-gray-400 font-semibold">$</span>
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        placeholder="0.00"
+                                        min="0.01"
+                                        className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 py-3 pl-8 pr-4 text-gray-700 dark:text-white bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                        {...register("precio", { 
+                                            required: "El precio es obligatorio para artículos consumibles",
+                                            min: { value: 0.01, message: "El precio debe ser un valor positivo mayor a 0" }
+                                        })}
+                                    />
+                                </div>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Precio de venta al público</p>
+                                {errors.precio && <p className="text-red-600 text-sm mt-1.5">{errors.precio.message}</p>}
+                            </div>
+                        )}
                     </div>
-                </div>
-            </div>
 
             {/* Botones de Acción */}
             <div className="max-w-7xl mx-auto flex gap-3 justify-end">
