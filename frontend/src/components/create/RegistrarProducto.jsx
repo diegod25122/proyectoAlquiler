@@ -302,7 +302,7 @@ const RegistrarProducto = () => {
                             <img
                                 src={imagenState.preview}
                                 alt="preview herramienta"
-                                className="w-200 h-40 object-cover rounded-lg border-2 border-gray-300 dark:border-gray-700 shadow-sm"
+                                className="w-100 h-20 object-cover rounded-lg border-2 border-gray-300 dark:border-gray-700 shadow-sm"
                             />
                         </div>
 
