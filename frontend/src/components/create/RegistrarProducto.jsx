@@ -284,9 +284,8 @@ const RegistrarProducto = () => {
                         </p>
                     </div>
                 </div>
-            </div>
 
-                    {/* Sección: Inventario y Precio */}
+                                    {/* Sección: Inventario y Precio */}
                     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
                         <div className="flex items-center gap-2 mb-6">
                             <div className="w-6 h-6 text-purple-600">💰</div>
@@ -339,6 +338,9 @@ const RegistrarProducto = () => {
                             </div>
                         )}
                     </div>
+
+            </div>
+
 
             {/* Botones de Acción */}
             <div className="max-w-7xl mx-auto flex gap-3 justify-end">
