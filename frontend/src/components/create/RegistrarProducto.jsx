@@ -86,14 +86,14 @@ const RegistrarProducto = () => {
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl mx-auto bg-white dark:bg-gray-900 p-6 rounded-xl shadow-md">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 mx-auto bg-white dark:bg-gray-900 p-6 rounded-xl shadow-md">
             <ToastContainer />
             <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-5">
                 Registrar nueva herramienta
             </h2>
 
             {/* Alternador de Modo de Imagen */}
-            <div className="flex gap-2 mb-4">
+            <div className="bg-white rounded-xl shadow-lg p-8">
                 <button
                     type="button"
                     onClick={() => setImagenState((prev) => ({ ...prev, modo: "subir" }))}
