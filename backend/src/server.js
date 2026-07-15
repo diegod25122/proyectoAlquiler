@@ -10,6 +10,9 @@ import cloudinary from 'cloudinary'
 import routerProducto from './routers/producto_routers.js';
 import routerReserva from './routers/reserva_routers.js';
 import routerPrestamos from './routers/prestamo_routes.js'
+import routerCedula from './routers/cedula_routes.js'
+import routerChat from './routers/chat_routes.js'
+import routerMeshy from './routers/meshy_routes.js'
 
 // Inicializaciones
 const app = express()
@@ -68,7 +71,12 @@ app.use('/api', routerProducto)
 app.use('/api', routerReserva)
 
 // Rutas para prestamos
-app.use('/api',routerPrestamos)
+app.use('/api', routerPrestamos)
+
+// Rutas para cédula Ecuador, Chat IA y Meshy 3D
+app.use('/api', routerCedula)
+app.use('/api', routerChat)
+app.use('/api', routerMeshy)
 
 // Manejo de una ruta que no sea encontrada
 app.use((req,res)=>res.status(404).send("Endpoint no encontrado - 404"))

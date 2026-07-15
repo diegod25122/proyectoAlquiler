@@ -4,6 +4,7 @@ import axios from 'axios'
 import TableTreatments from '../components/treatments/Table'
 import ModalTreatments from '../components/treatments/Modal'
 import useStorePrestamos from '../context/storePrestamos'
+import { FiBox, FiLoader } from 'react-icons/fi'
 
 const getAuthHeaders = () => {
     const storedUser = JSON.parse(localStorage.getItem('auth-token'))
@@ -20,6 +21,39 @@ const Details = () => {
     const { modal, toggleModal } = useStorePrestamos()
     const [herramienta, setHerramienta] = useState(null)
     const [prestamos, setPrestamos] = useState([])
+    const [modelo3D, setModelo3D] = useState(null)
+    const [generando3D, setGenerando3D] = useState(false)
+    const [error3D, setError3D] = useState(null)
+
+    // Cargar model-viewer web component desde Google CDN
+    useEffect(() => {
+        if (!document.querySelector('[data-model-viewer]')) {
+            const s = document.createElement('script')
+            s.type = 'module'
+            s.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js'
+            s.setAttribute('data-model-viewer', 'true')
+            document.head.appendChild(s)
+        }
+    }, [])
+
+    const generarModelo = async () => {
+        if (!herramienta) return
+        setGenerando3D(true)
+        setError3D(null)
+        setModelo3D(null)
+        try {
+            const { data } = await axios.post(
+                `${import.meta.env.VITE_BACKEND_URL}/meshy/generar`,
+                { nombre: herramienta.nombre, descripcion: herramienta.descripcion },
+                { ...getAuthHeaders(), timeout: 130000 }
+            )
+            setModelo3D(data)
+        } catch (error) {
+            setError3D(error.response?.data?.msg || 'No se pudo generar el modelo 3D')
+        } finally {
+            setGenerando3D(false)
+        }
+    }
 
     const listarPrestamos = async () => {
         try {
@@ -99,13 +133,38 @@ const Details = () => {
                         </ul>
                     </div>
 
-                    {/* Imagen lateral */}
-                    <div>
-                        <img
-                            src={herramienta?.imagen || 'https://cdn-icons-png.flaticon.com/512/2138/2138440.png'}
-                            alt={herramienta?.nombre || 'herramienta'}
-                            className='h-80 w-80 object-cover rounded-lg'
-                        />
+                    {/* Imagen + modelo 3D */}
+                    <div className="flex flex-col items-center gap-3">
+                        {modelo3D?.modelUrl ? (
+                            <div className="w-80 h-80 rounded-lg overflow-hidden border border-gray-200">
+                                <model-viewer
+                                    src={modelo3D.modelUrl}
+                                    alt={herramienta?.nombre}
+                                    auto-rotate=""
+                                    camera-controls=""
+                                    style={{ width: '100%', height: '100%' }}
+                                />
+                            </div>
+                        ) : (
+                            <img
+                                src={herramienta?.imagen || 'https://cdn-icons-png.flaticon.com/512/2138/2138440.png'}
+                                alt={herramienta?.nombre || 'herramienta'}
+                                className='h-80 w-80 object-cover rounded-lg'
+                            />
+                        )}
+
+                        <button
+                            onClick={generarModelo}
+                            disabled={generando3D}
+                            className="flex items-center gap-2 px-4 py-2 bg-indigo-700 hover:bg-indigo-800 disabled:bg-gray-400 text-white rounded-lg text-sm transition-colors"
+                        >
+                            {generando3D
+                                ? <><FiLoader className="animate-spin" size={16} /> Generando modelo 3D...</>
+                                : <><FiBox size={16} /> {modelo3D ? 'Regenerar modelo 3D' : 'Ver modelo 3D (Meshy AI)'}</>
+                            }
+                        </button>
+                        {error3D && <p className="text-red-500 text-xs text-center max-w-xs">{error3D}</p>}
+                        {generando3D && <p className="text-gray-500 text-xs text-center">Esto puede tardar hasta 2 minutos...</p>}
                     </div>
                 </div>
 
