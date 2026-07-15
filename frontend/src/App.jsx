@@ -14,6 +14,8 @@ import Update from './pages/Update'
 import Chat from './pages/Chat'
 import Reset from './pages/Reset'
 import Panel from './pages/Panel'
+import GestionReservas from './pages/GestionReservas'
+import GestionUsuarios from './pages/GestionUsuarios'
 import PublicRoute from './routers/PublicRoute'
 import ProtectedRoute from './routers/ProtectedRoute'
 import PrivateRouteWithRole from './routers/PrivateRouteWithRole'
@@ -60,6 +62,8 @@ function App() {
                   <Route path='update/:id' element={<PrivateRouteWithRole><Update /></PrivateRouteWithRole>} />
                   <Route path='chat' element={<Chat />} />
                   <Route path="registrar-producto" element={<RegistrarProducto/>} />
+                  <Route path='reservas' element={<PrivateRouteWithRole><GestionReservas /></PrivateRouteWithRole>} />
+                  <Route path='usuarios' element={<PrivateRouteWithRole><GestionUsuarios /></PrivateRouteWithRole>} />
                 </Route>
               </Routes>
             </ProtectedRoute>

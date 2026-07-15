@@ -1,25 +1,20 @@
 import Reserva from '../models/Reserva.js';
 import mongoose from 'mongoose';
+import { sendMailRechazoReserva } from '../helpers/sendMail.js'
 
-// 1. Registrar una nueva reserva
 const registrarReserva = async (req, res) => {
     try {
         const { usuario, producto, fechaInicio, fechaFin } = req.body;
 
-        // Validar la existencia de campos obligatorios
-        if (!usuario || !producto || !fechaInicio || !fechaFin) {
+        if (!usuario || !producto || !fechaInicio || !fechaFin)
             return res.status(400).json({ msg: "Debes llenar todos los campos obligatorios (usuario, producto, fechaInicio, fechaFin)" });
-        }
 
-        // Validar sintaxis del ID del usuario
         if (!mongoose.Types.ObjectId.isValid(usuario))
             return res.status(400).json({ msg: `El ID del Usuario no es válido: ${usuario}` });
 
-        // Validar sintaxis del ID del producto
         if (!mongoose.Types.ObjectId.isValid(producto))
             return res.status(400).json({ msg: `El ID del producto no es válido: ${producto}` });
 
-        // Registrar la reserva
         const reserva = await Reserva.create(req.body);
         return res.status(201).json({ msg: "Reserva registrada correctamente", reserva });
 
@@ -29,44 +24,76 @@ const registrarReserva = async (req, res) => {
     }
 };
 
-// 2. Listar todas las reservas
 const listarReservas = async (req, res) => {
     try {
-        // Trae las reservas y cruza los datos de usuario y producto
-        const reservas = await Reserva.find().populate('usuario').populate('producto');
-        return res.status(200).json(reservas);
+        const reservas = await Reserva.find()
+            .populate('usuario', 'nombre apellido email cedula')
+            .populate('producto', 'nombre codigoInventario imagen')
+            .populate('aprobadoPor', 'nombre apellido')
+            .sort({ createdAt: -1 })
+        res.status(200).json(reservas)
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ msg: `❌ Error en el servidor - ${error.message || error}` });
+        res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
     }
-};
+}
 
-// 3. Eliminar una reserva por ID
-const eliminarReserva = async (req, res) => {
+const aprobarReserva = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { id } = req.params
+        if (!mongoose.Types.ObjectId.isValid(id))
+            return res.status(404).json({ msg: 'ID de reserva inválido' })
 
-        // Validar que el ID de la reserva sea válido
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ msg: "El ID de la reserva no es válido" });
-        }
+        const reserva = await Reserva.findById(id)
+        if (!reserva) return res.status(404).json({ msg: 'Reserva no encontrada' })
 
-        // Buscar y eliminar
-        const reservaEliminada = await Reserva.findByIdAndDelete(id);
+        reserva.estado = 'Aprobada'
+        reserva.aprobadoPor = req.usuarioHeader._id
+        await reserva.save()
 
-        if (!reservaEliminada) {
-            return res.status(404).json({ msg: "No se encontró la reserva que deseas eliminar" });
-        }
-
-        return res.status(200).json({ msg: "Reserva eliminada correctamente", reservaEliminada });
+        res.status(200).json({ msg: 'Reserva aprobada correctamente' })
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ msg: `❌ Error en el servidor - ${error.message || error}` });
+        res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
     }
-};
+}
 
-export {
-    registrarReserva,
-    listarReservas,
-    eliminarReserva
-};
+const rechazarReserva = async (req, res) => {
+    try {
+        const { id } = req.params
+        const { motivo } = req.body
+
+        if (!motivo?.trim())
+            return res.status(400).json({ msg: 'Debes ingresar el motivo del rechazo' })
+
+        if (!mongoose.Types.ObjectId.isValid(id))
+            return res.status(404).json({ msg: 'ID de reserva inválido' })
+
+        const reserva = await Reserva.findById(id)
+            .populate('usuario', 'nombre apellido email')
+            .populate('producto', 'nombre')
+
+        if (!reserva) return res.status(404).json({ msg: 'Reserva no encontrada' })
+
+        reserva.estado = 'Rechazada'
+        reserva.observaciones = motivo.trim()
+        reserva.aprobadoPor = req.usuarioHeader._id
+        await reserva.save()
+
+        try {
+            const nombreUsuario = `${reserva.usuario.nombre} ${reserva.usuario.apellido}`
+            await sendMailRechazoReserva(
+                reserva.usuario.email,
+                nombreUsuario,
+                reserva.producto.nombre,
+                motivo.trim()
+            )
+        } catch (emailErr) {
+            console.error('Error enviando email de rechazo:', emailErr.message)
+        }
+
+        res.status(200).json({ msg: 'Reserva rechazada y notificación enviada al usuario' })
+    } catch (error) {
+        res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
+    }
+}
+
+export { registrarReserva, listarReservas, aprobarReserva, rechazarReserva };

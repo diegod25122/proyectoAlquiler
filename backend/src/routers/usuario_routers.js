@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { actualizarPassword, actualizarPerfil, comprobarTokenPasword, confirmarMail, crearNuevoPassword, login, perfil, recuperarPassword, registro } from '../controllers/usuario_controller.js'
-import { verificarTokenJWT } from '../middlewares/JWT.js'
+import { actualizarPassword, actualizarPerfil, comprobarTokenPasword, confirmarMail, crearNuevoPassword, login, perfil, recuperarPassword, registro, listarUsuarios, eliminarUsuario, bloquearUsuario } from '../controllers/usuario_controller.js'
+import { verificarTokenJWT, verificarRolAdmin } from '../middlewares/JWT.js'
 import { validacionRegistro } from '../middlewares/validaciones.js'
 import multer from 'multer'
 
@@ -303,5 +303,10 @@ router.put('/actualizarperfil/',verificarTokenJWT, actualizarPerfil)
  *         description: Password actual incorrecto
  */
 router.put('/actualizarpassword/:id', verificarTokenJWT, actualizarPassword)
+
+// Rutas de administración de usuarios
+router.get('/usuarios', verificarTokenJWT, verificarRolAdmin, listarUsuarios)
+router.delete('/usuarios/:id', verificarTokenJWT, verificarRolAdmin, eliminarUsuario)
+router.put('/usuarios/bloquear/:id', verificarTokenJWT, verificarRolAdmin, bloquearUsuario)
 
 export default router

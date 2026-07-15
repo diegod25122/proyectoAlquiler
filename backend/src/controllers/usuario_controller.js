@@ -205,6 +205,59 @@ const actualizarPassword = async (req,res)=>{
 
 
 
+const listarUsuarios = async (req, res) => {
+    try {
+        const usuarios = await Usuario.find()
+            .select('-password -token')
+            .sort({ createdAt: -1 })
+        res.status(200).json(usuarios)
+    } catch (error) {
+        res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
+    }
+}
+
+const eliminarUsuario = async (req, res) => {
+    try {
+        const { id } = req.params
+        if (!mongoose.Types.ObjectId.isValid(id))
+            return res.status(404).json({ msg: 'ID de usuario inválido' })
+
+        const usuarioBDD = await Usuario.findById(id)
+        if (!usuarioBDD) return res.status(404).json({ msg: 'Usuario no encontrado' })
+
+        if (usuarioBDD.rol === 'Admin')
+            return res.status(400).json({ msg: 'No se puede eliminar a un administrador' })
+
+        await Usuario.findByIdAndDelete(id)
+        res.status(200).json({ msg: 'Usuario eliminado correctamente' })
+    } catch (error) {
+        res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
+    }
+}
+
+const bloquearUsuario = async (req, res) => {
+    try {
+        const { id } = req.params
+        if (!mongoose.Types.ObjectId.isValid(id))
+            return res.status(404).json({ msg: 'ID de usuario inválido' })
+
+        const usuarioBDD = await Usuario.findById(id)
+        if (!usuarioBDD) return res.status(404).json({ msg: 'Usuario no encontrado' })
+
+        if (usuarioBDD.rol === 'Admin')
+            return res.status(400).json({ msg: 'No se puede bloquear a un administrador' })
+
+        // Togglear: si confirmEmail=true lo bloqueamos, si =false lo desbloqueamos
+        usuarioBDD.confirmEmail = !usuarioBDD.confirmEmail
+        await usuarioBDD.save()
+
+        const accion = usuarioBDD.confirmEmail ? 'desbloqueado' : 'bloqueado'
+        res.status(200).json({ msg: `Usuario ${accion} correctamente`, bloqueado: !usuarioBDD.confirmEmail })
+    } catch (error) {
+        res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
+    }
+}
+
 export {
     registro,
     confirmarMail,
@@ -214,5 +267,8 @@ export {
     login,
     perfil,
     actualizarPerfil,
-    actualizarPassword
+    actualizarPassword,
+    listarUsuarios,
+    eliminarUsuario,
+    bloquearUsuario
 }
