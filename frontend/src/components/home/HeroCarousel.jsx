@@ -15,25 +15,24 @@ export const HeroCarousel = () => {
         document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' })
 
     return (
-        <section className="relative overflow-hidden bg-gradient-to-r from-[#0B1A3A] to-[#123B8F]">
-            {/* Textura de puntos sutil */}
-            <div
-                className="absolute inset-0 opacity-[0.06]"
-                style={{
-                    backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
-                    backgroundSize: '32px 32px',
-                }}
+        <section className="relative overflow-hidden bg-[#0B1A3A]">
+            {/* Imagen de fondo completa */}
+            <img
+                src={heroTools}
+                alt="Herramientas del taller ESFOT"
+                className="absolute inset-0 w-full h-full object-cover"
             />
+            {/* Degradado: navy opaco a la izquierda, transparente a la derecha */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0B1A3A] via-[#0B1A3A]/85 to-transparent" />
 
+            {/* Contenido */}
             <div className="relative grid grid-cols-1 md:grid-cols-2 gap-8 px-8 md:px-14 py-16 max-w-7xl mx-auto items-center">
-                {/* Columna izquierda */}
                 <div>
                     <span className="inline-block text-[11px] font-medium tracking-widest text-white bg-white/10 px-3 py-1 rounded-full mb-5 uppercase">
                         ESFOT · Taller estudiantil
                     </span>
                     <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-4">
-                        Herramientas y consumibles,{' '}
-                        <br className="hidden md:block" />
+                        Herramientas y consumibles,<br />
                         <span className="text-[#4FA6FF]">sin planillas de papel</span>
                     </h1>
                     <p className="text-white/70 text-sm md:text-base max-w-md mb-8">
@@ -78,15 +77,8 @@ export const HeroCarousel = () => {
                     </div>
                 </div>
 
-                {/* Columna derecha — imagen real de herramientas */}
-                <div className="hidden md:block h-80 rounded-2xl overflow-hidden border border-white/10 relative">
-                    <img
-                        src={heroTools}
-                        alt="Caja de herramientas, multímetro y kit de soldadura del taller ESFOT"
-                        className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#0B1A3A]/50 via-transparent to-transparent" />
-                </div>
+                {/* Columna derecha vacía — la imagen se ve a través del gradiente */}
+                <div className="hidden md:block" />
             </div>
         </section>
     )
