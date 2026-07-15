@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { FiBriefcase, FiClock, FiMapPin } from 'react-icons/fi'
-import selloEPN from '../../assets/selloEPN.png'
+import heroTools from '../../assets/hero-tools.png'
 
 const STATS = [
     { icon: FiBriefcase, value: '100+', label: 'HERRAMIENTAS', bg: 'bg-[#2E4CDB]' },
@@ -78,12 +78,14 @@ export const HeroCarousel = () => {
                     </div>
                 </div>
 
-                {/* Columna derecha — visual */}
-                <div className="hidden md:flex h-72 rounded-2xl bg-white/5 border border-white/10 items-center justify-center">
-                    <div className="text-center">
-                        <img src={selloEPN} alt="Sello EPN" className="w-32 opacity-80 mx-auto mb-4" />
-                        <p className="text-white/40 text-xs tracking-widest uppercase">Escuela Politécnica Nacional</p>
-                    </div>
+                {/* Columna derecha — imagen real de herramientas */}
+                <div className="hidden md:block h-80 rounded-2xl overflow-hidden border border-white/10 relative">
+                    <img
+                        src={heroTools}
+                        alt="Caja de herramientas, multímetro y kit de soldadura del taller ESFOT"
+                        className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#0B1A3A]/50 via-transparent to-transparent" />
                 </div>
             </div>
         </section>

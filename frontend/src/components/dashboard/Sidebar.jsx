@@ -49,7 +49,6 @@ export const Sidebar = () => {
                                     { to: '/dashboard/list', label: 'Inventario General', icon: <MdInventory className="h-5 w-5" /> },
                                     { to: '/dashboard/registrar-producto', label: 'Registrar Producto', icon: <MdAddBox className="h-5 w-5" /> },
                                     { to: '/dashboard/reservas', label: 'Aprobar Reservas', icon: <MdCalendarToday className="h-5 w-5" /> },
-                                    { to: '/dashboard/ordenes', label: 'Órdenes de Compra', icon: <MdReceipt className="h-5 w-5" /> },
                                     { to: '/dashboard/usuarios', label: 'Usuarios', icon: <MdPerson className="h-5 w-5" /> },
                                 ].map(link => (
                                     <li key={link.to}>

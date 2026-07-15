@@ -3,5 +3,5 @@ import { Forbidden } from '../pages/Forbidden'
 
 export default function PrivateRouteWithRole({ children }) {
     const { rol } = storeAuth()
-    return rol === 'Administrador' ? children : <Forbidden />
+    return rol === 'Admin' ? children : <Forbidden />
 }
