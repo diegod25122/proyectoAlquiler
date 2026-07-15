@@ -7,7 +7,7 @@ import { Footer } from '../components/Footer'
 
 export const Home = () => {
     return (
-        <div className="min-h-screen bg-white dark:bg-gray-950 transition-colors duration-300">
+        <div className="min-h-screen bg-[#F5F7FA] dark:bg-gray-950 transition-colors duration-300">
             <Navbar />
             <HeroCarousel />
             <AboutSection />
