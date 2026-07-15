@@ -16,75 +16,71 @@ export const ToolCard = ({ producto }) => {
 
     const handleAccion = () => {
         if (sinStock) return
-
-        if (requiereLogin()) {
-            navigate("/login")
-            return
-        }
+        if (requiereLogin()) { navigate("/login"); return }
 
         if (esPrestable) {
             agregarReserva({ productoId: producto._id, nombre: producto.nombre, imagen: producto.imagen })
-            navigate(`/reservar/${producto._id}`) // ahí va el formulario de Materia/Docente/Propósito/Horas
+            navigate(`/reservar/${producto._id}`)
         } else {
             agregarCompra({ productoId: producto._id, nombre: producto.nombre, imagen: producto.imagen, precio: producto.precio })
         }
     }
 
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md
-                        hover:shadow-xl transition-shadow duration-300 p-4 flex flex-col">
+        <div className="border border-gray-200 dark:border-gray-800 rounded-xl p-4 flex flex-col hover:border-gray-400 dark:hover:border-gray-600 transition-colors bg-white dark:bg-gray-900">
 
-            {/* Imagen + badge tipo "etiqueta de taller" (código de inventario en mono) */}
-            <div className="relative">
-                <img
-                    src={producto.imagen}
-                    alt={producto.nombre}
-                    className="w-full h-40 object-contain mb-3"
-                />
-                <span className="absolute top-2 left-2 bg-gray-900/80 text-white font-mono
-                                 text-[10px] px-2 py-1 rounded-md tracking-wide">
+            {/* Header: código + badge disponibilidad */}
+            <div className="flex items-center justify-between mb-3">
+                <span className="font-mono text-[10px] text-gray-400 dark:text-gray-500 tracking-wide">
                     {producto.codigoInventario}
+                </span>
+                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                    sinStock
+                        ? 'bg-gray-100 dark:bg-gray-800 text-gray-400'
+                        : 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                }`}>
+                    {sinStock ? 'Agotado' : 'Disponible'}
                 </span>
             </div>
 
+            {/* Imagen */}
+            <div className="h-28 flex items-center justify-center mb-3">
+                <img
+                    src={producto.imagen || 'https://cdn-icons-png.flaticon.com/512/2618/2618671.png'}
+                    alt={producto.nombre}
+                    className="h-full w-full object-contain"
+                />
+            </div>
+
             {/* Info */}
-            <h3 className="font-bold text-gray-800 dark:text-white text-sm">{producto.nombre}</h3>
-            <p className="text-gray-500 dark:text-gray-400 text-xs mb-2">{producto.categoria}</p>
-
-            {/* Disponibilidad real (stock/estado, no el mock "disponible" anterior) */}
-            <span className={`inline-block mb-2 px-2 py-1 rounded-full text-xs font-semibold w-fit
-                ${sinStock
-                    ? 'bg-gray-200 text-gray-500'
-                    : 'bg-green-100 text-green-700'}`}>
-                {sinStock ? 'NO DISPONIBLE' : 'DISPONIBLE'}
-            </span>
-
-            {/* Precio (solo Consumibles) */}
-            {!esPrestable && (
-                <p className="text-green-700 dark:text-green-400 font-bold text-lg mb-2">
-                    ${producto.precio?.toFixed(2)}
-                </p>
-            )}
+            <h3 className="text-sm font-medium text-gray-900 dark:text-white leading-tight">{producto.nombre}</h3>
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 mb-3">
+                {producto.categoria}
+                {!esPrestable && producto.precio != null && (
+                    <span className="ml-2 font-semibold text-gray-700 dark:text-gray-300">${producto.precio.toFixed(2)}</span>
+                )}
+            </p>
 
             <div className="flex-1" />
 
-            {/* Botón condicional */}
+            {/* Botón */}
             <button
                 onClick={handleAccion}
                 disabled={sinStock}
-                className={`mt-3 w-full py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors
-                    ${sinStock
-                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                className={`mt-2 w-full py-2 rounded-md text-xs font-medium flex items-center justify-center gap-1.5 transition-colors ${
+                    sinStock
+                        ? 'bg-gray-50 dark:bg-gray-800 text-gray-300 dark:text-gray-600 cursor-not-allowed border border-gray-200 dark:border-gray-700'
                         : esPrestable
-                            ? 'bg-[#6B46C1] text-white hover:bg-[#5b3aa8]'
-                            : 'bg-[#15803D] text-white hover:bg-[#12692f]'}`}
+                            ? 'border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                            : 'border border-gray-900 dark:border-white bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-100'
+                }`}
             >
                 {sinStock ? (
-                    'No Disponible'
+                    'Sin stock'
                 ) : esPrestable ? (
-                    <><MdCalendarToday /> Reservar Herramienta</>
+                    <><MdCalendarToday size={12} /> Reservar</>
                 ) : (
-                    <><MdShoppingCart /> Añadir al Carrito</>
+                    <><MdShoppingCart size={12} /> Añadir</>
                 )}
             </button>
         </div>

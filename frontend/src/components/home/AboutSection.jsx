@@ -1,40 +1,41 @@
 export const AboutSection = () => {
     return (
-        <section className="bg-gray-50 dark:bg-gray-900 py-16 px-6 transition-colors duration-300">
-            <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <section id="about" className="bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 py-16 px-8 transition-colors">
+            <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 
-                {/* Columna texto */}
+                {/* Texto */}
                 <div>
-                    <span className="font-mono text-xs uppercase tracking-widest text-[#6B46C1]">
-                        Sobre el sistema
-                    </span>
-                    <h2 className="font-display text-3xl font-bold text-[#0F2A4A] dark:text-white mt-2 mb-5">
+                    <p className="text-xs tracking-widest text-gray-400 uppercase mb-3">Sobre el sistema</p>
+                    <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-5 leading-snug">
                         Un solo lugar para préstamos e insumos del taller
                     </h2>
-                    <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
-                        EPN ToolRental centraliza el control de los activos físicos de la ESFOT —
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 leading-relaxed">
+                        PoliRent centraliza el control de los activos físicos de la ESFOT —
                         equipos de laboratorio, herramientas manuales y tecnológicas — eliminando
                         las planillas en papel y dando trazabilidad real a cada préstamo.
                     </p>
-                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                        A la vez, resuelve la venta ágil de consumibles de electrónica y desarrollo
-                        de software — resistencias, microcontroladores, componentes de prototipado —
-                        para que estudiantes y docentes avancen sus proyectos de titulación sin
-                        fricciones administrativas.
+                    <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                        Resuelve también la venta ágil de consumibles de electrónica —
+                        resistencias, microcontroladores, componentes de prototipado —
+                        para que estudiantes y docentes avancen sin fricciones administrativas.
                     </p>
                 </div>
 
-                {/* Columna geométrica: identidad institucional sin foto stock */}
-                <div className="relative h-72 md:h-80">
-                    <div className="absolute inset-0 bg-[#0F2A4A] rounded-2xl rotate-2" />
-                    <div className="absolute inset-0 bg-[#6B46C1]/20 rounded-2xl -rotate-3 translate-x-3 translate-y-3" />
-                    <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-[#0F2A4A]">
-                        <div className="text-center px-8">
-                            <p className="font-display text-5xl font-bold text-white">ESFOT</p>
-                            <p className="font-mono text-xs text-gray-300 mt-2 tracking-widest">
-                                ESCUELA POLITÉCNICA NACIONAL
-                            </p>
-                        </div>
+                {/* Panel derecho — identidad institucional */}
+                <div className="border border-gray-200 dark:border-gray-800 rounded-2xl p-10 text-center">
+                    <p className="text-5xl font-bold text-gray-900 dark:text-white tracking-tight">ESFOT</p>
+                    <p className="text-xs text-gray-400 mt-2 tracking-widest uppercase">Escuela Politécnica Nacional</p>
+                    <div className="mt-6 grid grid-cols-3 gap-4 text-center">
+                        {[
+                            { label: 'Préstamos', desc: 'de herramientas' },
+                            { label: 'Consumibles', desc: 'con Stripe' },
+                            { label: 'Chat IA', desc: 'PoliBot' },
+                        ].map(item => (
+                            <div key={item.label} className="border border-gray-100 dark:border-gray-800 rounded-lg p-3">
+                                <p className="text-xs font-semibold text-gray-900 dark:text-white">{item.label}</p>
+                                <p className="text-[10px] text-gray-400 mt-0.5">{item.desc}</p>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>

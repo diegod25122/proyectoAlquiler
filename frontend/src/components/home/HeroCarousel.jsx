@@ -1,70 +1,50 @@
-import { useState, useEffect } from 'react'
-
-const SLIDES = [
-    {
-        titulo: 'Equipamiento Tecnológico a tu Alcance',
-        subtitulo: 'Gestión optimizada para los talleres de la ESFOT',
-        // Gradiente "circuito nocturno": navy a violeta, evoca placas/laboratorio sin foto externa
-        gradiente: 'from-[#0B1220] via-[#0F2A4A] to-[#27205A]'
-    },
-    {
-        titulo: 'Reserva tus Materiales en Segundos',
-        subtitulo: 'Planifica tus proyectos académicos y de titulación de forma ágil',
-        gradiente: 'from-[#0B1220] via-[#1E4D8C] to-[#0F2A4A]'
-    },
-    {
-        titulo: 'Abastecimiento de Consumibles Autorizados',
-        subtitulo: 'Compra de componentes electrónicos directamente desde la plataforma',
-        gradiente: 'from-[#0B1220] via-[#14532D] to-[#0F2A4A]'
-    }
-]
+import { useNavigate } from 'react-router-dom'
 
 export const HeroCarousel = () => {
-    const [indice, setIndice] = useState(0)
+    const navigate = useNavigate()
 
-    useEffect(() => {
-        const intervalo = setInterval(() => {
-            setIndice((prev) => (prev + 1) % SLIDES.length)
-        }, 5000)
-        return () => clearInterval(intervalo)
-    }, [])
+    const scrollCatalogo = () => {
+        document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' })
+    }
 
     return (
-        <section className="relative w-full h-[420px] md:h-[480px] overflow-hidden">
-            {SLIDES.map((slide, i) => (
-                <div
-                    key={slide.titulo}
-                    className={`absolute inset-0 bg-gradient-to-br ${slide.gradiente}
-                                transition-opacity duration-700 ease-in-out
-                                ${i === indice ? 'opacity-100' : 'opacity-0'}`}
+        <section className="text-center px-8 py-20 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 transition-colors">
+            <p className="text-xs tracking-widest text-gray-400 uppercase mb-4">
+                ESFOT · Taller estudiantil
+            </p>
+            <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 dark:text-white max-w-xl mx-auto leading-snug">
+                Herramientas y consumibles,{' '}
+                <span className="text-gray-500 dark:text-gray-400 font-normal">sin planillas de papel</span>
+            </h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto mt-4 mb-8">
+                Préstamos de equipo y compra de componentes electrónicos, todo desde una sola plataforma académica.
+            </p>
+            <div className="flex justify-center gap-3 flex-wrap">
+                <button
+                    onClick={scrollCatalogo}
+                    className="px-5 py-2.5 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-100 transition"
                 >
-                    {/* Textura sutil tipo "circuito" — reemplazo deliberado de foto stock */}
-                    <div className="absolute inset-0 opacity-[0.07]"
-                         style={{
-                             backgroundImage: 'radial-gradient(circle at 20% 30%, white 1px, transparent 1px), radial-gradient(circle at 70% 60%, white 1px, transparent 1px)',
-                             backgroundSize: '48px 48px'
-                         }} />
+                    Ver catálogo
+                </button>
+                <button
+                    onClick={() => navigate('/register')}
+                    className="px-5 py-2.5 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-900 transition"
+                >
+                    Crear cuenta
+                </button>
+            </div>
 
-                    <div className="relative h-full flex flex-col items-center justify-center text-center px-6">
-                        <h1 className="font-display text-3xl md:text-5xl font-bold text-white max-w-3xl leading-tight">
-                            {slide.titulo}
-                        </h1>
-                        <p className="mt-4 text-gray-200 text-base md:text-lg max-w-xl">
-                            {slide.subtitulo}
-                        </p>
+            {/* Stats row */}
+            <div className="flex justify-center gap-10 mt-14 text-center">
+                {[
+                    { value: '100+', label: 'Herramientas' },
+                    { value: '24/7', label: 'Disponible' },
+                    { value: 'ESFOT', label: 'EPN' },
+                ].map(s => (
+                    <div key={s.label}>
+                        <p className="text-xl font-semibold text-gray-900 dark:text-white">{s.value}</p>
+                        <p className="text-xs text-gray-400 mt-0.5 uppercase tracking-wide">{s.label}</p>
                     </div>
-                </div>
-            ))}
-
-            {/* Indicadores */}
-            <div className="absolute bottom-5 left-0 right-0 flex justify-center gap-2">
-                {SLIDES.map((_, i) => (
-                    <button
-                        key={i}
-                        onClick={() => setIndice(i)}
-                        aria-label={`Ir a la diapositiva ${i + 1}`}
-                        className={`h-1.5 rounded-full transition-all ${i === indice ? 'w-8 bg-white' : 'w-3 bg-white/40'}`}
-                    />
                 ))}
             </div>
         </section>
