@@ -7,6 +7,7 @@ import useDarkMode from "../hooks/useDarkMode"
 import { Navbar } from "../components/Navbar"
 import { useFetch } from "../hooks/useFetch.js"
 import logo from '../assets/selloEPN.png'
+import axios from "axios"
 
 const FACULTADES = [
     "Sistemas",
@@ -25,6 +26,21 @@ export function Register() {
     const [showPassword, setShowPassword] = useState(false)
     const { fetchDataBackend, loading } = useFetch()
     const { register, handleSubmit, formState: { errors } } = useForm()
+    const [cedulaInfo, setCedulaInfo] = useState(null)
+    const [consultandoCedula, setConsultandoCedula] = useState(false)
+
+    const consultarCedula = async (valor) => {
+        if (valor.length !== 10) { setCedulaInfo(null); return }
+        setConsultandoCedula(true)
+        try {
+            const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/cedula/${valor}`)
+            setCedulaInfo({ valida: true, ...data })
+        } catch (error) {
+            setCedulaInfo({ valida: false, msg: error.response?.data?.msg || 'Cédula inválida' })
+        } finally {
+            setConsultandoCedula(false)
+        }
+    }
 
     const registerUser = async (dataForm) => {
         const url = `${import.meta.env.VITE_BACKEND_URL}/registro`
@@ -159,11 +175,11 @@ export function Register() {
                                     type="text"
                                     inputMode="numeric"
                                     placeholder="Ingrese su número de cédula"
-                                    className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 
-                      bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 
-                      placeholder-gray-400 dark:placeholder-gray-500 
-                      focus:border-purple-600 dark:focus:border-purple-500 
-                      focus:outline-none focus:ring-1 focus:ring-purple-600 
+                                    className="block w-full rounded-lg border border-gray-300 dark:border-gray-700
+                      bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
+                      placeholder-gray-400 dark:placeholder-gray-500
+                      focus:border-purple-600 dark:focus:border-purple-500
+                      focus:outline-none focus:ring-1 focus:ring-purple-600
                       py-2 px-3 text-sm transition-all"
                                     {...register("cedula", {
                                         required: "La cédula es obligatoria",
@@ -172,10 +188,20 @@ export function Register() {
                                             message: "Debe ser un número de cédula válido"
                                         },
                                         minLength: { value: 10, message: "La cédula debe tener 10 dígitos" },
-                                        maxLength: { value: 10, message: "La cédula debe tener 10 dígitos" }
+                                        maxLength: { value: 10, message: "La cédula debe tener 10 dígitos" },
+                                        onChange: (e) => consultarCedula(e.target.value)
                                     })}
                                 />
                                 {errors.cedula && <p className="text-red-500 text-xs mt-1">{errors.cedula.message}</p>}
+                                {consultandoCedula && <p className="text-gray-400 text-xs mt-1">Verificando cédula...</p>}
+                                {!consultandoCedula && cedulaInfo && (
+                                    <p className={`text-xs mt-1 font-medium ${cedulaInfo.valida ? 'text-green-600' : 'text-red-500'}`}>
+                                        {cedulaInfo.valida
+                                            ? `✓ Cédula válida — Provincia: ${cedulaInfo.provincia}${cedulaInfo.nombres ? ` · ${cedulaInfo.nombres} ${cedulaInfo.apellidos}` : ''}`
+                                            : `✗ ${cedulaInfo.msg}`
+                                        }
+                                    </p>
+                                )}
                             </div>
 
                             {/* Correo */}

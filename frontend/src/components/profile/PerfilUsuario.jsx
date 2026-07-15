@@ -1,5 +1,6 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useNavigate } from "react-router"
+import axios from "axios"
 import {
   FiUser, FiCreditCard, FiMail, FiPhone, FiBookOpen,
   FiEdit2, FiZap, FiCalendar, FiDollarSign, FiBell,
@@ -13,9 +14,26 @@ import "./PerfilUsuario.css"
 
 export default function PerfilUsuario() {
   const [mostrarModalEdicion, setMostrarModalEdicion] = useState(false)
+  const [pagos, setPagos] = useState([])
   const { user, updateProfile } = storeProfile()
   const navigate = useNavigate()
   const fileInputRef = useRef(null)
+
+  useEffect(() => {
+    if (!user) return
+    const cargarPagos = async () => {
+      try {
+        const storedUser = JSON.parse(localStorage.getItem("auth-token"))
+        const token = storedUser?.state?.token
+        const { data } = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/prestamo/mis-pagos`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        setPagos(data)
+      } catch (_) {}
+    }
+    cargarPagos()
+  }, [user])
 
   const nombreCompleto = `${user?.nombre || ""} ${user?.apellido || ""}`.trim()
   const primerNombre = user?.nombre || "Usuario"
@@ -31,7 +49,7 @@ export default function PerfilUsuario() {
     { icono: <FiCalendar />,   titulo: "Mis reservas",   desc: "Ver y gestionar tus reservas",     color: "morado",  accion: () => navigate("/dashboard/list") },
     { icono: <FiDollarSign />, titulo: "Mis pagos",      desc: "Historial y comprobantes de pago", color: "verde",   accion: () => {} },
     { icono: <FiBell />,       titulo: "Notificaciones", desc: "Ver tus mensajes y alertas",       color: "naranja", accion: () => {} },
-    { icono: <FiHelpCircle />, titulo: "Ayuda",          desc: "Preguntas frecuentes y soporte",   color: "azul",    accion: () => {} },
+    { icono: <FiHelpCircle />, titulo: "Ayuda",          desc: "Preguntas frecuentes y soporte",   color: "azul",    accion: () => navigate("/dashboard/chat") },
   ]
 
   const handleFotoChange = async (e) => {
@@ -195,9 +213,22 @@ export default function PerfilUsuario() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td colSpan={5} className="tabla-vacia">No tienes pagos registrados aún.</td>
-              </tr>
+              {pagos.length === 0
+                ? <tr><td colSpan={5} className="tabla-vacia">No tienes pagos registrados aún.</td></tr>
+                : pagos.map(p => (
+                    <tr key={p._id}>
+                      <td>{p.herramienta?.nombre || '—'}</td>
+                      <td>{p.fechaInicio ? new Date(p.fechaInicio).toLocaleDateString('es-EC') : '—'}</td>
+                      <td>{p.fechaFin ? new Date(p.fechaFin).toLocaleDateString('es-EC') : '—'}</td>
+                      <td>${p.precio?.toFixed(2)}</td>
+                      <td>
+                        <span className={p.estadoPago === 'Pagado' ? 'badge-pagado' : 'badge-pendiente'}>
+                          {p.estadoPago}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+              }
             </tbody>
           </table>
         </div>

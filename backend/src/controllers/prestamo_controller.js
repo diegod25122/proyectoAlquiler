@@ -106,4 +106,17 @@ const pagarPrestamo = async (req, res) => {
     }
 }
 
-export { registrarPrestamo, listarPrestamosPorHerramienta, eliminarPrestamo, pagarPrestamo }
+const listarPrestamosPorUsuario = async (req, res) => {
+    try {
+        const usuarioId = req.usuarioHeader._id
+        const prestamos = await Prestamo.find({ usuario: usuarioId })
+            .populate('herramienta', 'nombre codigoInventario imagen')
+            .select('-__v')
+            .sort({ createdAt: -1 })
+        res.status(200).json(prestamos)
+    } catch (error) {
+        res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
+    }
+}
+
+export { registrarPrestamo, listarPrestamosPorHerramienta, eliminarPrestamo, pagarPrestamo, listarPrestamosPorUsuario }
