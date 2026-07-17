@@ -23,6 +23,7 @@ import { useEffect } from 'react'
 import storeProfile from './context/storeProfile'
 import storeAuth from './context/storeAuth'
 import RegistrarProducto from './components/create/RegistrarProducto'
+import ChatBotIA from './components/ChatBotIA.jsx'
 
 function App() {
   const { profile  } = storeProfile()
@@ -36,6 +37,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
+      <ChatBotIA />
         <Routes>
 
 

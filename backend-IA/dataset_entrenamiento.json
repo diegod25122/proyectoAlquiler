@@ -1,0 +1,67 @@
+{
+  "intents": [
+    {
+      "tag": "saludo",
+      "patterns": [
+        "hola", "buenas", "buenos dias", "buenas tardes", "buenas noches", 
+        "que tal", "ayuda", "oe", "hola que tal", "alguien ahi", "disculpe"
+      ],
+      "responses": [
+        "¡Hola! Soy la IA asistente de PoliRent. Puedo ayudarte con tus dudas sobre el alquiler de herramientas, plazos y requisitos. ¿Qué deseas consultar hoy?"
+      ]
+    },
+    {
+      "tag": "funcionamiento_pagina",
+      "patterns": [
+        "como funciona la pagina", "para que sirve este sitio", "que puedo hacer aqui", 
+        "de que es esta app", "que es polirent", "cual es el objetivo del sistema",
+        "para que sirve la plataforma", "que hace este sistema"
+      ],
+      "responses": [
+        "PoliRent es una plataforma web desarrollada para la ESFOT que permite automatizar y gestionar el control de inventario, ventas y alquiler de herramientas de forma rápida para los estudiantes."
+      ]
+    },
+    {
+      "tag": "requisitos_alquiler",
+      "patterns": [
+        "que necesito para alquilar", "requisitos para retirar", "puedo pedir una herramienta", 
+        "cuales son los requisitos", "como saco un equipo", "como alquilar una herramienta", 
+        "que debo hacer si quiero alquilar una herramienta", "como hago un prestamo", 
+        "que me piden para alquilar", "quiero alquilar", "como se renta algo"
+      ],
+      "responses": [
+        "Para alquilar, debes iniciar sesión con tu cuenta institucional, actualizar tus datos en 'Mi Perfil' y verificar la disponibilidad de la herramienta en el catálogo."
+      ]
+    },
+    {
+      "tag": "tiempo_prestamo",
+      "patterns": [
+        "cuantos dias me prestan", "tiempo maximo de alquiler", "cuando debo devolver", 
+        "plazos de entrega", "cuanto dura el prestamo", "dias de prestamo", 
+        "por cuanto tiempo me prestan", "plazo de devolucion", "tiempo limite"
+      ],
+      "responses": [
+        "El tiempo máximo estándar de préstamo es de 3 días laborables. Recuerda devolver a tiempo para evitar sanciones en tu cuenta."
+      ]
+    },
+    {
+      "tag": "duda_pagos",
+      "patterns": [
+        "tengo que pagar algo", "es gratis", "cuanto cuesta alquilar", "valores o multas",
+        "tiene algun costo", "hay que pagar", "cobran por las herramientas"
+      ],
+      "responses": [
+        "El préstamo de herramientas es completamente gratuito para fines académicos de la comunidad politécnica de la ESFOT. Sin embargo, existen suspensiones temporales si devuelves los equipos fuera de plazo o dañados."
+      ]
+    },
+    {
+      "tag": "despedida",
+      "patterns": [
+        "gracias", "muchas gracias", "adios", "hasta luego", "chao", "listo gracias"
+      ],
+      "responses": [
+        "¡De nada! Si tienes más dudas sobre PoliRent, aquí estaré para asistirte. ¡Éxitos en tus laboratorios!"
+      ]
+    }
+  ]
+}
