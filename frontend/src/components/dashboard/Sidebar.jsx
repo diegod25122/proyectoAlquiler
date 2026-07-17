@@ -31,7 +31,7 @@ export const Sidebar = () => {
                 <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-800">
                     <img src={logo} alt="EPN" className="w-10 h-10 object-contain" />
                     <div>
-                        <p className="text-white font-bold text-sm tracking-wide">EPN ToolRental</p>
+                        <p className="text-white font-bold text-sm tracking-wide">Poli Rent</p>
                         <p className="text-gray-400 text-xs font-medium">ESFOT - EPN</p>
                     </div>
                 </div>

@@ -26,7 +26,7 @@ const GestionReservas = () => {
         try {
             setLoading(true)
             const { data } = await axios.get(
-                `${import.meta.env.VITE_BACKEND_URL}/api/reservas`,
+                `${import.meta.env.VITE_BACKEND_URL}/reservas`,
                 { headers: { Authorization: `Bearer ${token}` } }
             )
             setReservas(data)
