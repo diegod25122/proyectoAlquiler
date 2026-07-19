@@ -3,64 +3,354 @@
     {
       "tag": "saludo",
       "patterns": [
-        "hola", "buenas", "buenos dias", "buenas tardes", "buenas noches", 
-        "que tal", "ayuda", "oe", "hola que tal", "alguien ahi", "disculpe"
+        "hola",
+        "buenas",
+        "buenos dias",
+        "buenas tardes",
+        "buenas noches",
+        "que tal",
+        "ayuda",
+        "oe",
+        "hola bot",
+        "hola asistente",
+        "saludos",
+        "hey",
+        "como estas",
+        "alguien ahi",
+        "necesito ayuda",
+        "buen dia",
+        "hola polirent",
+        "disculpe",
+        "holi",
+        "hello"
       ],
       "responses": [
-        "¡Hola! Soy la IA asistente de PoliRent. Puedo ayudarte con tus dudas sobre el alquiler de herramientas, plazos y requisitos. ¿Qué deseas consultar hoy?"
+        "¡Hola! Soy PoliBot. ¿En qué puedo ayudarte?",
+        "¡Bienvenido a PoliRent! Estoy listo para responder tus dudas.",
+        "Hola 👋 ¿Qué necesitas consultar sobre préstamos o herramientas?",
+        "¡Saludos! Puedes preguntarme sobre reservas, devoluciones o inventario.",
+        "Estoy aquí para ayudarte con PoliRent.",
+        "Hola, dime tu consulta."
       ]
     },
     {
       "tag": "funcionamiento_pagina",
       "patterns": [
-        "como funciona la pagina", "para que sirve este sitio", "que puedo hacer aqui", 
-        "de que es esta app", "que es polirent", "cual es el objetivo del sistema",
-        "para que sirve la plataforma", "que hace este sistema"
+        "como funciona",
+        "que es polirent",
+        "para que sirve",
+        "objetivo",
+        "que hace",
+        "como uso la app",
+        "como funciona la pagina",
+        "explicame",
+        "que ofrece",
+        "informacion"
       ],
       "responses": [
-        "PoliRent es una plataforma web desarrollada para la ESFOT que permite automatizar y gestionar el control de inventario, ventas y alquiler de herramientas de forma rápida para los estudiantes."
+        "PoliRent permite gestionar préstamos, reservas e inventario de herramientas para estudiantes."
       ]
     },
     {
       "tag": "requisitos_alquiler",
       "patterns": [
-        "que necesito para alquilar", "requisitos para retirar", "puedo pedir una herramienta", 
-        "cuales son los requisitos", "como saco un equipo", "como alquilar una herramienta", 
-        "que debo hacer si quiero alquilar una herramienta", "como hago un prestamo", 
-        "que me piden para alquilar", "quiero alquilar", "como se renta algo"
+        "que necesito para alquilar",
+        "requisitos",
+        "como alquilar",
+        "quiero alquilar",
+        "como hago un prestamo",
+        "como retiro",
+        "quiero reservar",
+        "puedo pedir",
+        "como rento",
+        "proceso de alquiler",
+        "como obtener",
+        "que me piden",
+        "reservar herramienta",
+        "quiero una herramienta",
+        "como saco una herramienta"
       ],
       "responses": [
-        "Para alquilar, debes iniciar sesión con tu cuenta institucional, actualizar tus datos en 'Mi Perfil' y verificar la disponibilidad de la herramienta en el catálogo."
+        "Inicia sesión, completa tu perfil y verifica la disponibilidad de la herramienta."
       ]
     },
     {
       "tag": "tiempo_prestamo",
       "patterns": [
-        "cuantos dias me prestan", "tiempo maximo de alquiler", "cuando debo devolver", 
-        "plazos de entrega", "cuanto dura el prestamo", "dias de prestamo", 
-        "por cuanto tiempo me prestan", "plazo de devolucion", "tiempo limite"
+        "cuantos dias",
+        "tiempo prestamo",
+        "plazo",
+        "cuando devolver",
+        "dias",
+        "fecha limite",
+        "maximo",
+        "tiempo limite",
+        "vence",
+        "devolucion"
       ],
       "responses": [
-        "El tiempo máximo estándar de préstamo es de 3 días laborables. Recuerda devolver a tiempo para evitar sanciones en tu cuenta."
+        "El préstamo estándar es de 3 días laborables."
       ]
     },
     {
-      "tag": "duda_pagos",
+      "tag": "pagos",
       "patterns": [
-        "tengo que pagar algo", "es gratis", "cuanto cuesta alquilar", "valores o multas",
-        "tiene algun costo", "hay que pagar", "cobran por las herramientas"
+        "es gratis",
+        "cuanto cuesta",
+        "hay que pagar",
+        "precio",
+        "multa",
+        "costo",
+        "vale dinero",
+        "cobran",
+        "cancelar",
+        "pago"
       ],
       "responses": [
-        "El préstamo de herramientas es completamente gratuito para fines académicos de la comunidad politécnica de la ESFOT. Sin embargo, existen suspensiones temporales si devuelves los equipos fuera de plazo o dañados."
+        "El préstamo es gratuito; solo puede haber sanciones por retrasos o daños."
+      ]
+    },
+    {
+      "tag": "reservas",
+      "patterns": [
+        "como reservar",
+        "hacer reserva",
+        "reservar",
+        "apartar herramienta",
+        "reserva online",
+        "puedo reservar",
+        "reservacion",
+        "se puede reservar",
+        "reservar equipo",
+        "crear reserva"
+      ],
+      "responses": [
+        "Puedes reservar desde el catálogo cuando la herramienta esté disponible."
+      ]
+    },
+    {
+      "tag": "inventario",
+      "patterns": [
+        "inventario",
+        "herramientas",
+        "catalogo",
+        "que herramientas hay",
+        "disponibles",
+        "stock",
+        "equipos",
+        "listar",
+        "productos",
+        "ver herramientas"
+      ],
+      "responses": [
+        "Consulta el catálogo para conocer las herramientas disponibles."
+      ]
+    },
+    {
+      "tag": "devolucion",
+      "patterns": [
+        "como devolver",
+        "devolver",
+        "entregar",
+        "regresar herramienta",
+        "devolucion",
+        "donde devuelvo",
+        "entregar equipo",
+        "quiero devolver",
+        "proceso devolucion",
+        "devolver prestamo"
+      ],
+      "responses": [
+        "Entrega la herramienta antes de la fecha límite en el laboratorio."
+      ]
+    },
+    {
+      "tag": "contacto",
+      "patterns": [
+        "contacto",
+        "soporte",
+        "ayuda tecnica",
+        "administrador",
+        "correo",
+        "telefono",
+        "problema",
+        "reportar",
+        "quien administra",
+        "necesito soporte"
+      ],
+      "responses": [
+        "Comunícate con el administrador del laboratorio para recibir ayuda."
       ]
     },
     {
       "tag": "despedida",
       "patterns": [
-        "gracias", "muchas gracias", "adios", "hasta luego", "chao", "listo gracias"
+        "gracias",
+        "adios",
+        "hasta luego",
+        "chao",
+        "nos vemos",
+        "bye",
+        "eso es todo",
+        "listo gracias",
+        "hasta pronto",
+        "muchas gracias"
       ],
       "responses": [
-        "¡De nada! Si tienes más dudas sobre PoliRent, aquí estaré para asistirte. ¡Éxitos en tus laboratorios!"
+        "¡Con gusto! Éxitos en tus prácticas."
+      ]
+    },
+    {
+      "tag": "login",
+      "patterns": [
+        "no puedo iniciar sesión",
+        "no puedo ingresar",
+        "cómo inicio sesión",
+        "me sale error al iniciar sesión",
+        "no recuerdo cómo entrar",
+        "quiero acceder a mi cuenta",
+        "cómo ingreso al sistema",
+        "iniciar sesión",
+        "login",
+        "entrar a mi cuenta",
+        "no puedo acceder"
+      ],
+      "responses": [
+        "Para iniciar sesión utiliza tu correo institucional y tu contraseña registrada.",
+        "Dirígete a la pantalla de inicio de sesión e ingresa tus credenciales institucionales.",
+        "Si olvidaste tu contraseña puedes utilizar la opción 'Recuperar contraseña'."
+      ]
+    },
+    {
+      "tag": "recuperar_contrasena",
+      "patterns": [
+        "olvide mi contraseña",
+        "recuperar contraseña",
+        "no recuerdo mi contraseña",
+        "como cambio mi contraseña",
+        "restablecer contraseña",
+        "olvide la clave",
+        "no puedo entrar por la contraseña",
+        "quiero cambiar mi clave",
+        "olvide mi password",
+        "recuperar acceso",
+        "restablecer clave",
+        "como recuperar mi cuenta",
+        "cambiar contraseña",
+        "olvide mis datos",
+        "ayuda con mi contraseña"
+      ],
+      "responses": [
+        "Utiliza la opción '¿Olvidaste tu contraseña?' para recibir un enlace de recuperación en tu correo.",
+        "Desde la pantalla de inicio de sesión puedes solicitar el cambio de contraseña."
+      ]
+    },
+    {
+      "tag": "perfil_usuario",
+      "patterns": [
+        "editar perfil",
+        "actualizar datos",
+        "cambiar informacion",
+        "mi perfil",
+        "modificar perfil",
+        "actualizar correo",
+        "actualizar telefono",
+        "editar mis datos",
+        "configurar perfil",
+        "como cambiar mis datos",
+        "informacion personal",
+        "datos personales",
+        "editar cuenta",
+        "actualizar cuenta",
+        "perfil"
+      ],
+      "responses": [
+        "Desde la sección Mi Perfil puedes actualizar tu información personal.",
+        "Recuerda mantener tus datos actualizados antes de solicitar un préstamo."
+      ]
+    },
+    {
+      "tag": "herramientas",
+      "patterns": [
+        "que herramientas tienen",
+        "herramientas disponibles",
+        "que equipos existen",
+        "inventario",
+        "catalogo",
+        "que puedo alquilar",
+        "mostrar herramientas",
+        "ver herramientas",
+        "productos disponibles",
+        "equipos disponibles",
+        "herramientas",
+        "listar inventario",
+        "que herramientas hay",
+        "material disponible",
+        "equipos"
+      ],
+      "responses": [
+        "Puedes consultar todas las herramientas disponibles en el catálogo de PoliRent.",
+        "El inventario muestra únicamente las herramientas registradas y disponibles."
+      ]
+    },
+    {
+      "tag": "multas",
+      "patterns": [
+        "hay multas",
+        "que pasa si me atraso",
+        "sanciones",
+        "penalizacion",
+        "devuelvo tarde",
+        "retraso",
+        "castigo",
+        "me suspenden",
+        "que ocurre si no devuelvo",
+        "multa",
+        "penalidad",
+        "atraso entrega",
+        "suspension",
+        "castigo por retraso",
+        "consecuencias"
+      ],
+      "responses": [
+        "Las devoluciones tardías pueden generar una suspensión temporal para futuros préstamos.",
+        "Evita retrasos para mantener tu cuenta habilitada."
+      ]
+    },
+    {
+      "tag": "horario",
+      "patterns": [
+        "horario",
+        "horarios",
+        "a que hora atienden",
+        "cuando abren",
+        "cuando cierran",
+        "dias de atencion",
+        "atienden hoy",
+        "horario laboratorio",
+        "hora de atencion",
+        "cuando puedo retirar",
+        "cuando puedo devolver",
+        "atencion",
+        "horario de servicio",
+        "dias habiles",
+        "abren los sabados"
+      ],
+      "responses": [
+        "Consulta el horario del laboratorio responsable para retirar o devolver herramientas.",
+        "Los horarios pueden variar según el laboratorio."
+      ]
+    },
+    {
+      "tag": "desconocido",
+      "patterns": [
+        "asdf",
+        "qwerty",
+        "no entiendo",
+        "cualquier cosa"
+      ],
+      "responses": [
+        "Lo siento, únicamente puedo responder preguntas relacionadas con PoliRent."
       ]
     }
   ]
