@@ -10,9 +10,7 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-# ==============================
 # Cargar dataset
-# ==============================
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -34,9 +32,8 @@ for intent in data["intents"]:
         X.append(pattern.lower())
         y.append(tag)
 
-# ==============================
 # Vectorización
-# ==============================
+
 vectorizer = TfidfVectorizer(
     lowercase=True,
     strip_accents="unicode",
@@ -46,9 +43,8 @@ vectorizer = TfidfVectorizer(
 
 X_train = vectorizer.fit_transform(X)
 
-# ==============================
 # Entrenamiento
-# ==============================
+
 model = MLPClassifier(
     hidden_layer_sizes=(32, 16),
     activation="relu",
@@ -71,9 +67,9 @@ print(f"Precisión entrenamiento: {score*100:.2f}%")
 print("=========================================\n")
 
 
-# ==============================
+
 # API
-# ==============================
+
 @app.route("/api/chat", methods=["POST"])
 def chat():
 
