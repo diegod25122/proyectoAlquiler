@@ -6,7 +6,8 @@ import {
     MdPerson, 
     MdLogout,
     MdCalendarToday,
-    MdReceipt
+    MdReceipt,
+    MdHome
 } from 'react-icons/md'
 import useDarkMode from '../../hooks/useDarkMode'
 import storeAuth from '../../context/storeAuth'
@@ -76,6 +77,7 @@ export const Sidebar = () => {
                             </p>
                             <ul className="space-y-1">
                                 {[
+                                    { to: '/', label: 'Ir a Inicio', icon: <MdHome className="h-5 w-5 text-purple-400" /> },
                                     { to: '/dashboard/mis-reservas', label: 'Mis Reservas', icon: <MdCalendarToday className="h-5 w-5" /> },
                                     { to: '/dashboard/mis-pagos', label: 'Mis Pagos', icon: <MdReceipt className="h-5 w-5" /> },
                                     { to: '/dashboard/profile', label: 'Mi Perfil', icon: <MdPerson className="h-5 w-5" /> },

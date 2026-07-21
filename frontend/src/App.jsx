@@ -16,6 +16,8 @@ import Reset from './pages/Reset'
 import Panel from './pages/Panel'
 import GestionReservas from './pages/GestionReservas'
 import GestionUsuarios from './pages/GestionUsuarios'
+import MisReservas from './pages/MisReservas'
+import MisPagos from './pages/MisPagos'
 import PublicRoute from './routers/PublicRoute'
 import ProtectedRoute from './routers/ProtectedRoute'
 import PrivateRouteWithRole from './routers/PrivateRouteWithRole'
@@ -66,6 +68,8 @@ function App() {
                   <Route path="registrar-producto" element={<RegistrarProducto/>} />
                   <Route path='reservas' element={<PrivateRouteWithRole><GestionReservas /></PrivateRouteWithRole>} />
                   <Route path='usuarios' element={<PrivateRouteWithRole><GestionUsuarios /></PrivateRouteWithRole>} />
+                  <Route path='mis-reservas' element={<MisReservas />} />
+                  <Route path='mis-pagos' element={<MisPagos />} />
                 </Route>
               </Routes>
             </ProtectedRoute>

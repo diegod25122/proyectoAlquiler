@@ -1,5 +1,6 @@
-import { Outlet, useLocation, useNavigate } from 'react-router'
+import { Outlet, useLocation, useNavigate, Link } from 'react-router'
 import { useState } from 'react'
+import { MdHome } from 'react-icons/md'
 import { Sidebar } from '../components/dashboard/Sidebar'
 import storeProfile from '../context/storeProfile'
 import storeAuth from '../context/storeAuth'
@@ -37,6 +38,15 @@ const Dashboard = () => {
                     </h1>
 
                     <div className="flex items-center gap-4">
+
+                        {/* Botón directo a Home */}
+                        <Link 
+                            to="/" 
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-100 hover:bg-purple-200 dark:bg-purple-950 dark:hover:bg-purple-900 text-purple-700 dark:text-purple-300 text-xs font-semibold transition-colors"
+                        >
+                            <MdHome className="text-base" />
+                            Ir a Inicio
+                        </Link>
 
                         {/* Notificaciones funcionales */}
                         <div className="relative">

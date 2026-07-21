@@ -18,24 +18,27 @@ const CarouselCard = ({ producto }) => {
     const navigate = useNavigate()
 
     const sinStock = producto.stock === 0 || producto.estado === false
-    const esPrestable = producto.tipo === 'Prestable'
+    const esPrestable = producto.tipo === 'Prestable' || producto.tipo !== 'Consumible'
+    const esComprable = producto.tipo === 'Consumible' || producto.precio > 0 || producto.disponibleCompra === true
     const status = getStatus(producto)
 
-    const handleAccion = () => {
+    const handleReservar = () => {
         if (sinStock) return
         const sesion = JSON.parse(localStorage.getItem("auth-token") || "null")
         if (!sesion?.state?.token) { navigate("/login"); return }
+        agregarReserva({ productoId: producto._id, nombre: producto.nombre, imagen: producto.imagen })
+        navigate(`/reservar/${producto._id}`)
+    }
 
-        if (esPrestable) {
-            agregarReserva({ productoId: producto._id, nombre: producto.nombre, imagen: producto.imagen })
-            navigate(`/reservar/${producto._id}`)
-        } else {
-            agregarCompra({ productoId: producto._id, nombre: producto.nombre, imagen: producto.imagen, precio: producto.precio })
-        }
+    const handleComprar = () => {
+        if (sinStock) return
+        const sesion = JSON.parse(localStorage.getItem("auth-token") || "null")
+        if (!sesion?.state?.token) { navigate("/login"); return }
+        agregarCompra({ productoId: producto._id, nombre: producto.nombre, imagen: producto.imagen, precio: producto.precio || 0 })
     }
 
     return (
-        <div className="min-w-[210px] max-w-[210px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 flex flex-col shrink-0 hover:border-[#1E5FD9]/40 dark:hover:border-[#1E5FD9]/40 hover:shadow-md transition-all">
+        <div className="min-w-[220px] max-w-[220px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 flex flex-col shrink-0 hover:border-[#1E5FD9]/40 dark:hover:border-[#1E5FD9]/40 hover:shadow-md transition-all">
             {/* Header: código + badge */}
             <div className="flex items-center justify-between mb-3">
                 <span className="font-mono text-[10px] text-gray-400 dark:text-gray-500 truncate max-w-[90px]">
@@ -61,29 +64,33 @@ const CarouselCard = ({ producto }) => {
             </h3>
             <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{producto.categoria}</p>
 
-            {!esPrestable && producto.precio != null && (
-                <p className="text-sm font-bold text-[#1E5FD9] mt-1">${producto.precio.toFixed(2)}</p>
+            {esComprable && producto.precio != null && (
+                <p className="text-sm font-bold text-[#1E5FD9] mt-1">${Number(producto.precio).toFixed(2)}</p>
             )}
 
             <div className="flex-1" />
 
-            {/* Botón */}
-            <button
-                onClick={handleAccion}
-                disabled={sinStock}
-                className={`mt-3 w-full py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 transition-colors ${
-                    sinStock
-                        ? 'bg-gray-50 dark:bg-gray-800 text-gray-300 dark:text-gray-600 cursor-not-allowed border border-gray-200 dark:border-gray-700'
-                        : esPrestable
-                            ? 'border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
-                            : 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-100'
-                }`}
-            >
-                {sinStock ? 'Sin stock'
-                    : esPrestable ? <><MdCalendarToday size={12} /> Reservar</>
-                    : <><MdShoppingCart size={12} /> Añadir</>
-                }
-            </button>
+            {/* Botones de Acción */}
+            <div className="mt-3 flex gap-2 flex-col">
+                {esPrestable && (
+                    <button
+                        onClick={handleReservar}
+                        disabled={sinStock}
+                        className={`w-full py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors border border-purple-600 text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/40 disabled:opacity-40 disabled:cursor-not-allowed`}
+                    >
+                        <MdCalendarToday size={12} /> Reservar
+                    </button>
+                )}
+                {esComprable && (
+                    <button
+                        onClick={handleComprar}
+                        disabled={sinStock}
+                        className={`w-full py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed`}
+                    >
+                        <MdShoppingCart size={12} /> Comprar
+                    </button>
+                )}
+            </div>
         </div>
     )
 }
