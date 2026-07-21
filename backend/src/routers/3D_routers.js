@@ -1,11 +1,13 @@
-const express = require('express');
-const axios = require('axios');
-const router = express.Router();
+import { Router } from 'express';
+import axios from 'axios';
+
+const router = Router();
 
 // 1. Lee la API Key desde las variables de entorno (.env)
 const TRIPO_API_KEY = process.env.TRIPO_API_KEY;
 
-router.post('/api/generate-3d', async (req, res) => {
+// Nota: Cambiado a '/generate-3d' para que al montarlo con '/api' en server.js quede como '/api/generate-3d'
+router.post('/generate-3d', async (req, res) => {
   const { prompt } = req.body;
 
   if (!prompt) {
@@ -73,4 +75,4 @@ router.post('/api/generate-3d', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
