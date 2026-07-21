@@ -12,19 +12,20 @@ import routerReserva from './routers/reserva_routers.js';
 import routerPrestamos from './routers/prestamo_routes.js'
 import routerCedula from './routers/cedula_routes.js'
 import routerChat from './routers/chat_routes.js'
-import routerMeshy from './routers/meshy_routes.js'
+// Reemplazamos/actualizamos el router 3D con sintaxis import
+import router3D from './routers/3dRoutes.js'
 
 // Inicializaciones
 const app = express()
 dotenv.config()
 
-//confirguracion cloudinary
+// Configuracion cloudinary
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
 })
-// Configuraciones
+
 // CORS Configuration
 const corsOptions = {
     origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [
@@ -49,37 +50,31 @@ app.use(fileUpload({
 swaggerDocs(app)
 
 // Variables globales
-app.set('port',process.env.PORT || 3000)
-
-
+app.set('port', process.env.PORT || 3000)
 
 // Rutas
 
 // Ruta principal
-app.get('/',(req,res)=>res.send("Server on"))
+app.get('/', (req, res) => res.send("Server on"))
 
 // Health check endpoint (para Render/Vercel)
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'OK', timestamp: new Date() })
 })
 
-// Rutas para usuarios
+// Rutas de la API
 app.use('/api', routerUsuario)
 app.use('/api', routerProducto)
-
-//ruta para reservas
 app.use('/api', routerReserva)
-
-// Rutas para prestamos
 app.use('/api', routerPrestamos)
-
-// Rutas para cédula Ecuador, Chat IA y Meshy 3D
 app.use('/api', routerCedula)
 app.use('/api', routerChat)
-app.use('/api', routerMeshy)
 
-// Manejo de una ruta que no sea encontrada
-app.use((req,res)=>res.status(404).send("Endpoint no encontrado - 404"))
+// Ruta para generación 3D (Tripo3D)
+app.use('/api', router3D)
 
-// Exportar la instancia de express por medio de app
-export default  app
+// Manejo de ruta no encontrada
+app.use((req, res) => res.status(404).send("Endpoint no encontrado - 404"))
+
+// Exportar la instancia de express
+export default app

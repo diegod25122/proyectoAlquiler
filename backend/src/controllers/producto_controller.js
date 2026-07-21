@@ -2,37 +2,6 @@ import Producto from "../models/Producto.js"
 import mongoose from "mongoose"
 import fs from "fs-extra"
 
-/* ============================================================
-   HELPER 1: Generar imagen con Hugging Face Inference API
-   Devuelve un Buffer (no un archivo en disco)
-   ============================================================ */
-const generarImagenIA = async (prompt) => {
-    const HF_MODEL = "stabilityai/stable-diffusion-xl-base-1.0" // ajusta al modelo que estés usando
-    const HF_API_URL = `https://api-inference.huggingface.co/models/${HF_MODEL}`
-
-    const respuesta = await fetch(HF_API_URL, {
-        method: "POST",
-        headers: {
-            Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ inputs: prompt })
-    })
-
-    if (respuesta.status === 503) {
-        const data = await respuesta.json()
-        const segundos = Math.ceil(data?.estimated_time || 20)
-        throw { tipo: "HF_MODEL_LOADING", msg: `El modelo de IA se está iniciando. Intenta nuevamente en ${segundos} segundos.` }
-    }
-
-    if (!respuesta.ok) {
-        const errorTexto = await respuesta.text()
-        throw { tipo: "HF_API_ERROR", msg: `Hugging Face rechazó la solicitud: ${errorTexto}` }
-    }
-
-    const arrayBuffer = await respuesta.arrayBuffer()
-    return Buffer.from(arrayBuffer)
-}
 
 /* ============================================================
    HELPER 2: Subir un Buffer a Cloudinary (sin pasar por disco)

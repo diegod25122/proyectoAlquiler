@@ -5,6 +5,7 @@ import TableTreatments from '../components/treatments/Table'
 import ModalTreatments from '../components/treatments/Modal'
 import useStorePrestamos from '../context/storePrestamos'
 import { FiBox, FiLoader, FiTag, FiHash, FiFileText, FiUser, FiToggleRight, FiLayers, FiDollarSign } from 'react-icons/fi'
+import VisorHerramientas3D from '../components/VisorHerramientas3D'
 
 const getAuthHeaders = () => {
     const storedUser = JSON.parse(localStorage.getItem('auth-token'))
@@ -25,31 +26,28 @@ const Details = () => {
     const [generando3D, setGenerando3D] = useState(false)
     const [error3D, setError3D] = useState(null)
 
-    // Cargar model-viewer web component desde Google CDN
-    useEffect(() => {
-        if (!document.querySelector('[data-model-viewer]')) {
-            const s = document.createElement('script')
-            s.type = 'module'
-            s.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js'
-            s.setAttribute('data-model-viewer', 'true')
-            document.head.appendChild(s)
-        }
-    }, [])
-
+    // Generar modelo 3D usando el backend con Tripo3D
     const generarModelo = async () => {
         if (!herramienta) return
         setGenerando3D(true)
         setError3D(null)
         setModelo3D(null)
         try {
+            const promptTexto = `${herramienta.nombre} - ${herramienta.descripcion || 'herramienta de trabajo'}`
+
             const { data } = await axios.post(
-                `${import.meta.env.VITE_BACKEND_URL}/meshy/generar`,
-                { nombre: herramienta.nombre, descripcion: herramienta.descripcion },
+                `${import.meta.env.VITE_BACKEND_URL}/generate-3d`,
+                { prompt: promptTexto },
                 { ...getAuthHeaders(), timeout: 130000 }
             )
-            setModelo3D(data)
+
+            if (data.modelUrl) {
+                setModelo3D(data)
+            } else {
+                setError3D('No se obtuvo el enlace del modelo 3D')
+            }
         } catch (error) {
-            setError3D(error.response?.data?.msg || 'No se pudo generar el modelo 3D')
+            setError3D(error.response?.data?.error || error.response?.data?.msg || 'No se pudo generar el modelo 3D')
         } finally {
             setGenerando3D(false)
         }
@@ -96,13 +94,11 @@ const Details = () => {
                 </p>
             </div>
 
-            {/* Cuerpo principal: info (izq) + imagen (der) */}
+            {/* Cuerpo principal */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
 
-                {/* Info cards */}
+                {/* Información de la herramienta */}
                 <div className="lg:col-span-2 space-y-4">
-
-                    {/* Badges de estado */}
                     <div className="flex flex-wrap gap-2">
                         <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${
                             herramienta.estado
@@ -132,16 +128,15 @@ const Details = () => {
                         )}
                     </div>
 
-                    {/* Tarjeta de detalles */}
                     <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 divide-y divide-gray-100 dark:divide-gray-800">
                         {[
-                            { icon: FiTag,      label: "Nombre",              value: herramienta.nombre },
-                            { icon: FiHash,     label: "Código de inventario", value: herramienta.codigoInventario },
-                            { icon: FiLayers,   label: "Categoría",           value: herramienta.categoria || "—" },
-                            { icon: FiLayers,   label: "Tipo",                value: herramienta.tipo || "—" },
-                            { icon: FiDollarSign, label: "Precio",            value: herramienta.precio ? `$${herramienta.precio.toFixed(2)}` : "Gratuito (Préstamo)" },
-                            { icon: FiLayers,   label: "Stock",               value: herramienta.stock ?? "—" },
-                            { icon: FiUser,     label: "Registrado por",      value: herramienta.registradoPor ? `${herramienta.registradoPor.nombre} ${herramienta.registradoPor.apellido}` : "—" },
+                            { icon: FiTag,        label: "Nombre",               value: herramienta.nombre },
+                            { icon: FiHash,       label: "Código de inventario", value: herramienta.codigoInventario },
+                            { icon: FiLayers,     label: "Categoría",            value: herramienta.categoria || "—" },
+                            { icon: FiLayers,     label: "Tipo",                 value: herramienta.tipo || "—" },
+                            { icon: FiDollarSign, label: "Precio",               value: herramienta.precio ? `$${herramienta.precio.toFixed(2)}` : "Gratuito (Préstamo)" },
+                            { icon: FiLayers,     label: "Stock",                value: herramienta.stock ?? "—" },
+                            { icon: FiUser,       label: "Registrado por",       value: herramienta.registradoPor ? `${herramienta.registradoPor.nombre} ${herramienta.registradoPor.apellido}` : "—" },
                         ].map(({ icon: Icon, label, value }) => (
                             <div key={label} className="flex items-start gap-3 px-5 py-3.5">
                                 <div className="w-8 h-8 bg-gray-50 dark:bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -154,7 +149,6 @@ const Details = () => {
                             </div>
                         ))}
 
-                        {/* Descripción separada (puede ser larga) */}
                         <div className="flex items-start gap-3 px-5 py-3.5">
                             <div className="w-8 h-8 bg-gray-50 dark:bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
                                 <FiFileText size={14} className="text-gray-500 dark:text-gray-400" />
@@ -167,19 +161,12 @@ const Details = () => {
                     </div>
                 </div>
 
-                {/* Imagen + modelo 3D */}
+                {/* Columna derecha: Imagen / Visor 3D */}
                 <div className="lg:col-span-1 flex flex-col gap-4">
                     <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4">
                         {modelo3D?.modelUrl ? (
-                            <div className="w-full h-64 rounded-lg overflow-hidden border border-gray-100 dark:border-gray-800">
-                                <model-viewer
-                                    src={modelo3D.modelUrl}
-                                    alt={herramienta.nombre}
-                                    auto-rotate=""
-                                    camera-controls=""
-                                    style={{ width: '100%', height: '100%' }}
-                                />
-                            </div>
+                            /* ✅ Se pasa correctamente 'modelUrl' al componente */
+                            <VisorHerramientas3D modelUrl={modelo3D.modelUrl} />
                         ) : (
                             <img
                                 src={herramienta.imagen || 'https://cdn-icons-png.flaticon.com/512/2138/2138440.png'}
@@ -199,7 +186,7 @@ const Details = () => {
                             }
                         </button>
                         {error3D && <p className="text-red-500 text-xs text-center mt-2">{error3D}</p>}
-                        {generando3D && <p className="text-gray-400 text-xs text-center mt-1">Puede tardar hasta 2 minutos...</p>}
+                        {generando3D && <p className="text-gray-400 text-xs text-center mt-1">Puede tardar entre 30s y 1 minuto...</p>}
                     </div>
                 </div>
             </div>
