@@ -10,7 +10,7 @@ const ProductoSchema = new Schema({
         type: String,
         required: true,
         trim: true,
-        unique: true // Actúa como el SKU/Código único del tipo de artículo
+        unique: true 
     },
     descripcion: {
         type: String,
