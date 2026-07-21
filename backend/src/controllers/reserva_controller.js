@@ -4,10 +4,11 @@ import { sendMailRechazoReserva } from '../helpers/sendMail.js'
 
 const registrarReserva = async (req, res) => {
     try {
-        const { usuario, producto, fechaInicio, fechaFin } = req.body;
+    const { producto, materia, docente, proposito, horasSolicitadas, cantidadSolicitada } = req.body
 
-        if (!usuario || !producto || !fechaInicio || !fechaFin)
-            return res.status(400).json({ msg: "Debes llenar todos los campos obligatorios (usuario, producto, fechaInicio, fechaFin)" });
+    if (!producto || !materia || !docente || !proposito || !horasSolicitadas)
+        return res.status(400).json({ msg: "Debes llenar todos los campos" })
+
 
         if (!mongoose.Types.ObjectId.isValid(usuario))
             return res.status(400).json({ msg: `El ID del Usuario no es válido: ${usuario}` });
@@ -15,7 +16,10 @@ const registrarReserva = async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(producto))
             return res.status(400).json({ msg: `El ID del producto no es válido: ${producto}` });
 
-        const reserva = await Reserva.create(req.body);
+        const reserva = await Reserva.create({
+            ...req.body,
+            solicitadoPor: req.usuarioHeader._id
+        });
         return res.status(201).json({ msg: "Reserva registrada correctamente", reserva });
 
     } catch (error) {

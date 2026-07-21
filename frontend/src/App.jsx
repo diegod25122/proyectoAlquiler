@@ -26,6 +26,8 @@ import storeProfile from './context/storeProfile'
 import storeAuth from './context/storeAuth'
 import RegistrarProducto from './components/create/RegistrarProducto'
 import ChatBotIA from './components/ChatBotIA.jsx'
+import ReservarProducto from './pages/ReservarProducto'
+import Carrito from './pages/Carrito'
 
 function App() {
   const { profile  } = storeProfile()
