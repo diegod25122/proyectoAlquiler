@@ -96,4 +96,16 @@ const rechazarReserva = async (req, res) => {
     }
 }
 
-export { registrarReserva, listarReservas, aprobarReserva, rechazarReserva };
+const listarMisReservas = async (req, res) => {
+    try {
+        const reservas = await Reserva.find({ usuario: req.usuarioHeader._id })
+            .populate('producto', 'nombre codigoInventario imagen categoria tipo precio')
+            .populate('aprobadoPor', 'nombre apellido')
+            .sort({ createdAt: -1 })
+        res.status(200).json(reservas)
+    } catch (error) {
+        res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
+    }
+}
+
+export { registrarReserva, listarReservas, listarMisReservas, aprobarReserva, rechazarReserva };
