@@ -48,7 +48,7 @@ const GestionReservas = () => {
         try {
             setProcesando(true)
             await axios.put(
-                `${import.meta.env.VITE_BACKEND_URL}/api/reservas/aprobar/${id}`,
+                `${import.meta.env.VITE_BACKEND_URL}/reservas/aprobar/${id}`,
                 {},
                 { headers: { Authorization: `Bearer ${token}` } }
             )
@@ -66,7 +66,7 @@ const GestionReservas = () => {
         try {
             setProcesando(true)
             await axios.put(
-                `${import.meta.env.VITE_BACKEND_URL}/api/reservas/rechazar/${modal}`,
+                `${import.meta.env.VITE_BACKEND_URL}/reservas/rechazar/${modal}`,
                 { motivo },
                 { headers: { Authorization: `Bearer ${token}` } }
             )

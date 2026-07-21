@@ -11,7 +11,7 @@ const ChatbotIA = () => {
     const [metrica, setMetrica] = useState(null);
     const [intent, setIntent] = useState(null);
     const [loading, setLoading] = useState(false);
-
+const API_URL = import.meta.env.VITE_IA_API_URL
     const enviarMensaje = async (e) => {
         e.preventDefault();
         if (!mensaje.trim()) return;
