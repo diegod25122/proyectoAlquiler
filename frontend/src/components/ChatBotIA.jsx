@@ -22,8 +22,7 @@ const ChatbotIA = () => {
         setLoading(true);
 
         try {
-            // Consumiendo tu API local de Python expuesta en el puerto 5000
-            const res = await axios.post('http://localhost:5000/api/chat', { message: userText });
+         const res = await axios.post(`${API_URL}/api/chat`, { message: userText });
             
             setHistorial(prev => [...prev, { sender: 'bot', text: res.data.response }]);
             

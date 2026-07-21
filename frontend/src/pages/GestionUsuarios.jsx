@@ -15,7 +15,7 @@ const GestionUsuarios = () => {
         try {
             setLoading(true)
             const { data } = await axios.get(
-                `${import.meta.env.VITE_BACKEND_URL}/api/usuarios`,
+                `${import.meta.env.VITE_BACKEND_URL}/usuarios`,
                 { headers: { Authorization: `Bearer ${token}` } }
             )
             setUsuarios(data)
@@ -37,7 +37,7 @@ const GestionUsuarios = () => {
         try {
             setProcesando(id)
             const { data } = await axios.put(
-                `${import.meta.env.VITE_BACKEND_URL}/api/usuarios/bloquear/${id}`,
+                `${import.meta.env.VITE_BACKEND_URL}/usuarios/bloquear/${id}`,
                 {},
                 { headers: { Authorization: `Bearer ${token}` } }
             )
@@ -54,7 +54,7 @@ const GestionUsuarios = () => {
         try {
             setProcesando(id)
             await axios.delete(
-                `${import.meta.env.VITE_BACKEND_URL}/api/usuarios/${id}`,
+                `${import.meta.env.VITE_BACKEND_URL}/usuarios/${id}`,
                 { headers: { Authorization: `Bearer ${token}` } }
             )
             mostrarMsg("ok", "Usuario eliminado correctamente")
