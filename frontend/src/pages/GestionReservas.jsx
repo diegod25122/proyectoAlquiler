@@ -19,8 +19,7 @@ const GestionReservas = () => {
     const [motivo, setMotivo] = useState("")
     const [procesando, setProcesando] = useState(false)
     const [msg, setMsg] = useState(null)
-
-    const token = JSON.parse(localStorage.getItem("token") || '""')
+  const token = JSON.parse(localStorage.getItem("auth-token") || "null")?.state?.token
 
     const cargar = async () => {
         try {
