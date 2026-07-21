@@ -9,8 +9,7 @@ const GestionUsuarios = () => {
     const [confirmar, setConfirmar] = useState(null)
     const [msg, setMsg] = useState(null)
 
-    const token = JSON.parse(localStorage.getItem("token") || '""')
-
+  const token = JSON.parse(localStorage.getItem("auth-token") || "null")?.state?.token
     const cargar = async () => {
         try {
             setLoading(true)
