@@ -42,7 +42,8 @@ function App() {
       <ChatBotIA />
         <Routes>
 
-
+       <Route path="/reservar/:id" element={<ReservarProducto />} />
+       <Route path="/carrito" element={<Carrito />} />
           <Route element={<PublicRoute />}>
             <Route index element={<Home />} />
             <Route path='login' element={<Login />} />
