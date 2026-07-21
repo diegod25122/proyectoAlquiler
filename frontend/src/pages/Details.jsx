@@ -5,7 +5,7 @@ import TableTreatments from '../components/treatments/Table'
 import ModalTreatments from '../components/treatments/Modal'
 import useStorePrestamos from '../context/storePrestamos'
 import { FiBox, FiLoader, FiTag, FiHash, FiFileText, FiUser, FiToggleRight, FiLayers, FiDollarSign } from 'react-icons/fi'
-import VisorHerramientas3D from '../components/VisorHerramientas3D'
+import VisorHerramienta3D from '../components/VisorHerramienta3D'
 
 const getAuthHeaders = () => {
     const storedUser = JSON.parse(localStorage.getItem('auth-token'))
