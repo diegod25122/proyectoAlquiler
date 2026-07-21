@@ -64,7 +64,6 @@ function App() {
                   <Route path='profile' element={<Profile />} />
                   <Route path='list' element={<List />} />
                   <Route path='details/:id' element={<Details />} />
-                  <Route path='create' element={<PrivateRouteWithRole><Create /></PrivateRouteWithRole>} />
                   <Route path='update/:id' element={<PrivateRouteWithRole><Update /></PrivateRouteWithRole>} />
                   <Route path='chat' element={<Chat />} />
                   <Route path="registrar-producto" element={<RegistrarProducto/>} />
