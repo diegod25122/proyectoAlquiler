@@ -9,10 +9,11 @@ import fileUpload from "express-fileupload"
 import cloudinary from 'cloudinary'
 import routerProducto from './routers/producto_routers.js';
 import routerReserva from './routers/reserva_routers.js';
-import { iniciarCronExpiracion } from './controllers/ordenCompra_controller.js';
 import ordenCompraRouter from './routers/OrdenCompra_routers.js';
 import routerCedula from './routers/cedula_routes.js';
-// Reemplazamos/actualizamos el router 3D con sintaxis import
+import routerPrestamos from './routers/prestamo_routes.js';
+import routerChat from './routers/chat_routes.js';
+import routerMeshy from './routers/meshy_routes.js';
 import router from './routers/3D_routers.js';
 
 // Inicializaciones
@@ -68,6 +69,9 @@ app.use('/api', routerProducto)
 app.use('/api', routerReserva)
 app.use('/api', ordenCompraRouter)
 app.use('/api', routerCedula)
+app.use('/api', routerPrestamos)
+app.use('/api', routerChat)
+app.use('/api', routerMeshy)
 
 // Ruta para generación 3D (Tripo3D)
 app.use('/api', router)

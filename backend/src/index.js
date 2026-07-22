@@ -1,10 +1,12 @@
 import app from './server.js'
 import connection from './database.js'
+import { iniciarCronExpiracion } from './controllers/ordenCompra_controller.js'
 
 const PORT = app.get('port')
 
 // Conectar a la base de datos
 connection()
+iniciarCronExpiracion()
 
 // Iniciar el servidor
 const server = app.listen(PORT, () => {
