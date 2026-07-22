@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import { sendMailRechazoReserva } from '../helpers/sendMail.js'
 
 const registrarReserva = async (req, res) => {
+    const usuario = req.usuarioHeader?._id;
     try {
     const { producto, materia, docente, proposito, horasSolicitadas, cantidadSolicitada } = req.body
 
@@ -18,7 +19,7 @@ const registrarReserva = async (req, res) => {
 
         const reserva = await Reserva.create({
             ...req.body,
-            solicitadoPor: req.usuarioHeader._id
+            usuario: req.usuarioHeader._id
         });
         return res.status(201).json({ msg: "Reserva registrada correctamente", reserva });
 
