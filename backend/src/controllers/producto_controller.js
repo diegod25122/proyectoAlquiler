@@ -1,12 +1,20 @@
 import Producto from "../models/Producto.js"
 import mongoose from "mongoose"
 import fs from "fs-extra"
+import { v2 as cloudinary } from "cloudinary"
 
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+})
 
 /* ============================================================
    HELPER 2: Subir un Buffer a Cloudinary (sin pasar por disco)
    ============================================================ */
 const subirBufferACloudinary = (buffer, carpeta = "poli-rent/productos") => {
+    if (!buffer) return Promise.reject(new Error("No hay contenido para subir"))
+
     return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
             { folder: carpeta, resource_type: "image" },
@@ -20,8 +28,14 @@ const subirBufferACloudinary = (buffer, carpeta = "poli-rent/productos") => {
    HELPER 3: Subir un archivo físico (tempFilePath) a Cloudinary
    ============================================================ */
 const subirArchivoACloudinary = async (tempFilePath, carpeta = "poli-rent/productos") => {
+    if (!tempFilePath) throw new Error("No hay archivo temporal para subir")
+
     const resultado = await cloudinary.uploader.upload(tempFilePath, { folder: carpeta })
-    await fs.unlink(tempFilePath)
+    try {
+        await fs.unlink(tempFilePath)
+    } catch {
+        // Ignorar si el archivo ya no existe o no se pudo borrar
+    }
     return resultado
 }
 
@@ -64,8 +78,7 @@ const registrarProducto = async (req, res) => {
         return res.status(400).json({ msg: "Los productos consumibles requieren un precio mayor a 0" })
     }
 
-    // ✅ FIX: Leer archivo desde express-fileupload (req.files)
-    const archivoImagen = req.files?.imagen; 
+    const archivoImagen = req.files?.imagen || req.file
 
     if (archivoImagen && promptImagenIA) {
         return res.status(400).json({ msg: "Elige una sola fuente de imagen: archivo o IA, no ambas" })
@@ -83,23 +96,32 @@ const registrarProducto = async (req, res) => {
             registradoPor: req.usuarioHeader._id
         })
 
+        let imagenFinal = "https://cdn-icons-png.flaticon.com/512/2618/2618671.png"
+        let imagenIDFinal = null
+        let isGeneratedByIAFinal = false
+
         // 2. Procesar flujo de imagen según la fuente elegida
         if (promptImagenIA && promptImagenIA.trim() !== "") {
-            const buffer = await generarImagenIA(promptImagenIA)
-            const { secure_url, public_id } = await subirBufferACloudinary(buffer)
-            nuevoProducto.imagen = secure_url
-            nuevoProducto.imagenID = public_id
-            nuevoProducto.isGeneratedByIA = true
-            
+            console.warn("Se recibió un prompt de IA, pero la generación de imágenes está deshabilitada para este registro.")
         } else if (archivoImagen) {
-            // ✅ FIX: express-fileupload guarda la ruta temporal en tempFilePath
-            const { secure_url, public_id } = await subirArchivoACloudinary(archivoImagen.tempFilePath)
-            nuevoProducto.imagen = secure_url
-            nuevoProducto.imagenID = public_id
-        } else {
-            // Imagen por defecto institucional
-            nuevoProducto.imagen = "https://cdn-icons-png.flaticon.com/512/2618/2618671.png"
+            try {
+                if (archivoImagen.tempFilePath) {
+                    const { secure_url, public_id } = await subirArchivoACloudinary(archivoImagen.tempFilePath)
+                    imagenFinal = secure_url
+                    imagenIDFinal = public_id
+                } else if (archivoImagen.buffer) {
+                    const { secure_url, public_id } = await subirBufferACloudinary(archivoImagen.buffer)
+                    imagenFinal = secure_url
+                    imagenIDFinal = public_id
+                }
+            } catch (error) {
+                console.warn("No se pudo subir la imagen a Cloudinary, se usará la imagen por defecto", error)
+            }
         }
+
+        nuevoProducto.imagen = imagenFinal
+        nuevoProducto.imagenID = imagenIDFinal
+        nuevoProducto.isGeneratedByIA = isGeneratedByIAFinal
 
         await nuevoProducto.save()
         return res.status(201).json({ msg: "✅ Producto registrado exitosamente", producto: nuevoProducto })
@@ -180,25 +202,34 @@ const actualizarProducto = async (req, res) => {
         const productoExistente = await Producto.findById(id)
         if (!productoExistente) return res.status(404).json({ msg: "No existe el producto" })
 
-        if (req.files?.imagen && req.body.promptImagenIA) {
+        const archivoImagen = req.files?.imagen || req.file
+
+        if (archivoImagen && req.body.promptImagenIA) {
             return res.status(400).json({ msg: "Elige una sola fuente de imagen: archivo o IA, no ambas" })
         }
 
         // Reemplazo de imagen: primero subimos la nueva, luego borramos la vieja de Cloudinary.
         // (Si lo hiciéramos al revés y la subida nueva fallara, te quedarías sin imagen)
         if (req.body.promptImagenIA) {
-            const buffer = await generarImagenIA(req.body.promptImagenIA)
-            const { secure_url, public_id } = await subirBufferACloudinary(buffer)
-            if (productoExistente.imagenID) await cloudinary.uploader.destroy(productoExistente.imagenID)
-            req.body.imagen = secure_url
-            req.body.imagenID = public_id
-            req.body.isGeneratedByIA = true
-        } else if (req.files?.imagen) {
-            const { secure_url, public_id } = await subirArchivoACloudinary(req.files.imagen.tempFilePath)
-            if (productoExistente.imagenID) await cloudinary.uploader.destroy(productoExistente.imagenID)
-            req.body.imagen = secure_url
-            req.body.imagenID = public_id
-            req.body.isGeneratedByIA = false
+            console.warn("Se recibió un prompt de IA para actualizar, pero la generación de imágenes está deshabilitada.")
+        } else if (archivoImagen) {
+            try {
+                if (archivoImagen.tempFilePath) {
+                    const { secure_url, public_id } = await subirArchivoACloudinary(archivoImagen.tempFilePath)
+                    if (productoExistente.imagenID) await cloudinary.uploader.destroy(productoExistente.imagenID)
+                    req.body.imagen = secure_url
+                    req.body.imagenID = public_id
+                    req.body.isGeneratedByIA = false
+                } else if (archivoImagen.buffer) {
+                    const { secure_url, public_id } = await subirBufferACloudinary(archivoImagen.buffer)
+                    if (productoExistente.imagenID) await cloudinary.uploader.destroy(productoExistente.imagenID)
+                    req.body.imagen = secure_url
+                    req.body.imagenID = public_id
+                    req.body.isGeneratedByIA = false
+                }
+            } catch (error) {
+                console.warn("No se pudo subir la imagen a Cloudinary al actualizar, se conservará la actual", error)
+            }
         }
 
         const productoActualizado = await Producto.findByIdAndUpdate(id, req.body, {
