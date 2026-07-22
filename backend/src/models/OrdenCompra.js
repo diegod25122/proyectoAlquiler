@@ -5,11 +5,11 @@ import mongoose, { Schema, model } from "mongoose"
 // si el Admin sube el precio después, tu historial quedaría corrupto.
 const ItemOrdenSchema = new Schema({
     producto: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "Producto",
         required: true
     },
-    nombre: { type: String, required: true },        // snapshot del nombre
+    nombre: { type: String, required: true },         // snapshot del nombre
     cantidad: { type: Number, required: true, min: [1, "Mínimo 1 unidad"] },
     precioUnitario: { type: Number, required: true } // snapshot del precio
 }, { _id: false })
@@ -18,7 +18,7 @@ const OrdenCompraSchema = new Schema({
 
     // ─── Relaciones ───────────────────────────────────────────────
     usuario: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "Usuario",
         required: true
     },
@@ -27,7 +27,7 @@ const OrdenCompraSchema = new Schema({
     items: {
         type: [ItemOrdenSchema],
         validate: {
-            validator: (arr) => arr.length > 0,
+            validator: (arr) => Array.isArray(arr) && arr.length > 0,
             message: "La orden debe contener al menos un artículo"
         }
     },
@@ -46,7 +46,7 @@ const OrdenCompraSchema = new Schema({
 
     // ─── Trazabilidad de entrega ──────────────────────────────────
     verificadoPor: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "Usuario",
         default: null
     },
@@ -57,12 +57,11 @@ const OrdenCompraSchema = new Schema({
 
 }, { timestamps: true })
 
-// Calcula la expiración automáticamente al crear la orden
-OrdenCompraSchema.pre("validate", function (next) {
+// ✅ CORRECCIÓN: Quitamos 'next' para evitar 'TypeError: next is not a function'
+OrdenCompraSchema.pre("validate", function () {
     if (this.isNew && !this.expiraEn) {
         this.expiraEn = new Date(Date.now() + 24 * 60 * 60 * 1000)
     }
-    next()
 })
 
 export default model("OrdenCompra", OrdenCompraSchema)

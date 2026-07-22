@@ -20,14 +20,8 @@ const manejarError = (error, res) => {
 
 /* ============================================================
    1. CREAR ORDEN (Usuario)
-   - Valida que todos los productos sean Consumibles
-   - Verifica stock disponible
-   - Descuenta stock atómicamente con transacción Mongo
-   - Crea PaymentIntent en Stripe
-   - Guarda la orden con stripeClientSecret para el frontend
    ============================================================ */
 const crearOrden = async (req, res) => {
-    // items esperado: [{ productoId, cantidad }]
     const { items } = req.body
 
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -41,7 +35,6 @@ const crearOrden = async (req, res) => {
         let total = 0
         const itemsOrden = []
 
-        // Validar cada producto dentro de la transacción
         for (const item of items) {
             if (!mongoose.Types.ObjectId.isValid(item.productoId)) {
                 await session.abortTransaction()
@@ -75,25 +68,25 @@ const crearOrden = async (req, res) => {
 
             itemsOrden.push({
                 producto: producto._id,
-                nombre: producto.nombre,       // snapshot
+                nombre: producto.nombre,        // snapshot
                 cantidad: item.cantidad,
                 precioUnitario: producto.precio // snapshot
             })
         }
 
-        // Redondear total para evitar problemas de float (ej: 0.1 + 0.2 ≠ 0.3 en JS)
+        // Redondear total para evitar decimales infinitos
         total = Math.round(total * 100) / 100
 
-        // Crear PaymentIntent en Stripe
-        // amount en centavos (Stripe siempre trabaja en la unidad mínima de la moneda)
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount: Math.round(total * 100), // USD → centavos
-            currency: "usd",
-            description: `Orden de compra - EPN ToolRental`,
-            metadata: { usuarioId: req.usuarioHeader._id.toString() },
-            automatic_payment_methods: { enabled: true, allow_redirects: "never" }
-        })
-
+        // Crear PaymentIntent y devolver `client_secret` para que el Frontend confirme
+const paymentIntent = await stripe.paymentIntents.create({
+    amount: Math.round(total * 100), // USD → centavos
+    currency: "usd",
+    description: `Orden de compra - POLI RENT`,
+    // No establecer `payment_method` ni `confirm` aquí: el cliente debe
+    // confirmar la intención con el `client_secret` y los datos de tarjeta.
+    automatic_payment_methods: { enabled: true },
+    metadata: { usuarioId: req.usuarioHeader._id.toString() }
+})
         // Guardar la orden con los datos de Stripe
         const nuevaOrden = new OrdenCompra({
             usuario: req.usuarioHeader._id,
@@ -106,7 +99,6 @@ const crearOrden = async (req, res) => {
         await nuevaOrden.save({ session })
         await session.commitTransaction()
 
-        // Devolvemos el clientSecret al frontend para que Stripe.js confirme el pago
         return res.status(201).json({
             msg: "Orden creada. Procede con el pago.",
             ordenId: nuevaOrden._id,
@@ -124,9 +116,6 @@ const crearOrden = async (req, res) => {
 
 /* ============================================================
    2. CONFIRMAR PAGO (Usuario)
-   El frontend llama a este endpoint DESPUÉS de que Stripe.js
-   confirme el pago con el clientSecret. Aquí solo verificamos
-   el estado del PaymentIntent y actualizamos la orden.
    ============================================================ */
 const confirmarPago = async (req, res) => {
     try {
@@ -168,7 +157,7 @@ const confirmarPago = async (req, res) => {
 const listarMisOrdenes = async (req, res) => {
     try {
         const ordenes = await OrdenCompra.find({ usuario: req.usuarioHeader._id })
-            .select("-stripeClientSecret -__v") // nunca exponer el clientSecret en listados
+            .select("-stripeClientSecret -__v")
             .sort({ createdAt: -1 })
 
         return res.status(200).json(ordenes)
@@ -179,7 +168,6 @@ const listarMisOrdenes = async (req, res) => {
 
 /* ============================================================
    4. LISTAR TODAS LAS ÓRDENES (Admin)
-   Filtra por estado: ?estado=Pendiente
    ============================================================ */
 const listarOrdenes = async (req, res) => {
     try {
@@ -200,7 +188,6 @@ const listarOrdenes = async (req, res) => {
 
 /* ============================================================
    5. MARCAR COMO ENTREGADO (Admin)
-   Confirma que el estudiante retiró físicamente los consumibles
    ============================================================ */
 const marcarEntregado = async (req, res) => {
     try {
@@ -228,9 +215,7 @@ const marcarEntregado = async (req, res) => {
 }
 
 /* ============================================================
-   6. CANCELAR ORDEN (Admin o Usuario dueño)
-   Solo se pueden cancelar órdenes Pendientes (no pagadas aún)
-   Restaura el stock de todos los ítems
+   6. CANCELAR ORDEN (Admin o Usuario)
    ============================================================ */
 const cancelarOrden = async (req, res) => {
     const session = await mongoose.startSession()
@@ -250,7 +235,6 @@ const cancelarOrden = async (req, res) => {
             return res.status(400).json({ msg: "Solo se pueden cancelar órdenes Pendientes" })
         }
 
-        // Restaurar stock de cada ítem
         for (const item of orden.items) {
             await Producto.findByIdAndUpdate(
                 item.producto,
@@ -259,9 +243,12 @@ const cancelarOrden = async (req, res) => {
             )
         }
 
-        // Cancelar el PaymentIntent en Stripe para liberar los fondos retenidos
         if (orden.stripePaymentIntentId) {
-            await stripe.paymentIntents.cancel(orden.stripePaymentIntentId)
+            try {
+                await stripe.paymentIntents.cancel(orden.stripePaymentIntentId)
+            } catch {
+                // Ignorar error si ya estaba cancelado en Stripe
+            }
         }
 
         orden.estado = "Cancelada"
@@ -278,9 +265,7 @@ const cancelarOrden = async (req, res) => {
 }
 
 /* ============================================================
-   CRON: Expirar órdenes automáticamente cada 10 minutos
-   Busca órdenes Pendientes cuya expiraEn ya pasó,
-   las marca Expiradas y restaura el stock
+   CRON: Expirar órdenes automáticamente
    ============================================================ */
 export const iniciarCronExpiracion = () => {
     cron.schedule("*/10 * * * *", async () => {
@@ -304,7 +289,7 @@ export const iniciarCronExpiracion = () => {
                     try {
                         await stripe.paymentIntents.cancel(orden.stripePaymentIntentId)
                     } catch {
-                        // Si ya fue cancelado en Stripe, ignoramos el error
+                        // Ignorar si ya fue cancelado
                     }
                 }
                 orden.estado = "Expirada"
