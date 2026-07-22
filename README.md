@@ -15,7 +15,7 @@
 [![Python](https://img.shields.io/badge/Python_·_Flask-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://flask.palletsprojects.com/)
 [![Stripe](https://img.shields.io/badge/Stripe-635BFF?style=for-the-badge&logo=stripe&logoColor=white)](https://stripe.com/)
 
-🌐 **[Aplicación en vivo](https://proyecto-alquiler-five.vercel.app)** · 📚 **[Documentación de la API (Swagger)](https://poli-rent-backend.onrender.com/api-docs/)** · ⚙️ **[API Backend](https://poli-rent-backend.onrender.com/api)**
+🌐 **[Aplicación en vivo](https://proyecto-alquiler-five.vercel.app)** · 📚 **[Documentación de la API (Swagger)](https://poli-rent-backend.onrender.com/api-docs/)** · ⚙️ **API Backend ([https://poli-rent-backend.onrender.com/api](https://poli-rent-backend.onrender.com/)**
 
 </div>
 
