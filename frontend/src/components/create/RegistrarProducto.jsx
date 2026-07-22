@@ -10,28 +10,27 @@ const DEFAULT_IMAGE = "https://cdn-icons-png.flaticon.com/512/2618/2618671.png"
 const RegistrarProducto = () => {
     const { registrarProducto } = storeProducto()
     const navigate = useNavigate()
+    
     const { register, handleSubmit, watch, formState: { errors }, setValue } = useForm({
         defaultValues: {
             stock: 1,
             tipo: "",
             categoria: "",
-            generadoConIA: false,
             estado: true,
         }
     })
 
     const tipoSeleccionado = watch("tipo")
-    const generadoConIA = watch("generadoConIA")
-    const estado = watch("estado")
 
     const [imagenState, setImagenState] = useState({
         preview: DEFAULT_IMAGE,
         prompt: "",
         loading: false,
-        modo: "subir",
+        modo: "subir", // 'subir' | 'ia'
     })
 
-    const handleGenerateImage = async () => {
+    // Handler para previsualizar localmente si generan la imagen en el cliente
+    const handleGenerateImagePreview = async () => {
         if (!imagenState.prompt.trim()) {
             toast.error("Escribe una descripción para generar la imagen")
             return
@@ -41,14 +40,15 @@ const RegistrarProducto = () => {
             const blob = await generateAvatar(imagenState.prompt)
             if (!blob?.type?.startsWith("image/")) throw new Error("No es una imagen válida")
 
-            const file = new File([blob], "herramienta.png", { type: blob.type })
             const imageUrl = URL.createObjectURL(blob)
-
             setImagenState((prev) => ({ ...prev, preview: imageUrl, loading: false }))
+            
+            // Opcional: si quieres enviar la imagen ya generada como un File físico
+            const file = new File([blob], "ia-producto.png", { type: blob.type })
             setValue("imagen", [file])
         } catch (error) {
             console.error(error)
-            toast.error("Error al generar la imagen con IA")
+            toast.error("Error al previsualizar la imagen con IA")
             setImagenState((prev) => ({ ...prev, preview: DEFAULT_IMAGE, loading: false }))
         }
     }
@@ -63,38 +63,41 @@ const RegistrarProducto = () => {
     const onSubmit = async (dataForm) => {
         const formData = new FormData()
         
-        // Empaquetado estricto de campos de texto obligatorios
+        // 1. Campos de texto básicos
         formData.append("nombre", dataForm.nombre.trim())
         formData.append("codigoInventario", dataForm.codigoInventario.trim().toUpperCase())
         formData.append("descripcion", dataForm.descripcion.trim())
         formData.append("categoria", dataForm.categoria)
         formData.append("tipo", dataForm.tipo)
-        
-        // Tipos numéricos limpios para Mongoose
         formData.append("stock", parseInt(dataForm.stock, 10))
 
-        // Si es consumible, adjuntar el precio parseado numéricamente
         if (dataForm.tipo === "Consumible" && dataForm.precio) {
             formData.append("precio", parseFloat(dataForm.precio))
         }
 
-        // Campos adicionales
-        formData.append("generadoConIA", dataForm.generadoConIA)
-        formData.append("estado", dataForm.estado)
-
-        // Imagen obligatoria u opcional dependiendo de tus requerimientos de backend
-        if (dataForm.imagen?.[0]) {
+        /* 
+           2. Lógica para enviar la Imagen o el Prompt según el MODO seleccionado:
+           - Si estás en MODO IA y prefieres que el Backend se encargue de llamar a Hugging Face:
+             envías promptImagenIA.
+           - Si estás en MODO SUBIR (o envías el File del blob): envías el archivo en 'imagen'.
+        */
+        if (imagenState.modo === "ia" && imagenState.prompt.trim()) {
+            // Envío directo del prompt al controlador de backend
+            formData.append("promptImagenIA", imagenState.prompt.trim())
+        } else if (dataForm.imagen?.[0]) {
+            // Archivo local o Blob convertido a File
             formData.append("imagen", dataForm.imagen[0])
         }
 
         const exito = await registrarProducto(formData)
         if (exito) {
+            toast.success("¡Producto creado con éxito!")
             setTimeout(() => navigate("/dashboard/list"), 1500)
         }
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="bg-gray-50 dark:bg-gray-950 p-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="bg-gray-50 dark:bg-gray-950 p-6 min-h-screen">
             <ToastContainer />
 
             {/* Header */}
@@ -106,10 +109,10 @@ const RegistrarProducto = () => {
                 </div>
             </div>
 
-            {/* Grid principal: campos (izq) + imagen (der) */}
+            {/* Grid principal */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
                 
-                {/* IZQUIERDA — todos los campos de datos */}
+                {/* IZQUIERDA — Formulario de datos */}
                 <div className="lg:col-span-2 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 space-y-5">
 
                     {/* Fila 1: Nombre + Código */}
@@ -120,8 +123,8 @@ const RegistrarProducto = () => {
                             </label>
                             <input
                                 type="text"
-                                placeholder="Ej: Taladro Inalámbrico Bosch"
-                                className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 py-2.5 px-3 text-sm text-gray-700 dark:text-white bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                placeholder="Ej: Multímetro Digital Fluke"
+                                className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 py-2.5 px-3 text-sm text-gray-700 dark:text-white bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 transition"
                                 {...register("nombre", { required: "El nombre es obligatorio" })}
                             />
                             {errors.nombre && <p className="text-red-600 text-xs mt-1">{errors.nombre.message}</p>}
@@ -132,8 +135,8 @@ const RegistrarProducto = () => {
                             </label>
                             <input
                                 type="text"
-                                placeholder="Ej: TEC-00125"
-                                className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 py-2.5 px-3 text-sm text-gray-700 dark:text-white bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                placeholder="Ej: ELE-00125"
+                                className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 py-2.5 px-3 text-sm text-gray-700 dark:text-white bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 transition"
                                 {...register("codigoInventario", { required: "El código es obligatorio" })}
                             />
                             {errors.codigoInventario && <p className="text-red-600 text-xs mt-1">{errors.codigoInventario.message}</p>}
@@ -147,7 +150,7 @@ const RegistrarProducto = () => {
                                 Categoría <span className="text-red-500">*</span>
                             </label>
                             <select
-                                className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 py-2.5 px-3 text-sm text-gray-700 dark:text-white bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 py-2.5 px-3 text-sm text-gray-700 dark:text-white bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 transition"
                                 {...register("categoria", { required: "Selecciona una categoría" })}
                             >
                                 <option value="">Seleccione categoría</option>
@@ -163,7 +166,7 @@ const RegistrarProducto = () => {
                                 Tipo <span className="text-red-500">*</span>
                             </label>
                             <select
-                                className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 py-2.5 px-3 text-sm text-gray-700 dark:text-white bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 py-2.5 px-3 text-sm text-gray-700 dark:text-white bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 transition"
                                 {...register("tipo", { required: "El tipo es obligatorio" })}
                             >
                                 <option value="">Seleccione el tipo</option>
@@ -174,7 +177,7 @@ const RegistrarProducto = () => {
                         </div>
                     </div>
 
-                    {/* Fila 3: Stock + Precio (condicional) */}
+                    {/* Fila 3: Stock + Precio */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="mb-1.5 block text-sm font-semibold text-gray-700 dark:text-gray-300">
@@ -184,7 +187,7 @@ const RegistrarProducto = () => {
                                 type="number"
                                 placeholder="Ej: 5"
                                 min="0"
-                                className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 py-2.5 px-3 text-sm text-gray-700 dark:text-white bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 py-2.5 px-3 text-sm text-gray-700 dark:text-white bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 transition"
                                 {...register("stock", { required: "El stock es obligatorio", min: { value: 0, message: "Mínimo 0" } })}
                             />
                             {errors.stock && <p className="text-red-600 text-xs mt-1">{errors.stock.message}</p>}
@@ -201,7 +204,7 @@ const RegistrarProducto = () => {
                                         step="0.01"
                                         placeholder="0.00"
                                         min="0.01"
-                                        className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 py-2.5 pl-7 pr-3 text-sm text-gray-700 dark:text-white bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                        className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 py-2.5 pl-7 pr-3 text-sm text-gray-700 dark:text-white bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 transition"
                                         {...register("precio", { required: "Precio obligatorio para consumibles", min: { value: 0.01, message: "Precio inválido" } })}
                                     />
                                 </div>
@@ -218,7 +221,7 @@ const RegistrarProducto = () => {
                         <textarea
                             rows={4}
                             placeholder="Describe el producto, sus características y especificaciones..."
-                            className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 py-2.5 px-3 text-sm text-gray-700 dark:text-white bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none"
+                            className="block w-full rounded-lg border border-gray-300 dark:border-gray-700 py-2.5 px-3 text-sm text-gray-700 dark:text-white bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 transition resize-none"
                             {...register("descripcion", { required: "La descripción es obligatoria" })}
                         />
                         {errors.descripcion && <p className="text-red-600 text-xs mt-1">{errors.descripcion.message}</p>}
@@ -242,57 +245,79 @@ const RegistrarProducto = () => {
                     </div>
                 </div>
 
-                {/* DERECHA — imagen */}
-                <div className="lg:col-span-1 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
-                    <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-4">Imagen del producto</h3>
+                {/* DERECHA — Imagen & IA */}
+                <div className="lg:col-span-1 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 flex flex-col justify-between">
+                    <div>
+                        <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-4">Imagen del producto</h3>
 
-                    <div className="flex gap-2 mb-4">
-                        {["subir", "ia"].map(modo => (
-                            <button key={modo} type="button"
-                                onClick={() => setImagenState(prev => ({ ...prev, modo }))}
-                                className={`flex-1 py-2 px-3 rounded-lg font-semibold text-xs transition-colors ${
-                                    imagenState.modo === modo ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-                                }`}
-                            >
-                                {modo === "subir" ? "Subir archivo" : "Generar IA"}
-                            </button>
-                        ))}
+                        {/* Selector de modo */}
+                        <div className="flex gap-2 mb-4">
+                            {["subir", "ia"].map(modo => (
+                                <button 
+                                    key={modo} 
+                                    type="button"
+                                    onClick={() => {
+                                        setImagenState(prev => ({ ...prev, modo }))
+                                        // Limpiar selección previa para evitar enviar ambas fuentes al backend
+                                        setValue("imagen", null) 
+                                    }}
+                                    className={`flex-1 py-2 px-3 rounded-lg font-semibold text-xs transition-colors ${
+                                        imagenState.modo === modo 
+                                            ? "bg-blue-600 text-white" 
+                                            : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                                    }`}
+                                >
+                                    {modo === "subir" ? "Subir archivo" : "Generar IA"}
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Previsualización */}
+                        <div className="relative mb-4">
+                            <img
+                                src={imagenState.preview}
+                                alt="preview"
+                                className="w-full h-48 object-cover rounded-lg border border-gray-200 dark:border-gray-700"
+                            />
+                            {imagenState.loading && (
+                                <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center text-white text-xs font-semibold">
+                                    Generando vista previa...
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Inputs según el modo */}
+                        {imagenState.modo === "subir" ? (
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className="block w-full text-xs text-gray-600 dark:text-gray-400 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:cursor-pointer"
+                            />
+                        ) : (
+                            <div className="space-y-2">
+                                <input
+                                    type="text"
+                                    placeholder="Ej: osciloscopio digital azul"
+                                    value={imagenState.prompt}
+                                    onChange={e => setImagenState(prev => ({ ...prev, prompt: e.target.value }))}
+                                    className="w-full rounded-lg border border-gray-300 dark:border-gray-700 py-2 px-3 text-sm text-gray-700 dark:text-white bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleGenerateImagePreview}
+                                    disabled={imagenState.loading}
+                                    className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold text-sm hover:bg-blue-700 disabled:opacity-50 transition"
+                                >
+                                    {imagenState.loading ? "Procesando..." : "Generar Vista Previa"}
+                                </button>
+                            </div>
+                        )}
                     </div>
 
-                    <img
-                        src={imagenState.preview}
-                        alt="preview"
-                        className="w-full h-44 object-cover rounded-lg border border-gray-200 dark:border-gray-700 mb-4"
-                    />
-
-                    {imagenState.modo === "subir" ? (
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleFileChange}
-                            className="block w-full text-xs text-gray-600 dark:text-gray-400 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:cursor-pointer"
-                        />
-                    ) : (
-                        <div className="space-y-2">
-                            <input
-                                type="text"
-                                placeholder="Ej: taladro rojo industrial"
-                                value={imagenState.prompt}
-                                onChange={e => setImagenState(prev => ({ ...prev, prompt: e.target.value }))}
-                                className="w-full rounded-lg border border-gray-300 dark:border-gray-700 py-2 px-3 text-sm text-gray-700 dark:text-white bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            />
-                            <button
-                                type="button"
-                                onClick={handleGenerateImage}
-                                disabled={imagenState.loading}
-                                className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {imagenState.loading ? "Generando..." : "Generar imagen"}
-                            </button>
-                        </div>
-                    )}
-                    <p className="text-xs text-gray-400 mt-3">JPG, PNG, WebP · Máx. 5 MB</p>
+                    <p className="text-xs text-gray-400 mt-4 text-center">JPG, PNG, WebP · Máx. 5 MB</p>
                 </div>
+
             </div>
         </form>
     )

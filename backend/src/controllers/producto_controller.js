@@ -64,8 +64,8 @@ const registrarProducto = async (req, res) => {
         return res.status(400).json({ msg: "Los productos consumibles requieren un precio mayor a 0" })
     }
 
-    // Identificar si viene un archivo físico (compatible con Multer: req.file)
-    const archivoImagen = req.file; 
+    // ✅ FIX: Leer archivo desde express-fileupload (req.files)
+    const archivoImagen = req.files?.imagen; 
 
     if (archivoImagen && promptImagenIA) {
         return res.status(400).json({ msg: "Elige una sola fuente de imagen: archivo o IA, no ambas" })
@@ -92,13 +92,12 @@ const registrarProducto = async (req, res) => {
             nuevoProducto.isGeneratedByIA = true
             
         } else if (archivoImagen) {
-            // Si usas Multer con almacenamiento en disco local (ej: carpeta uploads/)
-            // pasas archivoImagen.path. Si usas memoria buffer, archivoImagen.buffer
-            const { secure_url, public_id } = await subirArchivoACloudinary(archivoImagen.path)
+            // ✅ FIX: express-fileupload guarda la ruta temporal en tempFilePath
+            const { secure_url, public_id } = await subirArchivoACloudinary(archivoImagen.tempFilePath)
             nuevoProducto.imagen = secure_url
             nuevoProducto.imagenID = public_id
         } else {
-            // Imagen por defecto institucional por si no suben nada
+            // Imagen por defecto institucional
             nuevoProducto.imagen = "https://cdn-icons-png.flaticon.com/512/2618/2618671.png"
         }
 
@@ -106,7 +105,7 @@ const registrarProducto = async (req, res) => {
         return res.status(201).json({ msg: "✅ Producto registrado exitosamente", producto: nuevoProducto })
 
     } catch (error) {
-        console.error("❌ Error real en el controlador:", error); // Esto te ahorrará revisar Render a cada rato
+        console.error("❌ Error real en el controlador:", error);
         return manejarErrorProducto(error, res)
     }
 }
