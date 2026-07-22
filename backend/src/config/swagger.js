@@ -11,7 +11,7 @@ const servers = [
 // Add production server if in production
 if (process.env.NODE_ENV === 'production' || process.env.PROD_URL_BACKEND) {
     servers.push({
-        url: process.env.PROD_URL_BACKEND || 'https://poli-rent-backend.onrender.com/api',
+        url: process.env.URL_BACKEND || 'https://poli-rent-backend.onrender.com/api',
         description: 'Production'
     })
 }

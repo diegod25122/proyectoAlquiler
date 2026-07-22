@@ -3,6 +3,52 @@ import axios from 'axios';
 
 const router = Router();
 
+/**
+ * @swagger
+ * tags:
+ *   - name: Modelos3D
+ *     description: Generación de modelos 3D a partir de texto (Tripo3D)
+ */
+
+/**
+ * @swagger
+ * /generate-3d:
+ *   post:
+ *     summary: Generar un modelo 3D a partir de un prompt de texto
+ *     tags: [Modelos3D]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [prompt]
+ *             properties:
+ *               prompt:
+ *                 type: string
+ *                 example: "una silla de madera estilo minimalista"
+ *     responses:
+ *       200:
+ *         description: Modelo 3D generado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 modelUrl:
+ *                   type: string
+ *                 renderedImageUrl:
+ *                   type: string
+ *       400:
+ *         description: El campo "prompt" es requerido
+ *       500:
+ *         description: Error interno, API Key no configurada, o fallo en Tripo3D
+ *       504:
+ *         description: Tiempo de espera agotado al generar el modelo 3D
+ */
 router.post('/generate-3d', async (req, res) => {
   const TRIPO_API_KEY = process.env.TRIPO_API_KEY;
 
