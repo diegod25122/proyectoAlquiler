@@ -17,17 +17,21 @@ const reservaSchema = new Schema({
         default: 1,
         min: [1, 'La cantidad debe ser al menos 1']
     },
+    materia: { type: String, trim: true, default: "" },
+    docente: { type: String, trim: true, default: "" },
+    proposito: { type: String, trim: true, default: "" },
+    horasSolicitadas: { type: Number, default: 1 },
     fechaReserva: {
         type: Date,
         default: Date.now
     },
     fechaInicio: {
         type: Date,
-        required: true
+        default: null
     },
     fechaFin: {
         type: Date,
-        required: true
+        default: null
     },
     fechaEntrega: {
         type: Date,

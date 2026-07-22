@@ -142,7 +142,7 @@ const crearOrden = async (req, res) => {
    ============================================================ */
 const confirmarPago = async (req, res) => {
     try {
-        const { ordenId } = req.body
+        const { ordenId, simularPagoExitoso } = req.body
 
         if (!mongoose.Types.ObjectId.isValid(ordenId)) {
             return res.status(400).json({ msg: "ID de orden inválido" })
@@ -153,6 +153,14 @@ const confirmarPago = async (req, res) => {
 
         if (orden.estado === "Pagado") {
             return res.status(400).json({ msg: "Esta orden ya fue pagada" })
+        }
+
+        // Modo pruebas: omitir verificación Stripe solo en entorno de desarrollo
+        const esModoDesarrollo = process.env.NODE_ENV !== "production"
+        if (simularPagoExitoso && esModoDesarrollo) {
+            orden.estado = "Pagado"
+            await orden.save()
+            return res.status(200).json({ msg: "✅ Pago simulado confirmado (modo pruebas)", orden })
         }
 
         const stripe = getStripeClient()

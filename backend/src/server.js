@@ -9,10 +9,8 @@ import fileUpload from "express-fileupload"
 import cloudinary from 'cloudinary'
 import routerProducto from './routers/producto_routers.js';
 import routerReserva from './routers/reserva_routers.js';
-import { iniciarCronExpiracion } from './controllers/ordenCompra_controller.js';
 import ordenCompraRouter from './routers/OrdenCompra_routers.js';
 import routerCedula from './routers/cedula_routes.js';
-// Reemplazamos/actualizamos el router 3D con sintaxis import
 import router from './routers/3D_routers.js';
 
 // Inicializaciones
