@@ -27,7 +27,7 @@
 
 Proyecto desarrollado como **Trabajo de Integración Curricular** (ESFOT — EPN).
 
-## 👨‍💻 Equipo de Desarrollo
+##  Equipo de Desarrollo
 
 | Integrante | Rol |
 |---|---|
@@ -66,7 +66,7 @@ flowchart LR
 
 ---
 
-## 🔌 Las 4 APIs externas integradas
+##  Las 4 APIs externas integradas
 
 | # | API | Uso en POLI-RENT | Estado |
 |---|-----|------------------|--------|
@@ -79,7 +79,7 @@ flowchart LR
 
 ---
 
-## 🧩 Módulos y Endpoints
+##  Módulos y Endpoints
 
 Documentación interactiva completa en **[Swagger](https://poli-rent-backend.onrender.com/api-docs/)**.
 
@@ -142,7 +142,7 @@ Documentación interactiva completa en **[Swagger](https://poli-rent-backend.onr
 | GET | `/api/ordenes` | 🔐 Admin |
 | PUT | `/api/ordenes/entregar/:id` | 🔐 Admin |
 
-⏰ Incluye **cron job** que expira órdenes pendientes de pago automáticamente.
+ Incluye **cron job** que expira órdenes pendientes de pago automáticamente.
 
 </details>
 
@@ -176,7 +176,7 @@ Documentación interactiva completa en **[Swagger](https://poli-rent-backend.onr
 | **node-cron** | Expiración automática de órdenes |
 | **Swagger (jsdoc + ui)** | Documentación interactiva de la API |
 
-### Microservicio de IA (`/backend-IA`) 🚧
+### Microservicio de IA (`/backend-IA`) 
 | Tecnología | Uso |
 |---|---|
 | **Python + Flask** | API del chatbot (`POST /api/chat`) |
@@ -266,7 +266,7 @@ npm install
 npm run dev        # → http://localhost:5173
 ```
 
-### 4. Microservicio de IA (chatbot) 🚧
+### 4. Microservicio de IA (chatbot) 
 ```bash
 cd backend-IA
 pip install -r requirements.txt
