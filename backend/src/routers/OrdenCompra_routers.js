@@ -34,19 +34,24 @@ const router = Router()
  *         application/json:
  *           schema:
  *             type: object
- *             required: [productos]
+ *             required:
+ *               - productos
  *             properties:
  *               productos:
  *                 type: array
+ *                 description: Lista de productos de la orden
  *                 items:
  *                   type: object
+ *                   required:
+ *                     - productoId
+ *                     - cantidad
  *                   properties:
  *                     productoId:
  *                       type: string
- *                       example: "64f1a2b3c4d5e6f7a8b9c0d1"
+ *                       example: "6a60d130e5f374131d94e01f"
  *                     cantidad:
  *                       type: integer
- *                       example: 2
+ *                       example: 1
  *     responses:
  *       200:
  *         description: Orden creada exitosamente
