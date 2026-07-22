@@ -4,7 +4,15 @@ import mongoose from "mongoose"
 import Stripe from "stripe"
 import cron from "node-cron"
 
-const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY)
+const getStripeClient = () => {
+    const apiKey = process.env.STRIPE_PRIVATE_KEY
+
+    if (!apiKey) {
+        throw new Error("Falta la clave privada de Stripe (STRIPE_PRIVATE_KEY) en el archivo .env")
+    }
+
+    return new Stripe(apiKey)
+}
 
 /* ============================================================
    HELPER: Manejo centralizado de errores
@@ -14,8 +22,21 @@ const manejarError = (error, res) => {
         const detalles = Object.values(error.errors).map(e => e.message)
         return res.status(400).json({ msg: "Error de validación", detalles })
     }
+
+    if (error?.message?.includes("STRIPE_PRIVATE_KEY")) {
+        return res.status(500).json({ msg: error.message })
+    }
+
+    if (error?.type === "StripeInvalidRequestError") {
+        return res.status(400).json({ msg: `Error de Stripe: ${error.message}` })
+    }
+
+    if (error?.type === "StripeAuthenticationError") {
+        return res.status(401).json({ msg: "La clave de Stripe es inválida o no tiene permisos." })
+    }
+
     console.error("Error en ordenCompra.controller:", error)
-    return res.status(500).json({ msg: "❌ Error en el servidor" })
+    return res.status(500).json({ msg: `❌ Error en el servidor: ${error?.message || "Error inesperado"}` })
 }
 
 /* ============================================================
@@ -77,16 +98,18 @@ const crearOrden = async (req, res) => {
         // Redondear total para evitar decimales infinitos
         total = Math.round(total * 100) / 100
 
+        const stripe = getStripeClient()
+
         // Crear PaymentIntent y devolver `client_secret` para que el Frontend confirme
-const paymentIntent = await stripe.paymentIntents.create({
-    amount: Math.round(total * 100), // USD → centavos
-    currency: "usd",
-    description: `Orden de compra - POLI RENT`,
-    // No establecer `payment_method` ni `confirm` aquí: el cliente debe
-    // confirmar la intención con el `client_secret` y los datos de tarjeta.
-    automatic_payment_methods: { enabled: true },
-    metadata: { usuarioId: req.usuarioHeader._id.toString() }
-})
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: Math.round(total * 100), // USD → centavos
+            currency: "usd",
+            description: `Orden de compra - POLI RENT`,
+            // No establecer `payment_method` ni `confirm` aquí: el cliente debe
+            // confirmar la intención con el `client_secret` y los datos de tarjeta.
+            automatic_payment_methods: { enabled: true },
+            metadata: { usuarioId: req.usuarioHeader._id.toString() }
+        })
         // Guardar la orden con los datos de Stripe
         const nuevaOrden = new OrdenCompra({
             usuario: req.usuarioHeader._id,
@@ -131,6 +154,8 @@ const confirmarPago = async (req, res) => {
         if (orden.estado === "Pagado") {
             return res.status(400).json({ msg: "Esta orden ya fue pagada" })
         }
+
+        const stripe = getStripeClient()
 
         // Verificar en Stripe que el pago realmente se procesó
         const paymentIntent = await stripe.paymentIntents.retrieve(orden.stripePaymentIntentId)
@@ -243,6 +268,8 @@ const cancelarOrden = async (req, res) => {
             )
         }
 
+        const stripe = getStripeClient()
+
         if (orden.stripePaymentIntentId) {
             try {
                 await stripe.paymentIntents.cancel(orden.stripePaymentIntentId)
@@ -285,6 +312,8 @@ export const iniciarCronExpiracion = () => {
                         { session }
                     )
                 }
+                const stripe = getStripeClient()
+
                 if (orden.stripePaymentIntentId) {
                     try {
                         await stripe.paymentIntents.cancel(orden.stripePaymentIntentId)

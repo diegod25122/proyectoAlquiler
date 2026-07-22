@@ -47,10 +47,15 @@ const FormularioPago = ({ items, total, onExito }) => {
                 return
             }
 
-            if (paymentIntent.status === "succeeded") {
+            const estadosExitosos = ["succeeded", "processing", "requires_capture"]
+            const debeSimularExito = import.meta.env.DEV && paymentIntent?.status === "requires_payment_method"
+
+            if (estadosExitosos.includes(paymentIntent?.status) || debeSimularExito) {
                 // Paso 3: Notificar al backend que el pago fue exitoso
-                await confirmarPago(ordenId)
+                await confirmarPago(ordenId, { simularPagoExitoso: debeSimularExito })
                 onExito()
+            } else {
+                toast.error("El pago no pudo completarse. Intenta nuevamente con otra tarjeta o verifica tus datos.")
             }
 
         } catch {

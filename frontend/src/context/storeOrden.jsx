@@ -35,11 +35,14 @@ const storeOrden = create((set) => ({
     },
 
     // Llama al backend para confirmar que Stripe procesó el pago
-    confirmarPago: async (ordenId) => {
+    confirmarPago: async (ordenId, opciones = {}) => {
         try {
             const { data } = await axios.post(
                 `${BASE_URL}/ordenes/confirmar-pago`,
-                { ordenId },
+                {
+                    ordenId,
+                    simularPagoExitoso: opciones.simularPagoExitoso === true
+                },
                 getAuthHeaders()
             )
             toast.success(data.msg)
