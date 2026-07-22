@@ -32,7 +32,7 @@ Proyecto desarrollado como **Trabajo de Integración Curricular** (ESFOT — EPN
 | Integrante | Rol |
 |---|---|
 | Diego Camacho | Desarrollo Backend  |
-| Jairo Maigua |  Frontend |
+| Jairo Maigua |  Desarrollo Frontend |
 | Anthony Ledesma | Desarrollo Movil / Scrum Master |
 
 ---
