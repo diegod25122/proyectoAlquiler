@@ -1,116 +1,198 @@
-import Reserva from '../models/Reserva.js';
-import mongoose from 'mongoose';
-import { sendMailRechazoReserva } from '../helpers/sendMail.js'
+// controllers/reserva_controller.js
+import Reserva from "../models/Reserva.js"
+import Producto from "../models/Producto.js"
+import mongoose from "mongoose"
 
-const registrarReserva = async (req, res) => {
-    const usuario = req.usuarioHeader?._id;
-    try {
+// 1. Registrar nueva solicitud de reserva (Estudiante / Docente)
+export const registrarReserva = async (req, res) => {
     const { producto, materia, docente, proposito, horasSolicitadas, cantidadSolicitada } = req.body
 
-    if (!producto || !materia || !docente || !proposito || !horasSolicitadas)
-        return res.status(400).json({ msg: "Debes llenar todos los campos" })
-
-
-        if (!mongoose.Types.ObjectId.isValid(usuario))
-            return res.status(400).json({ msg: `El ID del Usuario no es válido: ${usuario}` });
-
-        if (!mongoose.Types.ObjectId.isValid(producto))
-            return res.status(400).json({ msg: `El ID del producto no es válido: ${producto}` });
-
-        const reserva = await Reserva.create({
-            ...req.body,
-            usuario: req.usuarioHeader._id
-        });
-        return res.status(201).json({ msg: "Reserva registrada correctamente", reserva });
-
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ msg: `❌ Error en el servidor - ${error.message || error}` });
+    // Validar campos requeridos
+    if (!producto || !materia || !docente || !proposito || !horasSolicitadas || !cantidadSolicitada) {
+        return res.status(400).json({ msg: "Todos los campos académicos son obligatorios." })
     }
-};
 
-const listarReservas = async (req, res) => {
     try {
-        const reservas = await Reserva.find()
-            .populate('usuario', 'nombre apellido email cedula')
-            .populate('producto', 'nombre codigoInventario imagen')
-            .populate('aprobadoPor', 'nombre apellido')
-            .sort({ createdAt: -1 })
-        res.status(200).json(reservas)
-    } catch (error) {
-        res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
-    }
-}
-
-const aprobarReserva = async (req, res) => {
-    try {
-        const { id } = req.params
-        if (!mongoose.Types.ObjectId.isValid(id))
-            return res.status(404).json({ msg: 'ID de reserva inválido' })
-
-        const reserva = await Reserva.findById(id)
-        if (!reserva) return res.status(404).json({ msg: 'Reserva no encontrada' })
-
-        reserva.estado = 'Aprobada'
-        reserva.aprobadoPor = req.usuarioHeader._id
-        await reserva.save()
-
-        res.status(200).json({ msg: 'Reserva aprobada correctamente' })
-    } catch (error) {
-        res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
-    }
-}
-
-const rechazarReserva = async (req, res) => {
-    try {
-        const { id } = req.params
-        const { motivo } = req.body
-
-        if (!motivo?.trim())
-            return res.status(400).json({ msg: 'Debes ingresar el motivo del rechazo' })
-
-        if (!mongoose.Types.ObjectId.isValid(id))
-            return res.status(404).json({ msg: 'ID de reserva inválido' })
-
-        const reserva = await Reserva.findById(id)
-            .populate('usuario', 'nombre apellido email')
-            .populate('producto', 'nombre')
-
-        if (!reserva) return res.status(404).json({ msg: 'Reserva no encontrada' })
-
-        reserva.estado = 'Rechazada'
-        reserva.observaciones = motivo.trim()
-        reserva.aprobadoPor = req.usuarioHeader._id
-        await reserva.save()
-
-        try {
-            const nombreUsuario = `${reserva.usuario.nombre} ${reserva.usuario.apellido}`
-            await sendMailRechazoReserva(
-                reserva.usuario.email,
-                nombreUsuario,
-                reserva.producto.nombre,
-                motivo.trim()
-            )
-        } catch (emailErr) {
-            console.error('Error enviando email de rechazo:', emailErr.message)
+        // Verificar que el producto exista y sea PRESTABLE
+        const productoBD = await Producto.findById(producto)
+        if (!productoBD || !productoBD.estado) {
+            return res.status(404).json({ msg: "El producto solicitado no está disponible o no existe." })
         }
 
-        res.status(200).json({ msg: 'Reserva rechazada y notificación enviada al usuario' })
+        if (productoBD.tipo !== "Prestable") {
+            return res.status(400).json({ msg: "Solo los productos de tipo 'Prestable' pueden ser reservados." })
+        }
+
+        if (productoBD.stock < cantidadSolicitada) {
+            return res.status(400).json({ msg: `Stock insuficiente. Disponible: ${productoBD.stock}` })
+        }
+
+        // Crear la reserva vinculada al usuario autenticado via JWT
+        const nuevaReserva = new Reserva({
+            producto,
+            solicitadoPor: req.usuarioHeader._id, // Tomado del middleware de autenticación
+            materia,
+            docente,
+            proposito,
+            horasSolicitadas: Number(horasSolicitadas),
+            cantidadSolicitada: Number(cantidadSolicitada),
+            estado: "Pendiente"
+        })
+
+        await nuevaReserva.save()
+        res.status(201).json({ msg: "Solicitud de reserva enviada con éxito. Espera la aprobación del taller.", reserva: nuevaReserva })
+
     } catch (error) {
-        res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
+        console.error("Error al registrar reserva:", error)
+        res.status(500).json({ msg: "Error interno al procesar la reserva", error: error.message })
     }
 }
 
-const listarMisReservas = async (req, res) => {
+// 2. Aprobar Reserva (Admin) - Descuenta stock y calcula fecha esperada de devolución
+export const aprobarReserva = async (req, res) => {
+    const { id } = req.params
+    const session = await mongoose.startSession()
+    session.startTransaction()
+
     try {
-        const reservas = await Reserva.find({ usuario: req.usuarioHeader._id })
-            .populate('producto', 'nombre codigoInventario imagen categoria tipo precio')
-            .populate('aprobadoPor', 'nombre apellido')
+        const reserva = await Reserva.findById(id).session(session)
+        if (!reserva || reserva.estado !== "Pendiente") {
+            await session.abortTransaction()
+            session.endSession()
+            return res.status(400).json({ msg: "La reserva no existe o ya no se encuentra en estado Pendiente." })
+        }
+
+        const producto = await Producto.findById(reserva.producto).session(session)
+        if (!producto || producto.stock < reserva.cantidadSolicitada) {
+            await session.abortTransaction()
+            session.endSession()
+            return res.status(400).json({ msg: "Stock insuficiente en taller para aprobar la reserva." })
+        }
+
+        // Descontar stock atómicamente
+        producto.stock -= reserva.cantidadSolicitada
+        await producto.save({ session })
+
+        // Calcular fecha estimada de devolución según las horas permitidas
+        const fechaAprobacion = new Date()
+        const fechaDevolucionEsperada = new Date(fechaAprobacion.getTime() + reserva.horasSolicitadas * 60 * 60 * 1000)
+
+        reserva.estado = "Aprobada"
+        reserva.aprobadoPor = req.usuarioHeader._id
+        reserva.fechaAprobacion = fechaAprobacion
+        reserva.fechaDevolucionEsperada = fechaDevolucionEsperada
+        await reserva.save({ session })
+
+        await session.commitTransaction()
+        session.endSession()
+
+        res.status(200).json({ msg: "Reserva aprobada exitosamente.", reserva })
+    } catch (error) {
+        await session.abortTransaction()
+        session.endSession()
+        res.status(500).json({ msg: "Error al aprobar la reserva", error: error.message })
+    }
+}
+
+// 3. Rechazar Reserva (Admin)
+export const rechazarReserva = async (req, res) => {
+    const { id } = req.params
+    const { motivoRechazo } = req.body
+
+    try {
+        const reserva = await Reserva.findById(id)
+        if (!reserva || reserva.estado !== "Pendiente") {
+            return res.status(400).json({ msg: "La reserva no está disponible para rechazo." })
+        }
+
+        reserva.estado = "Rechazada"
+        reserva.motivoRechazo = motivoRechazo || "No especificado"
+        reserva.aprobadoPor = req.usuarioHeader._id
+        await reserva.save()
+
+        res.status(200).json({ msg: "Reserva rechazada.", reserva })
+    } catch (error) {
+        res.status(500).json({ msg: "Error al rechazar reserva", error: error.message })
+    }
+}
+
+// 4. Marcar en uso (Admin - Entregado en el taller)
+export const marcarEnUso = async (req, res) => {
+    const { id } = req.params
+    try {
+        const reserva = await Reserva.findById(id)
+        if (!reserva || reserva.estado !== "Aprobada") {
+            return res.status(400).json({ msg: "La reserva debe estar en estado 'Aprobada' para entregarse." })
+        }
+
+        reserva.estado = "EnUso"
+        await reserva.save()
+
+        res.status(200).json({ msg: "Herramienta entregada. Reserva marcada en uso.", reserva })
+    } catch (error) {
+        res.status(500).json({ msg: "Error al actualizar estado a EnUso", error: error.message })
+    }
+}
+
+// 5. Marcar devuelto (Admin - Recibido en el taller y restaura el stock)
+export const marcarDevuelto = async (req, res) => {
+    const { id } = req.params
+    const { observacionesAdmin } = req.body
+    const session = await mongoose.startSession()
+    session.startTransaction()
+
+    try {
+        const reserva = await Reserva.findById(id).session(session)
+        if (!reserva || reserva.estado !== "EnUso") {
+            await session.abortTransaction()
+            session.endSession()
+            return res.status(400).json({ msg: "Solo se pueden devolver herramientas que estén actualmente 'EnUso'." })
+        }
+
+        // Devolver stock al inventario atómicamente
+        const producto = await Producto.findById(reserva.producto).session(session)
+        if (producto) {
+            producto.stock += reserva.cantidadSolicitada
+            await producto.save({ session })
+        }
+
+        reserva.estado = "Devuelto"
+        reserva.fechaDevolucionReal = new Date()
+        if (observacionesAdmin) reserva.observacionesAdmin = observacionesAdmin
+        await reserva.save({ session })
+
+        await session.commitTransaction()
+        session.endSession()
+
+        res.status(200).json({ msg: "Herramienta devuelta e inventario reabastecido correctamente.", reserva })
+    } catch (error) {
+        await session.abortTransaction()
+        session.endSession()
+        res.status(500).json({ msg: "Error al registrar la devolución", error: error.message })
+    }
+}
+
+// 6. Listar mis reservas (Usuario)
+export const listarMisReservas = async (req, res) => {
+    try {
+        const reservas = await Reserva.find({ solicitadoPor: req.usuarioHeader._id })
+            .populate("producto", "nombre codigoInventario imagen categoria")
             .sort({ createdAt: -1 })
         res.status(200).json(reservas)
     } catch (error) {
-        res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
+        res.status(500).json({ msg: "Error al obtener tus reservas", error: error.message })
     }
 }
 
-export { registrarReserva, listarReservas, listarMisReservas, aprobarReserva, rechazarReserva };
+// 7. Listar todas las reservas (Admin)
+export const listarReservas = async (req, res) => {
+    try {
+        const reservas = await Reserva.find()
+            .populate("producto", "nombre codigoInventario imagen")
+            .populate("solicitadoPor", "nombre apellido cedula email facultad")
+            .sort({ createdAt: -1 })
+        res.status(200).json(reservas)
+    } catch (error) {
+        res.status(500).json({ msg: "Error al obtener el listado general de reservas", error: error.message })
+    }
+}
