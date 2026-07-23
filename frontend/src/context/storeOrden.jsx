@@ -3,42 +3,41 @@ import axios from "axios"
 import { toast } from "react-toastify"
 
 const getAuthHeaders = () => {
-    try {
-        // 1. Intentar obtener el ítem de localStorage
-        const rawStorage = localStorage.getItem("auth-token") || localStorage.getItem("token");
+    let token = null;
 
-        if (!rawStorage) {
-            console.warn("⚠️ No se encontró ningún token en localStorage.");
-            return { headers: {} };
-        }
+    // 1. Buscar en las claves más comunes de localStorage
+    const authToken = localStorage.getItem("auth-token");
+    const tokenDirecto = localStorage.getItem("token");
+    const authStorage = localStorage.getItem("auth-storage");
 
-        let token = null;
+    const raw = authToken || tokenDirecto || authStorage;
 
-        // 2. Comprobar si es un JSON (por ejemplo, de Zustand Persist)
-        try {
-            const parsed = JSON.parse(rawStorage);
-            token = parsed?.state?.token || parsed?.token || parsed;
-        } catch {
-            // Si no es JSON, asumir que es el token directamente como string
-            token = rawStorage;
-        }
-
-        if (!token || token === "undefined") {
-            console.error("❌ El token encontrado no es válido:", token);
-            return { headers: {} };
-        }
-
-        return {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        };
-    } catch (error) {
-        console.error("Error al construir headers de autenticación:", error);
+    if (!raw) {
+        console.warn("⚠️ No se encontró ningún token en localStorage.");
         return { headers: {} };
     }
-}
 
+    try {
+        // 2. Intentar parsear por si viene de Zustand Persist u objeto JSON
+        const parsed = JSON.parse(raw);
+        token = parsed?.state?.token || parsed?.token || parsed;
+    } catch {
+        // 3. Si no es JSON, es una cadena de texto simple (JWT)
+        token = raw;
+    }
+
+    // Validar que realmente sea un string válido y no "undefined" / "null"
+    if (!token || token === "undefined" || token === "null") {
+        console.error("❌ El token recuperado no es válido:", token);
+        return { headers: {} };
+    }
+
+    return {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    };
+};
 const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}`
 
 const storeOrden = create((set) => ({
