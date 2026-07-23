@@ -14,45 +14,42 @@ import storeAuth from "../context/storeAuth";
 
 const estadoBadges = {
     Pagado: { label: "Pagado", cls: "bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300 border-green-300", icon: MdCheckCircle },
-    COMPLETADO: { label: "Completado", cls: "bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300 border-green-300", icon: MdCheckCircle },
+    Entregado: { label: "Entregado", cls: "bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 border-blue-300", icon: MdCheckCircle },
     Pendiente: { label: "Pendiente", cls: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border-amber-300", icon: MdHourglassEmpty },
-    PENDIENTE: { label: "Pendiente", cls: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border-amber-300", icon: MdHourglassEmpty },
-    CANCELADO: { label: "Cancelado", cls: "bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300 border-red-300", icon: MdCancel }
+    Cancelada: { label: "Cancelada", cls: "bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300 border-red-300", icon: MdCancel },
+    Expirada: { label: "Expirada", cls: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300 border-gray-300", icon: MdCancel }
 };
 
 export const MisPagos = () => {
     const { token } = storeAuth();
-    const [pagos, setPagos] = useState([]);
+    const [ordenes, setOrdenes] = useState([]);
     const [cargando, setCargando] = useState(true);
 
     useEffect(() => {
-        const obtenerMisPagos = async () => {
+        const obtenerMisOrdenes = async () => {
             try {
-                // Token seguro desde Zustand o LocalStorage
+                // Extracción segura del JWT
                 const sesionStorage = JSON.parse(localStorage.getItem("auth-token") || "null");
                 const jwtToken = token || sesionStorage?.state?.token || sesionStorage;
 
                 const config = { headers: { Authorization: `Bearer ${jwtToken}` } };
                 
-                // Intenta cargar transacciones (compras/ordenes) o historial de prestamos
+                // Endpoint exacto que ejecuta 'listarMisOrdenes'
                 const { data } = await axios.get(
-                    `${import.meta.env.VITE_BACKEND_URL}/ordenes/mis-compras`, 
+                    `${import.meta.env.VITE_BACKEND_URL}/ordenes/mis-ordenes`, 
                     config
-                ).catch(async () => {
-                    // Fallback a préstamos/pagos si la ruta principal es distinta
-                    return await axios.get(`${import.meta.env.VITE_BACKEND_URL}/prestamo/mis-pagos`, config);
-                });
+                );
 
-                setPagos(data || []);
+                setOrdenes(data || []);
             } catch (error) {
-                console.error("Error al cargar pagos desde la API:", error);
-                setPagos([]);
+                console.error("Error al cargar órdenes desde la API:", error);
+                setOrdenes([]);
             } finally {
                 setCargando(false);
             }
         };
 
-        obtenerMisPagos();
+        obtenerMisOrdenes();
     }, [token]);
 
     const formatearFecha = (str) => {
@@ -72,90 +69,80 @@ export const MisPagos = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200 dark:border-gray-800 pb-5">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                        <MdReceipt className="text-purple-600" /> Mis Pagos y Transacciones
+                        <MdReceipt className="text-purple-600" /> Mis Pagos y Compras
                     </h1>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        Historial en tiempo real de transacciones de compra y préstamos en Poli Rent.
+                        Historial de transacciones y compras procesadas con Stripe.
                     </p>
                 </div>
 
                 <div className="flex items-center gap-2 bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-900 px-3 py-2 rounded-lg text-purple-700 dark:text-purple-300 text-xs font-semibold">
                     <MdCreditCard className="text-lg" />
-                    Pasarela Stripe / Efectivo Taller
+                    Pagos Prototipo Stripe USD
                 </div>
             </div>
 
-            {/* Contenido / Listado */}
+            {/* Listado */}
             {cargando ? (
                 <div className="text-center py-12 text-gray-500 animate-pulse">
-                    Cargando tus comprobantes de pago...
+                    Cargando comprobantes...
                 </div>
-            ) : pagos.length === 0 ? (
+            ) : ordenes.length === 0 ? (
                 <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-8 text-center text-gray-500 dark:text-gray-400">
-                    No has registrado transacciones ni pagos cobrados aún.
+                    No tienes transacciones registradas.
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    {pagos.map((pago) => {
-                        const estadoKey = pago.estadoPago || pago.estado || "Pendiente";
-                        const BadgeInfo = estadoBadges[estadoKey] || { 
-                            label: estadoKey, 
+                    {ordenes.map((orden) => {
+                        const BadgeInfo = estadoBadges[orden.estado] || { 
+                            label: orden.estado, 
                             cls: "bg-gray-100 text-gray-700 border-gray-300", 
                             icon: MdHourglassEmpty 
                         };
                         const Icon = BadgeInfo.icon;
-                        const producto = pago.herramienta || pago.producto || (pago.items && pago.items[0]?.producto);
 
                         return (
                             <div 
-                                key={pago._id} 
+                                key={orden._id} 
                                 className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4"
                             >
-                                {/* Header del ítem */}
+                                {/* Header del Pago */}
                                 <div className="flex justify-between items-start gap-3">
-                                    <div className="flex items-start gap-3">
-                                        <div className="p-2 bg-purple-50 dark:bg-purple-950/50 rounded-lg border border-purple-100 dark:border-purple-900">
-                                            {producto?.imagen ? (
-                                                <img 
-                                                    src={producto.imagen} 
-                                                    alt="" 
-                                                    className="w-10 h-10 object-cover rounded" 
-                                                />
-                                            ) : (
-                                                <MdShoppingCart className="text-purple-600 text-2xl" />
-                                            )}
-                                        </div>
-                                        <div>
-                                            <span className="font-mono text-[11px] font-semibold text-purple-600 dark:text-purple-400">
-                                                {pago.codigoTransaccion || `#${pago._id.slice(-8).toUpperCase()}`}
-                                            </span>
-                                            <h3 className="font-bold text-gray-900 dark:text-white text-base leading-snug">
-                                                {producto?.nombre || pago.concepto || "Compra de Materiales / Reserva"}
-                                            </h3>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                                                Fecha: {formatearFecha(pago.createdAt || pago.fecha)}
-                                            </p>
-                                        </div>
+                                    <div>
+                                        <span className="font-mono text-[11px] font-semibold text-purple-600 dark:text-purple-400">
+                                            #{orden._id.slice(-8).toUpperCase()}
+                                        </span>
+                                        <h3 className="font-bold text-gray-900 dark:text-white text-base leading-snug">
+                                            Orden de Compra
+                                        </h3>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                            Fecha: {formatearFecha(orden.createdAt)}
+                                        </p>
                                     </div>
 
-                                    {/* Badge */}
+                                    {/* Badge Estado */}
                                     <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full border ${BadgeInfo.cls}`}>
                                         <Icon className="text-sm" />
                                         {BadgeInfo.label}
                                     </span>
                                 </div>
 
-                                {/* Método de Pago & Detalles */}
-                                <div className="text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 p-2.5 rounded-lg border border-gray-100 dark:border-gray-800/80 flex justify-between items-center">
-                                    <span>
-                                        <strong>Método:</strong> {pago.metodoPago || (pago.stripePaymentIntentId ? "Tarjeta (Stripe)" : "Efectivo")}
-                                    </span>
-                                    {pago.materia && (
-                                        <span><strong>Materia:</strong> {pago.materia}</span>
-                                    )}
+                                {/* Artículos Comprados */}
+                                <div className="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg border border-gray-100 dark:border-gray-800 space-y-2">
+                                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                                        Artículos ({orden.items?.length || 0})
+                                    </p>
+                                    <ul className="space-y-1 max-h-28 overflow-y-auto pr-1">
+                                        {orden.items?.map((item, idx) => (
+                                            <li key={idx} className="text-xs text-gray-700 dark:text-gray-300 flex justify-between">
+                                                <span>• {item.nombre} x{item.cantidad}</span>
+                                                <span className="font-mono text-gray-500">${(item.precioUnitario * item.cantidad).toFixed(2)}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </div>
 
-                                {/* Pie: Monto y Recibo */}
+                                {/* Pie del Pago */}
                                 <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-800">
                                     <div>
                                         <span className="text-[10px] text-gray-400 uppercase font-bold tracking-wider">
@@ -163,7 +150,7 @@ export const MisPagos = () => {
                                         </span>
                                         <p className="text-lg font-black text-gray-900 dark:text-white flex items-center">
                                             <MdAttachMoney className="text-green-600 -mr-1" />
-                                            {Number(pago.monto || pago.total || pago.precio || 0).toFixed(2)}
+                                            {Number(orden.total || 0).toFixed(2)}
                                         </p>
                                     </div>
 
@@ -171,7 +158,7 @@ export const MisPagos = () => {
                                         onClick={() => window.print()}
                                         className="flex items-center gap-1.5 text-xs font-semibold text-purple-600 hover:text-purple-700 border border-purple-200 hover:border-purple-300 dark:border-purple-800 dark:text-purple-400 px-3 py-1.5 rounded-lg transition-colors bg-purple-50/50 dark:bg-transparent"
                                     >
-                                        <MdFileDownload className="text-sm" /> Imprimir Comprobante
+                                        <MdFileDownload className="text-sm" /> Imprimir Recibo
                                     </button>
                                 </div>
                             </div>
