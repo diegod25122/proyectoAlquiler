@@ -35,9 +35,14 @@ const Details = () => {
         try {
             const promptTexto = `${herramienta.nombre} - ${herramienta.descripcion || 'herramienta de trabajo'}`
 
+            // Enviamos imageUrl, prompt y nombre para que el backend decida usar image-to-model o text-to-model
             const { data } = await axios.post(
                 `${import.meta.env.VITE_BACKEND_URL}/generate-3d`,
-                { prompt: promptTexto },
+                { 
+                    prompt: promptTexto,
+                    imageUrl: herramienta.imagen || null,
+                    nombre: herramienta.nombre
+                },
                 { ...getAuthHeaders(), timeout: 130000 }
             )
 
@@ -165,8 +170,7 @@ const Details = () => {
                 <div className="lg:col-span-1 flex flex-col gap-4">
                     <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4">
                         {modelo3D?.modelUrl ? (
-                            /* ✅ Se pasa correctamente 'modelUrl' al componente */
-                            <VisorHerramientas3D modelUrl={modelo3D.modelUrl} />
+                            <VisorHerramienta3D modelUrl={modelo3D.modelUrl} />
                         ) : (
                             <img
                                 src={herramienta.imagen || 'https://cdn-icons-png.flaticon.com/512/2138/2138440.png'}
