@@ -14,6 +14,25 @@ const router = Router()
 
 /**
  * @swagger
+ * tags:
+ *   - name: Productos
+ *     description: Gestión de productos (públicos y administrativos)
+ */
+
+/**
+ * @swagger
+ * /productos:
+ *   get:
+ *     summary: Listar todos los productos (público)
+ *     tags: [Productos]
+ *     responses:
+ *       200:
+ *         description: Lista de productos disponibles
+ */
+router.get("/productos", listarProductos) 
+
+/**
+ * @swagger
  * /producto/{id}:
  *   get:
  *     summary: Ver el detalle de un producto (público)
@@ -31,31 +50,8 @@ const router = Router()
  *       404:
  *         description: Producto no encontrado
  */
-router.get("/producto/:id", detalleProducto) // 👈 Se removió verificarTokenJWT
-/**
- * @swagger
- * /producto/{id}:
- *   get:
- *     summary: Ver el detalle de un producto
- *     tags: [Productos]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: ID del producto
- *     responses:
- *       200:
- *         description: Detalle del producto
- *       401:
- *         description: Token no proporcionado o inválido
- *       404:
- *         description: Producto no encontrado
- */
-router.get("/producto/:id", verificarTokenJWT, detalleProducto)
+// ✅ CORREGIDO: Se elimina 'verificarTokenJWT' para permitir acceso público al detalle
+router.get("/producto/:id", detalleProducto)
 
 /**
  * @swagger
@@ -75,6 +71,22 @@ router.get("/producto/:id", verificarTokenJWT, detalleProducto)
  */
 router.get("/productos/admin", verificarTokenJWT, verificarRolAdmin, listarProductosAdmin)
 
+/**
+ * @swagger
+ * /producto/registro:
+ *   post:
+ *     summary: Registrar un nuevo producto (solo administrador)
+ *     tags: [Productos]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       201:
+ *         description: Producto registrado con éxito
+ *       401:
+ *         description: Token no proporcionado o inválido
+ *       403:
+ *         description: No tiene permisos de administrador
+ */
 router.post("/producto/registro", verificarTokenJWT, verificarRolAdmin, registrarProducto)
 
 /**
@@ -121,7 +133,7 @@ router.post("/producto/registro", verificarTokenJWT, verificarRolAdmin, registra
  *       404:
  *         description: Producto no encontrado
  */
-router.put("/producto/actualizar/:id", verificarTokenJWT, verificarRolAdmin,  actualizarProducto)
+router.put("/producto/actualizar/:id", verificarTokenJWT, verificarRolAdmin, actualizarProducto)
 
 /**
  * @swagger
