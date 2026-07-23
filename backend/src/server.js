@@ -11,7 +11,7 @@ import routerProducto from './routers/producto_routers.js';
 import routerReserva from './routers/reserva_routers.js';
 import ordenCompraRouter from './routers/OrdenCompra_routers.js';
 import routerCedula from './routers/cedula_routes.js';
-import router3D from './routes/3D_routers.js';
+import router3D from './routers/3D_routers.js'; // Importar el router para generación 3D
 // Inicializaciones
 const app = express()
 dotenv.config()
@@ -65,9 +65,7 @@ app.use('/api', routerProducto)
 app.use('/api', routerReserva)
 app.use('/api', ordenCompraRouter)
 app.use('/api', routerCedula)
-
-// Ruta para generación 3D (Tripo3D)
-pp.use('/api', router3D);
+app.use('/api', router3D);
 
 // Manejo de ruta no encontrada
 app.use((req, res) => res.status(404).send("Endpoint no encontrado - 404"))
