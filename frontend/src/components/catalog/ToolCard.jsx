@@ -6,6 +6,7 @@ import { toast } from 'react-toastify'
 import storeCarrito from '../../context/storeCarrito'
 import storeAuth from '../../context/storeAuth'
 import ModalConfirmarCompra from './ModalConfirmarCompra'
+import ModalReserva from './ModalReserva' // <--- 1. IMPORTAR MODAL RESERVA
 
 export const ToolCard = ({ producto }) => {
     const { agregarCompra } = storeCarrito()
@@ -13,6 +14,7 @@ export const ToolCard = ({ producto }) => {
     const navigate = useNavigate()
 
     const [modalCompraAbierto, setModalCompraAbierto] = useState(false)
+    const [modalReservaAbierto, setModalReservaAbierto] = useState(false) // <--- 2. ESTADO MODAL RESERVA
 
     const sinStock = producto.stock === 0 || producto.estado === false
     const esPrestable = producto.tipo === 'Prestable'
@@ -28,8 +30,8 @@ export const ToolCard = ({ producto }) => {
         }
 
         if (esPrestable) {
-            // Navega a la página ReservarProducto.jsx que ya tienes
-            navigate(`/reservar/${producto._id}`)
+            // Abre el modal de reserva directamente en lugar de redirigir
+            setModalReservaAbierto(true)
         } else {
             // Abre modal de confirmación antes de añadir al carrito
             setModalCompraAbierto(true)
@@ -97,7 +99,7 @@ export const ToolCard = ({ producto }) => {
                         sinStock
                             ? 'bg-gray-50 dark:bg-gray-800 text-gray-300 dark:text-gray-600 cursor-not-allowed border border-gray-200 dark:border-gray-700'
                             : esPrestable
-                                ? 'border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                                ? 'border border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-950/30'
                                 : 'border border-gray-900 dark:border-white bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-100'
                     }`}
                 >
@@ -114,6 +116,14 @@ export const ToolCard = ({ producto }) => {
                     producto={producto}
                     onConfirmar={handleConfirmarCompra}
                     onCerrar={() => setModalCompraAbierto(false)}
+                />
+            )}
+
+            {/* Modal de Reserva — para herramientas prestables */}
+            {modalReservaAbierto && (
+                <ModalReserva
+                    producto={producto}
+                    onCerrar={() => setModalReservaAbierto(false)}
                 />
             )}
         </>
