@@ -1,3 +1,46 @@
+import { BrowserRouter, Route, Routes } from 'react-router'
+import { Home } from './pages/Home'
+import Login from './pages/Login'
+import { Register } from './pages/Register'
+import { Forgot } from './pages/Forgot'
+import { Confirm } from './pages/Confirm'
+import { NotFound } from './pages/NotFound'
+import Dashboard from './layout/Dashboard'
+import Profile from './pages/Profile'
+import List from './pages/List'
+import Details from './pages/Details'
+import Update from './pages/Update'
+import Chat from './pages/Chat'
+import Reset from './pages/Reset'
+import Panel from './pages/Panel'
+import GestionReservas from './pages/GestionReservas'
+import GestionUsuarios from './pages/GestionUsuarios'
+import MisReservas from './pages/MisReservas'
+import MisPagos from './pages/MisPagos'
+import PublicRoute from './routers/PublicRoute'
+import ProtectedRoute from './routers/ProtectedRoute'
+import PrivateRouteWithRole from './routers/PrivateRouteWithRole'
+import { useEffect } from 'react'
+import storeProfile from './context/storeProfile'
+import storeAuth from './context/storeAuth'
+import RegistrarProducto from './components/create/RegistrarProducto'
+import ChatBotIA from './components/ChatBotIA.jsx'
+import ReservarProducto from './pages/ReservarProducto'
+import Carrito from './pages/Carrito'
+
+function App() {
+  const { profile  } = storeProfile()
+  const { token } = storeAuth()
+
+  useEffect(() => {
+    if (token) {
+      profile()
+    }
+  }, [token])
+  return (
+    <>
+      <BrowserRouter>
+      <ChatBotIA />
 <Routes>
     {/* ── Rutas completamente públicas (cualquiera, logueado o no) ── */}
     <Route index element={<Home />} />
@@ -35,3 +78,9 @@
         </ProtectedRoute>
     } />
 </Routes>
+      </BrowserRouter>
+    </>
+  )
+}
+
+export default App
