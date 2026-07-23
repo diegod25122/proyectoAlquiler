@@ -79,7 +79,6 @@ const Details = () => {
             }
         }
         fetchHerramienta()
-        listarPrestamos()
     }, [id])
 
     if (!herramienta) return (
