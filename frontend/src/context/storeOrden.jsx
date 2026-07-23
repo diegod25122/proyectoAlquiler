@@ -3,11 +3,39 @@ import axios from "axios"
 import { toast } from "react-toastify"
 
 const getAuthHeaders = () => {
-    const sesion = JSON.parse(localStorage.getItem("auth-token") || "null")
-    return {
-        headers: {
-            Authorization: `Bearer ${sesion?.state?.token}`
+    try {
+        // 1. Intentar obtener el ítem de localStorage
+        const rawStorage = localStorage.getItem("auth-token") || localStorage.getItem("token");
+
+        if (!rawStorage) {
+            console.warn("⚠️ No se encontró ningún token en localStorage.");
+            return { headers: {} };
         }
+
+        let token = null;
+
+        // 2. Comprobar si es un JSON (por ejemplo, de Zustand Persist)
+        try {
+            const parsed = JSON.parse(rawStorage);
+            token = parsed?.state?.token || parsed?.token || parsed;
+        } catch {
+            // Si no es JSON, asumir que es el token directamente como string
+            token = rawStorage;
+        }
+
+        if (!token || token === "undefined") {
+            console.error("❌ El token encontrado no es válido:", token);
+            return { headers: {} };
+        }
+
+        return {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        };
+    } catch (error) {
+        console.error("Error al construir headers de autenticación:", error);
+        return { headers: {} };
     }
 }
 
