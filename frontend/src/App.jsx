@@ -1,85 +1,37 @@
-import { BrowserRouter, Route, Routes } from 'react-router'
-import { Home } from './pages/Home'
-import Login from './pages/Login'
-import { Register } from './pages/Register'
-import { Forgot } from './pages/Forgot'
-import { Confirm } from './pages/Confirm'
-import { NotFound } from './pages/NotFound'
-import Dashboard from './layout/Dashboard'
-import Profile from './pages/Profile'
-import List from './pages/List'
-import Details from './pages/Details'
-import Update from './pages/Update'
-import Chat from './pages/Chat'
-import Reset from './pages/Reset'
-import Panel from './pages/Panel'
-import GestionReservas from './pages/GestionReservas'
-import GestionUsuarios from './pages/GestionUsuarios'
-import MisReservas from './pages/MisReservas'
-import MisPagos from './pages/MisPagos'
-import PublicRoute from './routers/PublicRoute'
-import ProtectedRoute from './routers/ProtectedRoute'
-import PrivateRouteWithRole from './routers/PrivateRouteWithRole'
-import { useEffect } from 'react'
-import storeProfile from './context/storeProfile'
-import storeAuth from './context/storeAuth'
-import RegistrarProducto from './components/create/RegistrarProducto'
-import ChatBotIA from './components/ChatBotIA.jsx'
-import ReservarProducto from './pages/ReservarProducto'
-import Carrito from './pages/Carrito'
+<Routes>
+    {/* ── Rutas completamente públicas (cualquiera, logueado o no) ── */}
+    <Route index element={<Home />} />
+    <Route path="/reservar/:id" element={<ReservarProducto />} />
+    <Route path="/carrito" element={<Carrito />} />
+    <Route path="confirm/:token" element={<Confirm />} />
+    <Route path="reset/:token" element={<Reset />} />
+    <Route path="*" element={<NotFound />} />
 
-function App() {
-  const { profile  } = storeProfile()
-  const { token } = storeAuth()
+    {/* ── Solo accesibles sin sesión (redirigen al dashboard si logueado) ── */}
+    <Route element={<PublicRoute />}>
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
+        <Route path="forgot" element={<Forgot />} />
+    </Route>
 
-  useEffect(() => {
-    if (token) {
-      profile()
-    }
-  }, [token])
-  return (
-    <>
-      <BrowserRouter>
-      <ChatBotIA />
-        <Routes>
-
-       <Route path="/reservar/:id" element={<ReservarProducto />} />
-       <Route path="/carrito" element={<Carrito />} />
-          <Route element={<PublicRoute />}>
-            <Route index element={<Home />} />
-            <Route path='login' element={<Login />} />
-            <Route path='register' element={<Register />} />
-            <Route path='forgot' element={<Forgot />} />
-            <Route path='confirm/:token' element={<Confirm />} />
-            <Route path='reset/:token' element={<Reset />} />
-            <Route path='*' element={<NotFound />} />
-          </Route>
-
-
-          <Route path='dashboard/*' element={
-            <ProtectedRoute>
-              <Routes>
+    {/* ── Solo accesibles con sesión ── */}
+    <Route path="dashboard/*" element={
+        <ProtectedRoute>
+            <Routes>
                 <Route element={<Dashboard />}>
-                  <Route index element={<Panel />} />
-                  <Route path='profile' element={<Profile />} />
-                  <Route path='list' element={<List />} />
-                  <Route path='details/:id' element={<Details />} />
-                  <Route path='update/:id' element={<PrivateRouteWithRole><Update /></PrivateRouteWithRole>} />
-                  <Route path='chat' element={<Chat />} />
-                  <Route path="registrar-producto" element={<RegistrarProducto/>} />
-                  <Route path='reservas' element={<PrivateRouteWithRole><GestionReservas /></PrivateRouteWithRole>} />
-                  <Route path='usuarios' element={<PrivateRouteWithRole><GestionUsuarios /></PrivateRouteWithRole>} />
-                  <Route path='mis-reservas' element={<MisReservas />} />
-                  <Route path='mis-pagos' element={<MisPagos />} />
+                    <Route index element={<Panel />} />
+                    <Route path="profile" element={<Profile />} />
+                    <Route path="list" element={<List />} />
+                    <Route path="details/:id" element={<Details />} />
+                    <Route path="update/:id" element={<PrivateRouteWithRole><Update /></PrivateRouteWithRole>} />
+                    <Route path="chat" element={<Chat />} />
+                    <Route path="registrar-producto" element={<RegistrarProducto />} />
+                    <Route path="reservas" element={<PrivateRouteWithRole><GestionReservas /></PrivateRouteWithRole>} />
+                    <Route path="usuarios" element={<PrivateRouteWithRole><GestionUsuarios /></PrivateRouteWithRole>} />
+                    <Route path="mis-reservas" element={<MisReservas />} />
+                    <Route path="mis-pagos" element={<MisPagos />} />
                 </Route>
-              </Routes>
-            </ProtectedRoute>
-          } />
-
-        </Routes>
-      </BrowserRouter>
-    </>
-  )
-}
-
-export default App
+            </Routes>
+        </ProtectedRoute>
+    } />
+</Routes>
