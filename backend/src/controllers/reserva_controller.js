@@ -1,54 +1,53 @@
-// controllers/reserva_controller.js
 import Reserva from "../models/Reserva.js"
 import Producto from "../models/Producto.js"
 import mongoose from "mongoose"
 
-// 1. Registrar nueva solicitud de reserva (Estudiante / Docente)
+// ─── 1. Registrar nueva reserva (Usuario logueado) ────────────────
 export const registrarReserva = async (req, res) => {
-    const { producto, materia, docente, proposito, horasSolicitadas, cantidadSolicitada } = req.body
+    const { producto, materia, docente, proposito, horasSolicitadas, cantidad } = req.body
 
-    // Validar campos requeridos
-    if (!producto || !materia || !docente || !proposito || !horasSolicitadas || !cantidadSolicitada) {
+    if (!producto || !materia || !docente || !proposito || !horasSolicitadas) {
         return res.status(400).json({ msg: "Todos los campos académicos son obligatorios." })
     }
 
     try {
-        // Verificar que el producto exista y sea PRESTABLE
         const productoBD = await Producto.findById(producto)
         if (!productoBD || !productoBD.estado) {
-            return res.status(404).json({ msg: "El producto solicitado no está disponible o no existe." })
+            return res.status(404).json({ msg: "El producto no está disponible o no existe." })
         }
-
         if (productoBD.tipo !== "Prestable") {
-            return res.status(400).json({ msg: "Solo los productos de tipo 'Prestable' pueden ser reservados." })
+            return res.status(400).json({ msg: "Solo los productos Prestables pueden reservarse." })
         }
 
-        if (productoBD.stock < cantidadSolicitada) {
+        const cantidadFinal = Number(cantidad) || 1
+        if (productoBD.stock < cantidadFinal) {
             return res.status(400).json({ msg: `Stock insuficiente. Disponible: ${productoBD.stock}` })
         }
 
-        // Crear la reserva vinculada al usuario autenticado via JWT
         const nuevaReserva = new Reserva({
+            usuario: req.usuarioHeader._id,   // ✅ campo real del modelo
             producto,
-            solicitadoPor: req.usuarioHeader._id, // Tomado del middleware de autenticación
             materia,
             docente,
             proposito,
             horasSolicitadas: Number(horasSolicitadas),
-            cantidadSolicitada: Number(cantidadSolicitada),
+            cantidad: cantidadFinal,           // ✅ campo real del modelo
             estado: "Pendiente"
         })
 
         await nuevaReserva.save()
-        res.status(201).json({ msg: "Solicitud de reserva enviada con éxito. Espera la aprobación del taller.", reserva: nuevaReserva })
+        return res.status(201).json({
+            msg: "Solicitud de reserva enviada. Espera la aprobación del taller.",
+            reserva: nuevaReserva
+        })
 
     } catch (error) {
         console.error("Error al registrar reserva:", error)
-        res.status(500).json({ msg: "Error interno al procesar la reserva", error: error.message })
+        return res.status(500).json({ msg: "Error interno al procesar la reserva", error: error.message })
     }
 }
 
-// 2. Aprobar Reserva (Admin) - Descuenta stock y calcula fecha esperada de devolución
+// ─── 2. Aprobar Reserva (Admin) ───────────────────────────────────
 export const aprobarReserva = async (req, res) => {
     const { id } = req.params
     const session = await mongoose.startSession()
@@ -58,43 +57,41 @@ export const aprobarReserva = async (req, res) => {
         const reserva = await Reserva.findById(id).session(session)
         if (!reserva || reserva.estado !== "Pendiente") {
             await session.abortTransaction()
-            session.endSession()
-            return res.status(400).json({ msg: "La reserva no existe o ya no se encuentra en estado Pendiente." })
+            return res.status(400).json({ msg: "La reserva no existe o ya no está en estado Pendiente." })
         }
 
         const producto = await Producto.findById(reserva.producto).session(session)
-        if (!producto || producto.stock < reserva.cantidadSolicitada) {
+        if (!producto || producto.stock < reserva.cantidad) {
             await session.abortTransaction()
-            session.endSession()
-            return res.status(400).json({ msg: "Stock insuficiente en taller para aprobar la reserva." })
+            return res.status(400).json({ msg: "Stock insuficiente para aprobar la reserva." })
         }
 
         // Descontar stock atómicamente
-        producto.stock -= reserva.cantidadSolicitada
+        producto.stock -= reserva.cantidad
         await producto.save({ session })
 
-        // Calcular fecha estimada de devolución según las horas permitidas
+        // Calcular fecha estimada de devolución
         const fechaAprobacion = new Date()
-        const fechaDevolucionEsperada = new Date(fechaAprobacion.getTime() + reserva.horasSolicitadas * 60 * 60 * 1000)
+        const fechaFin = new Date(fechaAprobacion.getTime() + reserva.horasSolicitadas * 60 * 60 * 1000)
 
         reserva.estado = "Aprobada"
         reserva.aprobadoPor = req.usuarioHeader._id
-        reserva.fechaAprobacion = fechaAprobacion
-        reserva.fechaDevolucionEsperada = fechaDevolucionEsperada
+        reserva.fechaInicio = fechaAprobacion   // ✅ campo real del modelo
+        reserva.fechaFin = fechaFin             // ✅ campo real del modelo
         await reserva.save({ session })
 
         await session.commitTransaction()
-        session.endSession()
+        return res.status(200).json({ msg: "Reserva aprobada exitosamente.", reserva })
 
-        res.status(200).json({ msg: "Reserva aprobada exitosamente.", reserva })
     } catch (error) {
         await session.abortTransaction()
+        return res.status(500).json({ msg: "Error al aprobar la reserva", error: error.message })
+    } finally {
         session.endSession()
-        res.status(500).json({ msg: "Error al aprobar la reserva", error: error.message })
     }
 }
 
-// 3. Rechazar Reserva (Admin)
+// ─── 3. Rechazar Reserva (Admin) ──────────────────────────────────
 export const rechazarReserva = async (req, res) => {
     const { id } = req.params
     const { motivoRechazo } = req.body
@@ -106,17 +103,18 @@ export const rechazarReserva = async (req, res) => {
         }
 
         reserva.estado = "Rechazada"
-        reserva.motivoRechazo = motivoRechazo || "No especificado"
+        reserva.observaciones = motivoRechazo || "No especificado"  // ✅ campo real del modelo
         reserva.aprobadoPor = req.usuarioHeader._id
         await reserva.save()
 
-        res.status(200).json({ msg: "Reserva rechazada.", reserva })
+        return res.status(200).json({ msg: "Reserva rechazada.", reserva })
     } catch (error) {
-        res.status(500).json({ msg: "Error al rechazar reserva", error: error.message })
+        return res.status(500).json({ msg: "Error al rechazar reserva", error: error.message })
     }
 }
 
-// 4. Marcar en uso (Admin - Entregado en el taller)
+// ─── 4. Marcar como entregada (Admin) ────────────────────────────
+// Estado: Aprobada → Alquilada (el estudiante ya retiró la herramienta)
 export const marcarEnUso = async (req, res) => {
     const { id } = req.params
     try {
@@ -125,16 +123,18 @@ export const marcarEnUso = async (req, res) => {
             return res.status(400).json({ msg: "La reserva debe estar en estado 'Aprobada' para entregarse." })
         }
 
-        reserva.estado = "EnUso"
+        reserva.estado = "Alquilada"            // ✅ estado real del modelo
+        reserva.fechaEntrega = new Date()       // ✅ campo real del modelo
         await reserva.save()
 
-        res.status(200).json({ msg: "Herramienta entregada. Reserva marcada en uso.", reserva })
+        return res.status(200).json({ msg: "Herramienta entregada. Reserva marcada como Alquilada.", reserva })
     } catch (error) {
-        res.status(500).json({ msg: "Error al actualizar estado a EnUso", error: error.message })
+        return res.status(500).json({ msg: "Error al actualizar estado", error: error.message })
     }
 }
 
-// 5. Marcar devuelto (Admin - Recibido en el taller y restaura el stock)
+// ─── 5. Marcar como devuelta (Admin) ──────────────────────────────
+// Estado: Alquilada → Devuelta + restaura stock
 export const marcarDevuelto = async (req, res) => {
     const { id } = req.params
     const { observacionesAdmin } = req.body
@@ -143,56 +143,54 @@ export const marcarDevuelto = async (req, res) => {
 
     try {
         const reserva = await Reserva.findById(id).session(session)
-        if (!reserva || reserva.estado !== "EnUso") {
+        if (!reserva || reserva.estado !== "Alquilada") {  // ✅ estado real del modelo
             await session.abortTransaction()
-            session.endSession()
-            return res.status(400).json({ msg: "Solo se pueden devolver herramientas que estén actualmente 'EnUso'." })
+            return res.status(400).json({ msg: "Solo se pueden devolver herramientas en estado 'Alquilada'." })
         }
 
-        // Devolver stock al inventario atómicamente
         const producto = await Producto.findById(reserva.producto).session(session)
         if (producto) {
-            producto.stock += reserva.cantidadSolicitada
+            producto.stock += reserva.cantidad   // ✅ restaurar con campo real
             await producto.save({ session })
         }
 
-        reserva.estado = "Devuelto"
-        reserva.fechaDevolucionReal = new Date()
-        if (observacionesAdmin) reserva.observacionesAdmin = observacionesAdmin
+        reserva.estado = "Devuelta"              // ✅ estado real del modelo
+        reserva.observaciones = observacionesAdmin || reserva.observaciones  // ✅ campo real
         await reserva.save({ session })
 
         await session.commitTransaction()
-        session.endSession()
+        return res.status(200).json({ msg: "Herramienta devuelta e inventario reabastecido.", reserva })
 
-        res.status(200).json({ msg: "Herramienta devuelta e inventario reabastecido correctamente.", reserva })
     } catch (error) {
         await session.abortTransaction()
+        return res.status(500).json({ msg: "Error al registrar la devolución", error: error.message })
+    } finally {
         session.endSession()
-        res.status(500).json({ msg: "Error al registrar la devolución", error: error.message })
     }
 }
 
-// 6. Listar mis reservas (Usuario)
+// ─── 6. Listar mis reservas (Usuario) ────────────────────────────
 export const listarMisReservas = async (req, res) => {
     try {
-        const reservas = await Reserva.find({ solicitadoPor: req.usuarioHeader._id })
+        const reservas = await Reserva.find({ usuario: req.usuarioHeader._id })  // ✅
             .populate("producto", "nombre codigoInventario imagen categoria")
             .sort({ createdAt: -1 })
-        res.status(200).json(reservas)
+        return res.status(200).json(reservas)
     } catch (error) {
-        res.status(500).json({ msg: "Error al obtener tus reservas", error: error.message })
+        return res.status(500).json({ msg: "Error al obtener tus reservas", error: error.message })
     }
 }
 
-// 7. Listar todas las reservas (Admin)
+// ─── 7. Listar todas las reservas (Admin) ────────────────────────
 export const listarReservas = async (req, res) => {
     try {
         const reservas = await Reserva.find()
+            .populate("usuario", "nombre apellido cedula email facultad")  // ✅
             .populate("producto", "nombre codigoInventario imagen")
-            .populate("solicitadoPor", "nombre apellido cedula email facultad")
+            .populate("aprobadoPor", "nombre apellido")
             .sort({ createdAt: -1 })
-        res.status(200).json(reservas)
+        return res.status(200).json(reservas)
     } catch (error) {
-        res.status(500).json({ msg: "Error al obtener el listado general de reservas", error: error.message })
+        return res.status(500).json({ msg: "Error al obtener reservas", error: error.message })
     }
 }
