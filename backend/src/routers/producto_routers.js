@@ -14,23 +14,24 @@ const router = Router()
 
 /**
  * @swagger
- * tags:
- *   - name: Productos
- *     description: Gestión de productos (públicos y administrativos)
- */
-
-/**
- * @swagger
- * /productos:
+ * /producto/{id}:
  *   get:
- *     summary: Listar todos los productos (público)
+ *     summary: Ver el detalle de un producto (público)
  *     tags: [Productos]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del producto
  *     responses:
  *       200:
- *         description: Lista de productos disponibles
+ *         description: Detalle del producto
+ *       404:
+ *         description: Producto no encontrado
  */
-router.get("/productos", listarProductos) 
-
+router.get("/producto/:id", detalleProducto) // 👈 Se removió verificarTokenJWT
 /**
  * @swagger
  * /producto/{id}:
