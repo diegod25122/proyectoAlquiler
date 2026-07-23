@@ -11,8 +11,7 @@ export const Navbar = () => {
     const { isDarkMode, setIsDarkMode } = useDarkMode()
     const { reservas, compras, quitarReserva, quitarCompra, totalItems } = storeCarrito()
 
-    // ✅ Suscripción reactiva — cuando token/rol cambian en storeAuth,
-    // Zustand re-renderiza el Navbar automáticamente sin leer localStorage
+    // Suscripción reactiva con Zustand
     const { token, rol, clearToken } = storeAuth()
     const { user, profile } = storeProfile()
 
@@ -24,12 +23,12 @@ export const Navbar = () => {
 
     const estaLogueado = Boolean(token)
     const esAdmin = rol === "Admin"
-    const iniciales = user
-        ? `${user.nombre?.[0] ?? ""}${user.apellido?.[0] ?? ""}`.toUpperCase()
-        : ""
 
-    // Si hay token pero el store perdió el user (ej: recarga de página),
-    // volvemos a pedir el perfil al backend
+    // 🎨 Generación de la URL de DiceBear API como fallback
+    const seedAvatar = encodeURIComponent(user?.email || user?.nombre || 'usuario')
+    const dicebearAvatarUrl = `https://api.dicebear.com/7.x/adventurer/svg?seed=${seedAvatar}`
+
+    // Si hay token pero el store perdió el user (ej: recarga de página), volvemos a pedir el perfil
     useEffect(() => {
         if (token && !user) profile()
     }, [token])
@@ -113,30 +112,38 @@ export const Navbar = () => {
                         )}
                     </div>
 
-                    {/* Avatar o Login */}
+                    {/* Avatar (consumiendo la API de DiceBear) o Login */}
                     {estaLogueado ? (
                         <div className="relative" ref={menuRef}>
                             <button onClick={() => setMenuAbierto(p => !p)}
                                 className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 px-2 py-1.5 rounded-lg transition-colors">
-                                {user?.imagen ? (
-                                    <img src={user.imagen} alt="avatar" className="w-8 h-8 rounded-full object-cover ring-2 ring-[#6B46C1]/50" />
-                                ) : (
-                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center text-white text-xs font-bold ring-2 ring-[#6B46C1]/50">
-                                        {iniciales}
-                                    </div>
-                                )}
+                                
+                                {/* Si el usuario tiene foto subida la muestra, si no consume la API DiceBear */}
+                                <img 
+                                    src={user?.imagen || dicebearAvatarUrl} 
+                                    alt={`Avatar de ${user?.nombre || 'Usuario'}`} 
+                                    className="w-8 h-8 rounded-full object-cover bg-gray-100 dark:bg-gray-800 ring-2 ring-[#6B46C1]/50" 
+                                />
+
                                 <span className="hidden md:block text-sm font-medium text-gray-700 dark:text-gray-200">{user?.nombre}</span>
                                 <span className="text-gray-400 text-xs">▾</span>
                             </button>
 
                             {menuAbierto && (
                                 <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-100 dark:border-gray-800 py-1 z-50">
-                                    <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
-                                        <p className="text-xs font-semibold text-gray-800 dark:text-white truncate">{user?.nombre} {user?.apellido}</p>
-                                        <p className="text-[10px] text-gray-400 truncate">{user?.email}</p>
-                                        <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full mt-1 inline-block ${esAdmin ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
-                                            {rol}
-                                        </span>
+                                    <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center gap-3">
+                                        <img 
+                                            src={user?.imagen || dicebearAvatarUrl} 
+                                            alt="Avatar menú" 
+                                            className="w-9 h-9 rounded-full object-cover bg-gray-100 dark:bg-gray-800" 
+                                        />
+                                        <div className="truncate">
+                                            <p className="text-xs font-semibold text-gray-800 dark:text-white truncate">{user?.nombre} {user?.apellido}</p>
+                                            <p className="text-[10px] text-gray-400 truncate">{user?.email}</p>
+                                            <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full mt-0.5 inline-block ${esAdmin ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
+                                                {rol}
+                                            </span>
+                                        </div>
                                     </div>
 
                                     {esAdmin && (
