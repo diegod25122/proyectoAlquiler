@@ -78,7 +78,7 @@ const registrarProducto = async (req, res) => {
         return res.status(400).json({ msg: "Los productos consumibles requieren un precio mayor a 0" })
     }
 
-    const archivoImagen = req.files?.imagen || req.file
+    const archivoImagen = req.files?.imagen
 
     if (archivoImagen && promptImagenIA) {
         return res.status(400).json({ msg: "Elige una sola fuente de imagen: archivo o IA, no ambas" })

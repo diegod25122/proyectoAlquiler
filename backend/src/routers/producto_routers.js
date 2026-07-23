@@ -1,5 +1,4 @@
 import { Router } from 'express'
-import multer from 'multer'
 import { 
     registrarProducto, 
     listarProductos,
@@ -10,9 +9,6 @@ import {
 } from '../controllers/producto_controller.js'
 
 import { verificarTokenJWT, verificarRolAdmin } from '../middlewares/JWT.js'
-
-// 2. Configuración básica de Multer para almacenar temporalmente en el disco de Render
-const upload = multer({ storage: multer.memoryStorage() })
 
 const router = Router()
 
@@ -78,8 +74,7 @@ router.get("/producto/:id", verificarTokenJWT, detalleProducto)
  */
 router.get("/productos/admin", verificarTokenJWT, verificarRolAdmin, listarProductosAdmin)
 
-
-router.post("/producto/registro", verificarTokenJWT,upload.single('imagen'), verificarRolAdmin, registrarProducto)
+router.post("/producto/registro", verificarTokenJWT, verificarRolAdmin, registrarProducto)
 
 /**
  * @swagger
