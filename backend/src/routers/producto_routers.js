@@ -5,7 +5,9 @@ import {
     listarProductosAdmin, 
     actualizarProducto, 
     eliminarProducto,
-    detalleProducto
+    detalleProducto,
+    generarProducto3D,
+    obtenerEstado3D
 } from '../controllers/producto_controller.js'
 
 import { verificarTokenJWT, verificarRolAdmin } from '../middlewares/JWT.js'
@@ -162,4 +164,7 @@ router.put("/producto/actualizar/:id", verificarTokenJWT, verificarRolAdmin, act
  */
 router.delete("/producto/eliminar/:id", verificarTokenJWT, verificarRolAdmin, eliminarProducto)
 
+//Rutas para el modelo 
+router.post("/generar-3d", generarProducto3D)
+router.get("/3d-status/:taskId", obtenerEstado3D)
 export default router

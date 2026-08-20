@@ -5,7 +5,6 @@ import TableTreatments from '../components/treatments/Table'
 import ModalTreatments from '../components/treatments/Modal'
 import useStorePrestamos from '../context/storePrestamos'
 import { FiBox, FiLoader, FiTag, FiHash, FiFileText, FiUser, FiToggleRight, FiLayers, FiDollarSign } from 'react-icons/fi'
-import VisorHerramienta3D from '../components/VisorHerramienta3D'
 
 const getAuthHeaders = () => {
     const storedUser = JSON.parse(localStorage.getItem('auth-token'))
@@ -25,38 +24,6 @@ const Details = () => {
     const [modelo3D, setModelo3D] = useState(null)
     const [generando3D, setGenerando3D] = useState(false)
     const [error3D, setError3D] = useState(null)
-
-    // Generar modelo 3D usando el backend con Tripo3D
-    const generarModelo = async () => {
-        if (!herramienta) return
-        setGenerando3D(true)
-        setError3D(null)
-        setModelo3D(null)
-        try {
-            const promptTexto = `${herramienta.nombre} - ${herramienta.descripcion || 'herramienta de trabajo'}`
-
-            // Enviamos imageUrl, prompt y nombre para que el backend decida usar image-to-model o text-to-model
-            const { data } = await axios.post(
-                `${import.meta.env.VITE_BACKEND_URL}/generate-3d`,
-                { 
-                    prompt: promptTexto,
-                    imageUrl: herramienta.imagen || null,
-                    nombre: herramienta.nombre
-                },
-                { ...getAuthHeaders(), timeout: 130000 }
-            )
-
-            if (data.modelUrl) {
-                setModelo3D(data)
-            } else {
-                setError3D('No se obtuvo el enlace del modelo 3D')
-            }
-        } catch (error) {
-            setError3D(error.response?.data?.error || error.response?.data?.msg || 'No se pudo generar el modelo 3D')
-        } finally {
-            setGenerando3D(false)
-        }
-    }
 
     const listarPrestamos = async () => {
         try {
