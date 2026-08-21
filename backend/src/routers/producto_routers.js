@@ -6,11 +6,15 @@ import {
     actualizarProducto, 
     eliminarProducto,
     detalleProducto,
-    generarProducto3D,
-    obtenerEstado3D
-} from '../controllers/producto_controller.js'
+} from '../controllers/producto_controller.js';
+
+import {generarModelo3D, obtenerEstado3D} from '../controllers/meshy_controller.js';
 
 import { verificarTokenJWT, verificarRolAdmin } from '../middlewares/JWT.js'
+
+import multer from "multer"
+
+const upload = multer({ storage: multer.memoryStorage() })
 
 const router = Router()
 
@@ -89,7 +93,7 @@ router.get("/productos/admin", verificarTokenJWT, verificarRolAdmin, listarProdu
  *       403:
  *         description: No tiene permisos de administrador
  */
-router.post("/producto/registro", verificarTokenJWT, verificarRolAdmin, registrarProducto)
+router.post("/producto/registro", verificarTokenJWT, verificarRolAdmin, upload.single("imagen"), registrarProducto)
 
 /**
  * @swagger
@@ -135,7 +139,7 @@ router.post("/producto/registro", verificarTokenJWT, verificarRolAdmin, registra
  *       404:
  *         description: Producto no encontrado
  */
-router.put("/producto/actualizar/:id", verificarTokenJWT, verificarRolAdmin, actualizarProducto)
+router.put("/producto/actualizar/:id", verificarTokenJWT, verificarRolAdmin, upload.single("imagen"), actualizarProducto)
 
 /**
  * @swagger
@@ -165,6 +169,6 @@ router.put("/producto/actualizar/:id", verificarTokenJWT, verificarRolAdmin, act
 router.delete("/producto/eliminar/:id", verificarTokenJWT, verificarRolAdmin, eliminarProducto)
 
 //Rutas para el modelo 
-router.post("/generar-3d", generarProducto3D)
-router.get("/3d-status/:taskId", obtenerEstado3D)
+router.post("/generar-3d", generarModelo3D);
+router.get("/3d-status/:taskId", obtenerEstado3D);
 export default router

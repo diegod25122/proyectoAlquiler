@@ -37,6 +37,8 @@ const manejarErrorProducto = (error, res) => {
    1. REGISTRAR PRODUCTO
    ============================================================ */
 const registrarProducto = async (req, res) => {
+  console.log("BODY:", req.body)
+  console.log("FILE:", req.file || req.files)
   const { nombre, codigoInventario, descripcion, categoria, tipo, precio, stock } = req.body
 
   const camposRequeridos = { nombre, codigoInventario, descripcion, categoria, tipo, stock }
